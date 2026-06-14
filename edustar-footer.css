@@ -1,0 +1,108 @@
+.es-footer {
+  position: relative;
+  overflow: hidden;
+  padding: 4rem 0 2rem;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(255, 215, 0, 0.08), transparent 16%),
+    radial-gradient(circle at 70% 30%, rgba(75, 45, 143, 0.25), transparent 25%),
+    linear-gradient(180deg, rgba(10, 14, 39, 0.92), rgba(6, 10, 28, 0.98));
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.es-footer::before,
+.es-footer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.es-footer::before {
+  background-image:
+    radial-gradient(circle at 12px 18px, rgba(255, 255, 255, 0.9) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 64px 42px, rgba(255, 255, 255, 0.55) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 28px 98px, rgba(255, 215, 0, 0.6) 0 1px, transparent 1.5px);
+  background-size: 140px 140px;
+  opacity: 0.45;
+}
+
+.es-footer::after {
+  width: 220px;
+  height: 2px;
+  left: -220px;
+  top: 28%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.92), rgba(255, 215, 0, 0.65), transparent);
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.9);
+  transform: rotate(-18deg);
+  animation: es-footer-shoot 6s linear infinite;
+}
+
+@keyframes es-footer-shoot {
+  0% { transform: translateX(0) translateY(0) rotate(-18deg); opacity: 0; }
+  15% { opacity: 1; }
+  40% { transform: translateX(110vw) translateY(16px) rotate(-18deg); opacity: 1; }
+  41%, 100% { opacity: 0; }
+}
+
+.es-footer__grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.es-footer__brand {
+  max-width: 360px;
+}
+
+.es-footer__logo {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.es-footer h3,
+.es-footer h4 {
+  margin-bottom: 0.85rem;
+  color: var(--es-color-star-gold);
+}
+
+.es-footer p,
+.es-footer a,
+.es-footer span {
+  color: rgba(245, 247, 255, 0.82);
+}
+
+.es-footer__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.es-footer__links a:hover {
+  color: var(--es-color-star-gold);
+}
+
+.es-footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .es-footer__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .es-footer__bottom {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0A0E27">
+  <title>EduStar | Admin Debug</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="edustar-design-system.css">
+  <style>
+    .es-admin { padding: 2rem 0 4rem; }
+    .es-admin__top { display:grid; grid-template-columns: 1fr auto; gap: 1rem; align-items:end; margin-bottom: 1rem; }
+    .es-admin__filters { display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; }
+    .es-admin__input { min-height: 48px; padding: .75rem 1rem; border-radius: 18px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); color: var(--es-color-ink); }
+    .es-admin__grid { display:grid; gap: 1rem; }
+    .es-admin__stats { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: .75rem; }
+    .es-admin__stat { padding: 1rem; }
+    .es-admin__section { padding: 1rem; overflow:hidden; }
+    .es-admin__section h2 { margin-bottom: .75rem; }
+    .es-admin__table-wrap { overflow:auto; border-radius: 20px; }
+    .es-admin table { width:100%; border-collapse: collapse; min-width: 760px; }
+    .es-admin th, .es-admin td { padding: .75rem .8rem; border-bottom: 1px solid rgba(255,255,255,.08); text-align:left; vertical-align: top; }
+    .es-admin th { color: var(--es-color-star-gold); font-size: .9rem; }
+    .es-admin__empty { color: rgba(245,247,255,.68); }
+    .es-admin__json { font-family: var(--es-font-code); font-size: .9rem; white-space: pre-wrap; word-break: break-word; }
+    @media (max-width: 900px) { .es-admin__top, .es-admin__stats { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="es-admin es-shell">
+    <section class="es-card es-admin__section">
+      <div class="es-admin__top">
+        <div>
+          <span class="es-kicker es-slide-up">Admin / Debug</span>
+          <h1 class="es-slide-up">Learner Data Inspector</h1>
+          <p class="es-slide-up">Inspect stored settings, progress, notes, journal entries, quiz attempts, and tutor history.</p>
+        </div>
+        <div class="es-admin__filters">
+          <input class="es-admin__input" id="device-id" placeholder="Optional device id">
+          <button class="es-btn-primary" id="load">Load data</button>
+        </div>
+      </div>
+      <div class="es-admin__stats" id="stats">
+        <div class="es-card es-admin__stat"><small>Settings</small><h2 data-stat="settings">0</h2></div>
+        <div class="es-card es-admin__stat"><small>Progress</small><h2 data-stat="progress">0</h2></div>
+        <div class="es-card es-admin__stat"><small>Journal</small><h2 data-stat="journalEntries">0</h2></div>
+        <div class="es-card es-admin__stat"><small>Quiz Attempts</small><h2 data-stat="quizAttempts">0</h2></div>
+      </div>
+    </section>
+
+    <section class="es-card es-admin__section">
+      <h2>Settings</h2>
+      <div class="es-admin__table-wrap"><table><thead><tr><th>Device</th><th>Grade</th><th>Updated</th></tr></thead><tbody id="settings-body"><tr><td colspan="3" class="es-admin__empty">No data loaded.</td></tr></tbody></table></div>
+    </section>
+
+    <section class="es-card es-admin__section">
+      <h2>Progress</h2>
+      <div class="es-admin__table-wrap"><table><thead><tr><th>Device</th><th>Stars</th><th>Level</th><th>Lessons</th><th>Updated</th></tr></thead><tbody id="progress-body"><tr><td colspan="5" class="es-admin__empty">No data loaded.</td></tr></tbody></table></div>
+    </section>
+
+    <section class="es-card es-admin__section">
+      <h2>Notes</h2>
+      <div class="es-admin__table-wrap"><table><thead><tr><th>Device</th><th>Note</th><th>Updated</th></tr></thead><tbody id="notes-body"><tr><td colspan="3" class="es-admin__empty">No data loaded.</td></tr></tbody></table></div>
+    </section>
+
+    <section class="es-card es-admin__section">
+      <h2>Journal Entries</h2>
+      <div class="es-admin__table-wrap"><table><thead><tr><th>Device</th><th>Entry</th><th>Created</th></tr></thead><tbody id="journal-body"><tr><td colspan="3" class="es-admin__empty">No data loaded.</td></tr></tbody></table></div>
+    </section>
+
+    <section class="es-card es-admin__section">
+      <h2>Quiz Attempts</h2>
+      <div class="es-admin__table-wrap"><table><thead><tr><th>Device</th><th>Pillar</th><th>Score</th><th>Total</th><th>Created</th></tr></thead><tbody id="quiz-body"><tr><td colspan="5" class="es-admin__empty">No data loaded.</td></tr></tbody></table></div>
+    </section>
+
+    <section class="es-card es-admin__section">
+      <h2>Tutor Messages</h2>
+      <div class="es-admin__table-wrap"><table><thead><tr><th>Device</th><th>Role</th><th>Message</th><th>Created</th></tr></thead><tbody id="tutor-body"><tr><td colspan="4" class="es-admin__empty">No data loaded.</td></tr></tbody></table></div>
+    </section>
+  </main>
+
+  <script src="edustar-client-api.js"></script>
+  <script>
+    (() => {
+      const deviceInput = document.getElementById('device-id');
+      const loadButton = document.getElementById('load');
+      const statNodes = Object.fromEntries(Array.from(document.querySelectorAll('[data-stat]')).map((node) => [node.dataset.stat, node]));
+      const bodies = {
+        settings: document.getElementById('settings-body'),
+        progress: document.getElementById('progress-body'),
+        notes: document.getElementById('notes-body'),
+        journalEntries: document.getElementById('journal-body'),
+        quizAttempts: document.getElementById('quiz-body'),
+        tutorMessages: document.getElementById('tutor-body'),
+      };
+
+      async function loadData() {
+        const rawDeviceId = deviceInput.value.trim();
+        const query = rawDeviceId ? `?deviceId=${encodeURIComponent(rawDeviceId)}` : '';
+        const summary = await window.EduStarAPI.requestJson(`/api/admin/summary${query}`);
+
+        statNodes.settings.textContent = String(summary.settings.length);
+        statNodes.progress.textContent = String(summary.progress.length);
+        statNodes.journalEntries.textContent = String(summary.journalEntries.length);
+        statNodes.quizAttempts.textContent = String(summary.quizAttempts.length);
+
+        bodies.settings.innerHTML = summary.settings.length
+          ? summary.settings.map((row) => `<tr><td>${row.device_id}</td><td>${row.selected_grade}</td><td>${row.updated_at}</td></tr>`).join('')
+          : '<tr><td colspan="3" class="es-admin__empty">No settings stored.</td></tr>';
+
+        bodies.progress.innerHTML = summary.progress.length
+          ? summary.progress.map((row) => `<tr><td>${row.device_id}</td><td>${row.stars}</td><td>${row.level}</td><td>${row.completed_lessons}</td><td>${row.updated_at}</td></tr>`).join('')
+          : '<tr><td colspan="5" class="es-admin__empty">No progress stored.</td></tr>';
+
+        bodies.notes.innerHTML = summary.notes.length
+          ? summary.notes.map((row) => `<tr><td>${row.device_id}</td><td class="es-admin__json">${escapeHtml(row.note_text)}</td><td>${row.updated_at}</td></tr>`).join('')
+          : '<tr><td colspan="3" class="es-admin__empty">No notes stored.</td></tr>';
+
+        bodies.journalEntries.innerHTML = summary.journalEntries.length
+          ? summary.journalEntries.map((row) => `<tr><td>${row.device_id}</td><td class="es-admin__json">${escapeHtml(row.entry_text)}</td><td>${row.created_at}</td></tr>`).join('')
+          : '<tr><td colspan="3" class="es-admin__empty">No journal entries stored.</td></tr>';
+
+        bodies.quizAttempts.innerHTML = summary.quizAttempts.length
+          ? summary.quizAttempts.map((row) => `<tr><td>${row.device_id}</td><td>${row.pillar}</td><td>${row.score}</td><td>${row.total}</td><td>${row.created_at}</td></tr>`).join('')
+          : '<tr><td colspan="5" class="es-admin__empty">No quiz attempts stored.</td></tr>';
+
+        bodies.tutorMessages.innerHTML = summary.tutorMessages.length
+          ? summary.tutorMessages.map((row) => `<tr><td>${row.device_id}</td><td>${row.role}</td><td class="es-admin__json">${escapeHtml(row.message)}</td><td>${row.created_at}</td></tr>`).join('')
+          : '<tr><td colspan="4" class="es-admin__empty">No tutor messages stored.</td></tr>';
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#39;');
+      }
+
+      loadButton.addEventListener('click', () => {
+        loadData().catch((error) => {
+          Object.values(bodies).forEach((body) => {
+            body.innerHTML = `<tr><td colspan="5" class="es-admin__empty">${escapeHtml(error.message)}</td></tr>`;
+          });
+        });
+      });
+
+      loadData().catch(() => {});
+    })();
+  </script>
+</body>
+</html>

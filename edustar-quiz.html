@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0A0E27">
+  <title>EduStar | Quiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="edustar-design-system.css">
+  <style>
+    /* Navbar */
+    .es-topbar { display:flex; align-items:center; justify-content:space-between; padding:.75rem 0; gap:1rem; flex-wrap:wrap; }
+    .es-topbar__brand { display:flex; align-items:center; gap:.5rem; font-family: var(--es-font-heading); font-size:1.35rem; color: var(--es-color-star-gold); text-decoration:none; }
+    .es-topbar__nav { display:flex; gap:.75rem; flex-wrap:wrap; }
+    .es-topbar__link { font-size:.9rem; padding:.4rem .8rem; border-radius:999px; color:rgba(245,247,255,.8); text-decoration:none; transition: background var(--es-transition-fast), color var(--es-transition-fast); }
+    .es-topbar__link:hover, .es-topbar__link.is-active { background:rgba(255,215,0,.12); color:var(--es-color-star-gold); }
+    .es-quiz { min-height: 100vh; padding: 2rem 0 4rem; position: relative; }
+    .es-quiz__launch, .es-quiz__screen, .es-quiz__results { max-width: 980px; margin: 0 auto; }
+    .es-quiz__launch { min-height: 70vh; display:grid; place-items:center; text-align:center; }
+    .es-quiz__countdown { position: fixed; inset: 0; display:grid; place-items:center; background: rgba(10,14,39,.86); backdrop-filter: blur(10px); opacity: 0; pointer-events:none; transition: opacity .2s ease; z-index: 20; }
+    .es-quiz__countdown.is-show { opacity: 1; pointer-events:auto; }
+    .es-quiz__countdown span { font-family: var(--es-font-heading); font-size: clamp(4rem, 16vw, 8rem); color: var(--es-color-star-gold); animation: countdown-pop 1s ease both; }
+    .es-quiz__screen { display:none; grid-template-columns: minmax(0,1fr) 280px; gap: 1.2rem; align-items:start; }
+    .es-quiz__screen.is-show { display:grid; }
+    .es-quiz__question { min-height: 160px; }
+    .es-quiz__options { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+    .es-quiz__option { padding: 1rem; text-align:left; min-height: 76px; }
+    .es-quiz__option:hover { transform: perspective(800px) rotateX(2deg) rotateY(3deg) translateY(-4px); }
+    .es-quiz__option.is-correct { background: rgba(72,255,137,.18); border-color: rgba(72,255,137,.55); box-shadow: 0 0 24px rgba(72,255,137,.25); animation: correct-pulse .5s ease; }
+    .es-quiz__option.is-wrong { animation: wobble .4s ease 3; }
+    .es-quiz__timer { width: 220px; height: 220px; margin: 0 auto; position: relative; }
+    .es-quiz__timer svg { width:100%; height:100%; transform: rotate(-90deg); }
+    .es-quiz__timer circle { fill:none; stroke-width: 10; }
+    .es-quiz__timer .track { stroke: rgba(255,255,255,.12); }
+    .es-quiz__timer .ring { stroke: var(--es-color-cosmic-green); stroke-dasharray: 565; stroke-dashoffset: 0; transition: stroke .25s ease; }
+    .es-quiz__timer.is-gold .ring { stroke: var(--es-color-star-gold); }
+    .es-quiz__timer.is-red .ring { stroke: #ff6b6b; }
+    .es-quiz__results { display:none; text-align:center; position:relative; min-height: 72vh; }
+    .es-quiz__results.is-show { display:grid; place-items:center; }
+    .es-quiz__rocket { font-size: 4rem; animation: rocket-launch 8s linear infinite; }
+    .es-quiz__stars { display:flex; justify-content:center; gap: .8rem; margin: 1rem 0 0; }
+    .es-quiz__star { width: 64px; height: 64px; display:grid; place-items:center; }
+    .es-quiz__star .star-front, .es-quiz__star .star-back { width:100%; height:100%; border-radius: 18px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.12); }
+    .es-quiz__star .star-front { background: rgba(255,255,255,.05); }
+    .es-quiz__star .star-back { background: linear-gradient(180deg, #ffe98b, #ffd700); color:#251900; }
+    .es-quiz__star.is-flip { perspective: 400px; }
+    .es-quiz__star.is-flip .star-inner { transform: rotateY(180deg); transition: transform .6s ease; width:100%; height:100%; position:relative; transform-style: preserve-3d; }
+    .es-quiz__star.is-flip .star-front, .es-quiz__star.is-flip .star-back { position:absolute; inset:0; backface-visibility:hidden; }
+    .es-quiz__star.is-flip .star-back { transform: rotateY(180deg); }
+    .es-quiz__confetti { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+    .es-quiz__confetti i { position:absolute; top:-20px; width: 10px; height: 18px; border-radius: 2px; background: var(--c); animation: confetti-fall 2.8s linear infinite; left: var(--x); animation-delay: var(--d); transform: rotate(var(--r)); }
+    .es-quiz__message { margin-top: 1rem; min-height: 1.6em; }
+    #start:disabled { opacity: 0.6; cursor: not-allowed; }
+    @keyframes countdown-pop { 0% { transform: scale(.3); opacity:0; } 50% { transform: scale(1); opacity:1; } 100% { transform: scale(.8); opacity:0; } }
+    @keyframes correct-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    @keyframes wobble { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
+    @keyframes rocket-launch { 0% { transform: translateY(140%); opacity:0; } 20% { opacity:1; } 100% { transform: translateY(-80vh); opacity:0; } }
+    @keyframes confetti-fall { to { transform: translateY(110vh) rotate(calc(var(--r) + 360deg)); } }
+    @media (max-width: 900px) { .es-quiz__screen { grid-template-columns: 1fr; } .es-quiz__options { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="es-shell" style="border-bottom:1px solid rgba(255,255,255,.07);">
+    <div class="es-topbar">
+      <a class="es-topbar__brand" href="edustar-home.html">🚀⭐ EduStar</a>
+      <nav class="es-topbar__nav" aria-label="Main navigation">
+        <a class="es-topbar__link" href="edustar-home.html">Home</a>
+        <a class="es-topbar__link" href="edustar-subject-hub.html">Subjects</a>
+        <a class="es-topbar__link" href="edustar-ai-tech-learning-centre.html">AI Centre</a>
+        <a class="es-topbar__link" href="edustar-ai-tutor.html">AI Tutor</a>
+        <a class="es-topbar__link is-active" href="edustar-quiz.html">Quiz</a>
+        <a class="es-topbar__link" href="edustar-progress-tracker.html">Progress</a>
+      </nav>
+    </div>
+  </header>
+  <main class="es-quiz es-shell">
+    <section class="es-quiz__launch" id="launch-screen">
+      <div>
+        <span class="es-kicker es-slide-up">Quiz Mission</span>
+        <h1 class="es-slide-up">Launch Quiz!</h1>
+        <p class="es-slide-up" style="max-width:52ch;margin:0 auto;">A short, friendly quiz with a countdown, timer ring, and star rewards.</p>
+        <button class="es-btn-primary es-glow" id="start">Launch Quiz!</button>
+      </div>
+    </section>
+
+    <div class="es-quiz__countdown" id="countdown"><span id="countdown-number">3</span></div>
+
+    <section class="es-quiz__screen" id="quiz-screen" aria-live="polite">
+      <article class="es-card" style="padding:1.2rem;">
+        <div class="es-quiz__question">
+          <span class="es-kicker">Question <span id="q-index">1</span>/<span id="q-total">?</span></span>
+          <h2 id="question"></h2>
+        </div>
+        <div class="es-quiz__options" id="options"></div>
+        <p class="es-quiz__message" id="feedback"></p>
+      </article>
+      <aside class="es-card" style="padding:1rem; text-align:center;">
+        <div class="es-quiz__timer" id="timer"><svg viewBox="0 0 200 200"><circle class="track" cx="100" cy="100" r="90"></circle><circle class="ring" cx="100" cy="100" r="90"></circle></svg></div>
+        <p style="margin-top:.8rem;">Time remaining</p>
+        <h3 id="score">Score 0</h3>
+      </aside>
+    </section>
+
+    <section class="es-quiz__results" id="results">
+      <div class="es-quiz__confetti" id="confetti"></div>
+      <div>
+        <div class="es-quiz__rocket">🚀</div>
+        <h2>Your mission is complete</h2>
+        <p id="results-text"></p>
+        <div class="es-quiz__stars" id="stars"></div>
+        <div class="es-quiz__message">Almost there, Explorer! You got this!</div>
+        <button class="es-btn-secondary" id="retry">Play Again</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="edustar-client-api.js"></script>
+  <script>
+    (() => {
+      let questions = [];
+      // Load questions from JSON and filter by query params (pillarName, grade)
+      (async function loadQuestions() {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const pillarName = params.get('pillarName');
+          const grade = Number(params.get('grade')) || Number(window.localStorage.getItem('edustar-grade')) || 1;
+          const all = await window.EduStarAPI.requestJson('/edustar-quiz-questions.json');
+          // filter by pillarName if provided
+          questions = all.filter((q) => {
+            if (pillarName && String(q.pillar).toLowerCase() !== String(pillarName).toLowerCase()) return false;
+            // check gradeRange
+            if (q.gradeRange) {
+              const parts = String(q.gradeRange).split('-').map((p) => Number(p));
+              if (parts.length === 2) {
+                const [min, max] = parts;
+                return grade >= min && grade <= max;
+              }
+            }
+            return true;
+          }).map((q) => ({ question: q.question, options: q.options, answer: Number(q.correctIndex) }));
+          if (!questions.length) {
+            // fallback to a small default set
+            questions = [
+              { question: 'What is AI?', options: ['A smart computer helper', 'A toy rocket', 'A kind of fruit', 'A school book'], answer: 0 },
+            ];
+          }
+        } catch (e) {
+          questions = [
+            { question: 'What does AI stand for?', options: ['Artificial Intelligence', 'Auto Idea', 'Animal Instinct', 'Awesome Interface'], answer: 0 },
+            { question: 'What is coding?', options: ['Writing instructions for a computer', 'Painting a picture', 'Reading a book', 'Singing a song'], answer: 0 },
+            { question: 'What do robots use to sense the world?', options: ['Sensors', 'Wings', 'Pencils', 'Books'], answer: 0 },
+            { question: 'How does AI learn?', options: ['From patterns in data', 'By watching TV', 'By sleeping', 'From magic'], answer: 0 },
+            { question: 'What is digital safety?', options: ['Keeping passwords private and safe online', 'A type of robot', 'A coding language', 'A computer game'], answer: 0 },
+          ];
+        }
+      })();
+      const start = document.getElementById('start');
+      // disable start until questions load
+      start.disabled = true;
+      const enableStartInterval = setInterval(() => { if (questions.length > 0) { start.disabled = false; clearInterval(enableStartInterval); } }, 100);
+      const launch = document.getElementById('launch-screen');
+      const countdown = document.getElementById('countdown');
+      const countdownNumber = document.getElementById('countdown-number');
+      const quizScreen = document.getElementById('quiz-screen');
+      const questionEl = document.getElementById('question');
+      const optionsEl = document.getElementById('options');
+      const feedback = document.getElementById('feedback');
+      const qIndex = document.getElementById('q-index');
+      const qTotal = document.getElementById('q-total');
+      const scoreEl = document.getElementById('score');
+      const timer = document.getElementById('timer');
+      const results = document.getElementById('results');
+      const resultsText = document.getElementById('results-text');
+      const stars = document.getElementById('stars');
+      const confetti = document.getElementById('confetti');
+      const retry = document.getElementById('retry');
+      const deviceId = window.EduStarAPI.getDeviceId();
+      let current = 0;
+      let score = 0;
+      let timerValue = 30;
+      let timerId = 0;
+      let typeId = 0;
+
+      function speakBeep() {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          const ctx = new AudioContext();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = 880;
+          gain.gain.value = 0.04;
+          osc.connect(gain).connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.16);
+        } catch (error) {
+          // optional audio only
+        }
+      }
+
+      function typeQuestion(text) {
+        clearInterval(typeId);
+        questionEl.textContent = '';
+        let index = 0;
+        typeId = setInterval(() => {
+          questionEl.textContent += text[index];
+          index += 1;
+          if (index >= text.length) clearInterval(typeId);
+        }, 30);
+      }
+
+      function renderQuestion() {
+        const item = questions[current];
+        qIndex.textContent = String(current + 1);
+        if (qTotal) qTotal.textContent = String(questions.length);
+        optionsEl.innerHTML = '';
+        feedback.textContent = '';
+        typeQuestion(item.question);
+        item.options.forEach((option, index) => {
+          const button = document.createElement('button');
+          button.className = 'es-btn-secondary es-quiz__option';
+          button.style.animationDelay = `${index * 0.1}s`;
+          button.textContent = option;
+          button.addEventListener('click', () => answer(index, button));
+          optionsEl.appendChild(button);
+        });
+        timerValue = 30;
+        timer.className = 'es-quiz__timer';
+        runTimer();
+      }
+
+      function runTimer() {
+        clearInterval(timerId);
+        timerId = setInterval(() => {
+          timerValue -= 1;
+          const pct = timerValue / 30;
+          const offset = 565 * (1 - pct);
+          timer.querySelector('.ring').style.strokeDashoffset = String(offset);
+          timer.classList.toggle('is-gold', timerValue <= 15 && timerValue > 8);
+          timer.classList.toggle('is-red', timerValue <= 8);
+          if (timerValue <= 0) {
+            clearInterval(timerId);
+            nextQuestion(false);
+          }
+        }, 1000);
+      }
+
+      function answer(selected, button) {
+        clearInterval(timerId);
+        const correct = questions[current].answer;
+        const optionButtons = Array.from(optionsEl.children);
+        optionButtons.forEach((optionButton) => optionButton.disabled = true);
+        if (selected === correct) {
+          score += 1;
+          scoreEl.textContent = `Score ${score}`;
+          button.classList.add('is-correct');
+          feedback.textContent = 'Correct! Great job.';
+          speakBeep();
+        } else {
+          button.classList.add('is-wrong');
+          optionButtons[correct].classList.add('is-correct');
+          feedback.textContent = 'Almost there, Explorer! You got this!';
+        }
+        setTimeout(() => nextQuestion(selected === correct), 900);
+      }
+
+      function nextQuestion() {
+        current += 1;
+        if (current < questions.length) {
+          renderQuestion();
+        } else {
+          showResults();
+        }
+      }
+
+      function showResults() {
+        quizScreen.classList.remove('is-show');
+        results.classList.add('is-show');
+        resultsText.textContent = `You scored ${score} out of ${questions.length}.`;
+        stars.innerHTML = '';
+        for (let index = 0; index < Math.max(1, Math.min(3, score)); index += 1) {
+          const star = document.createElement('div');
+          star.className = 'es-quiz__star is-flip';
+          star.innerHTML = '<div class="star-inner"><div class="star-front">☆</div><div class="star-back">★</div></div>';
+          star.style.animationDelay = `${index * 0.2}s`;
+          stars.appendChild(star);
+        }
+        window.EduStarAPI.requestJson('/api/quiz-attempts', {
+          method: 'POST',
+          body: JSON.stringify({
+            deviceId,
+            pillar: 'AI & Technology',
+            score,
+            total: questions.length,
+          }),
+        }).catch(() => {});
+        Array.from({ length: 30 }, (_, index) => {
+          const conf = document.createElement('i');
+          conf.style.setProperty('--x', `${Math.random() * 100}%`);
+          conf.style.setProperty('--d', `${Math.random() * 1.8}s`);
+          conf.style.setProperty('--r', `${Math.random() * 360}deg`);
+          conf.style.setProperty('--c', ['#ffd700','#39ff14','#00d4ff','#ff8d5c'][index % 4]);
+          confetti.appendChild(conf);
+        });
+      }
+
+      start.addEventListener('click', () => {
+        launch.style.display = 'none';
+        countdown.classList.add('is-show');
+        [3,2,1].forEach((value, index) => {
+          setTimeout(() => {
+            countdownNumber.textContent = String(value);
+            countdownNumber.style.animation = 'none';
+            void countdownNumber.offsetWidth;
+            countdownNumber.style.animation = '';
+          }, index * 1000);
+        });
+        setTimeout(() => {
+          countdown.classList.remove('is-show');
+          quizScreen.classList.add('is-show');
+          renderQuestion();
+        }, 3000);
+      });
+
+      retry.addEventListener('click', () => location.reload());
+    })();
+  </script>
+  <!-- Footer -->
+  <footer class="es-shell" style="padding:1.2rem 0; border-top:1px solid rgba(255,255,255,.07); margin-top:2rem; text-align:center;">
+    <small>EduStar &copy; 2025 &mdash; Safe, ad-free, joyful learning for young explorers. &nbsp;
+      <a href="edustar-home.html" style="color:var(--es-color-star-gold); text-decoration:none;">↩ Back to Home</a>
+    </small>
+  </footer>
+</body>
+</html>

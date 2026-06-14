@@ -1,0 +1,78 @@
+<nav class="es-nav" aria-label="Primary">
+  <div class="es-nav__inner es-shell">
+    <a class="es-nav__brand" href="#home" aria-label="EduStar Home">
+      <span class="es-nav__logo es-float" aria-hidden="true">🚀⭐</span>
+      <span class="es-nav__name">EduStar</span>
+    </a>
+
+    <button class="es-nav__toggle" type="button" aria-expanded="false" aria-controls="es-nav-menu" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <div class="es-nav__menu" id="es-nav-menu">
+      <a class="es-nav__link is-active" href="#home">Home</a>
+      <a class="es-nav__link" href="#subjects">Subjects</a>
+      <a class="es-nav__link" href="#ai-tutor">AI Tutor</a>
+      <a class="es-nav__link" href="#quizzes">Quizzes</a>
+      <a class="es-nav__link" href="#progress">My Progress</a>
+    </div>
+
+    <label class="es-nav__grade" aria-label="Select class">
+      <span>Class</span>
+      <select class="es-nav__select" id="es-grade-select">
+          <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
+          <option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
+      </select>
+    </label>
+  </div>
+
+  <script src="edustar-client-api.js"></script>
+  <div class="es-nav__overlay" data-es-nav-overlay></div>
+  <script>
+    (function () {
+      const nav = document.querySelector('.es-nav');
+      const toggle = document.querySelector('.es-nav__toggle');
+      const menu = document.getElementById('es-nav-menu');
+      const select = document.getElementById('es-grade-select');
+      const deviceId = window.EduStarAPI.getDeviceId();
+      const storedGrade = localStorage.getItem('edustar-grade') || '1';
+
+      select.value = storedGrade;
+      window.EduStarAPI.requestJson(`/api/settings?deviceId=${encodeURIComponent(deviceId)}`)
+        .then((data) => {
+          if (data.settings?.selected_grade) {
+            select.value = String(data.settings.selected_grade);
+          }
+        })
+        .catch(() => {});
+
+      select.addEventListener('change', function () {
+        localStorage.setItem('edustar-grade', select.value);
+        window.EduStarAPI.requestJson('/api/settings', {
+          method: 'POST',
+          body: JSON.stringify({
+            deviceId,
+            selectedGrade: select.value,
+          }),
+        }).catch(() => {});
+      });
+
+      toggle.addEventListener('click', function () {
+        const isOpen = nav.classList.toggle('es-nav--open');
+        toggle.setAttribute('aria-expanded', String(isOpen));
+      });
+
+      function onScroll() {
+        nav.classList.toggle('es-nav--compact', window.scrollY > 50);
+
+    overlay.addEventListener("click", () => {
+      nav.classList.remove("es-nav--open");
+      toggle.setAttribute("aria-expanded", "false");
+    });
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+  </script>
+</nav>

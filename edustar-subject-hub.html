@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0A0E27">
+  <title>EduStar | Subject Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="edustar-design-system.css">
+  <style>
+    /* Navbar */
+    .es-topbar { display:flex; align-items:center; justify-content:space-between; padding:.75rem 0; gap:1rem; flex-wrap:wrap; }
+    .es-topbar__brand { display:flex; align-items:center; gap:.5rem; font-family: var(--es-font-heading); font-size:1.35rem; color: var(--es-color-star-gold); text-decoration:none; }
+    .es-topbar__nav { display:flex; gap:.75rem; flex-wrap:wrap; }
+    .es-topbar__link { font-size:.9rem; padding:.4rem .8rem; border-radius:999px; color:rgba(245,247,255,.8); text-decoration:none; transition: background var(--es-transition-fast), color var(--es-transition-fast); }
+    .es-topbar__link:hover, .es-topbar__link.is-active { background:rgba(255,215,0,.12); color:var(--es-color-star-gold); }
+    .es-hub { padding: 2rem 0 4rem; }
+    .es-hub__banner { display:grid; grid-template-columns: 1fr auto; gap: 2rem; align-items:center; padding: 2rem 0 2.5rem; }
+    .es-hub__planet { width: 220px; height: 220px; border-radius: 50%; position: relative; background: radial-gradient(circle at 30% 28%, rgba(255,255,255,.45), rgba(0,212,255,.15) 20%, #1b2a6b 42%, #0a0e27 100%); box-shadow: inset -24px -30px 42px rgba(0,0,0,.25), 0 24px 48px rgba(0,0,0,.28); }
+    .es-hub__planet::before { content:''; position:absolute; inset: 26px -20px auto; height: 34px; border: 3px solid rgba(255,215,0,.58); border-radius: 50%; transform: rotateX(75deg); animation: es-spin-slow 20s linear infinite; }
+    .es-hub__planet::after { content:''; position:absolute; inset: 24px; border-radius: 50%; border: 1px solid rgba(255,255,255,.08); }
+    .es-hub__title { color: var(--es-color-star-gold); }
+    .es-hub__pillars { display:flex; flex-wrap:wrap; gap:.65rem; margin: 1rem 0 2rem; }
+    .es-hub__pillar-btn { padding:.7rem 1.2rem; border-radius: var(--es-radius-pill); border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); color: var(--es-color-ink); cursor: pointer; transition: transform var(--es-transition-fast), box-shadow var(--es-transition-fast), opacity var(--es-transition-fast); font-size: .95rem; }
+    .es-hub__pillar-btn.is-selected { transform: scale(1.1); box-shadow: var(--es-shadow-glow); background: rgba(255,215,0,.12); border-color: rgba(255,215,0,.42); }
+    .es-hub__pillar-btn:hover { opacity: 0.8; }
+    .es-hub__grades { display:flex; flex-wrap:wrap; gap:.65rem; margin: 1rem 0 1.5rem; }
+    .es-hub__grade { padding:.7rem 1rem; border-radius: var(--es-radius-pill); border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); color: var(--es-color-ink); transition: transform var(--es-transition-fast), box-shadow var(--es-transition-fast), opacity var(--es-transition-fast); cursor: pointer; }
+    .es-hub__grade.is-selected { transform: scale(1.1); box-shadow: var(--es-shadow-glow); background: rgba(255,215,0,.12); border-color: rgba(255,215,0,.42); }
+    .es-hub__layout { display:grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 1.5rem; align-items:start; }
+    .es-hub__topics { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1rem; }
+    .es-hub__card { padding: 1rem; min-height: 210px; position: relative; overflow:hidden; transition: opacity var(--es-transition-med), transform var(--es-transition-med); }
+    .es-hub__card.is-muted { opacity: .3; transform: scale(.97); pointer-events:none; }
+    .es-hub__card.is-visible { animation: es-slide-up .5s ease both; }
+    .es-hub__icon { width: 52px; height: 52px; border-radius: 18px; display:grid; place-items:center; margin-bottom:.8rem; background: rgba(255,255,255,.08); }
+    .es-hub__icon span { display:inline-block; animation: es-float 4s ease-in-out infinite; }
+    .es-hub__card h3 { color: var(--es-color-star-gold); margin-bottom:.35rem; }
+    .es-hub__actions { display:flex; gap:.6rem; margin-top: 1rem; flex-wrap:wrap; }
+    .es-hub__actions .es-btn-secondary { min-height: 42px; padding: .7rem 1rem; }
+    .es-hub__watch:hover .es-hub__rocket { transform: translateX(4px); }
+    .es-hub__rocket { display:inline-block; transition: transform var(--es-transition-fast); }
+    .es-hub__quiz:active { animation: es-star-burst .6s ease-out; }
+    .es-hub__sidebar { padding: 1rem; position: sticky; top: 96px; }
+    .es-hub__ring { width: 190px; height: 190px; margin: 0 auto 1rem; }
+    .es-hub__ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .es-hub__ring circle { fill: none; stroke-width: 10; stroke-linecap: round; }
+    .es-hub__ring .track { stroke: rgba(255,255,255,.1); }
+    .es-hub__ring .fill { stroke: var(--es-color-star-gold); stroke-dasharray: 565; stroke-dashoffset: 565; animation: es-ring-fill 1.6s ease forwards; }
+    .es-hub__orbit { position:absolute; inset: 34px; display:grid; place-items:center; }
+    .es-hub__orbit span { animation: es-orbit 12s linear infinite; font-size: 1.4rem; }
+    .es-hub__message { margin-top:.8rem; text-align:center; }
+    .es-hub__meta { display:flex; flex-wrap:wrap; gap:.6rem; margin-top: 1rem; }
+    @keyframes es-ring-fill { to { stroke-dashoffset: 102; } }
+    @media (max-width: 960px) { .es-hub__banner, .es-hub__layout { grid-template-columns: 1fr; } .es-hub__planet { margin-inline:auto; } }
+    @media (max-width: 640px) { .es-hub__topics { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="es-shell" style="border-bottom:1px solid rgba(255,255,255,.07);">
+    <div class="es-topbar">
+      <a class="es-topbar__brand" href="edustar-home.html">🚀⭐ EduStar</a>
+      <nav class="es-topbar__nav" aria-label="Main navigation">
+        <a class="es-topbar__link" href="edustar-home.html">Home</a>
+        <a class="es-topbar__link is-active" href="edustar-subject-hub.html">Subjects</a>
+        <a class="es-topbar__link" href="edustar-ai-tech-learning-centre.html">AI Centre</a>
+        <a class="es-topbar__link" href="edustar-ai-tutor.html">AI Tutor</a>
+        <a class="es-topbar__link" href="edustar-quiz.html">Quiz</a>
+        <a class="es-topbar__link" href="edustar-progress-tracker.html">Progress</a>
+      </nav>
+    </div>
+  </header>
+  <canvas id="es-starfield" aria-hidden="true"></canvas>
+  <main class="es-hub es-shell">
+    <section class="es-hub__banner">
+      <div>
+        <span class="es-kicker es-slide-up">Subject Hub</span>
+        <h1 class="es-hub__title es-slide-up" style="animation-delay:.05s;" id="pillar-title">Choose a Pillar</h1>
+        <p class="es-slide-up" style="animation-delay:.12s; max-width:58ch;" id="pillar-desc">Select a learning pillar, choose your class, and explore topics that match your level.</p>
+        <div class="es-hub__meta es-slide-up" style="animation-delay:.18s;">
+          <span class="es-pill" id="data-source-pill">Offline mode ready</span>
+          <span class="es-pill">Topics: <strong data-es-hub-topic-count>--</strong></span>
+          <span class="es-pill">Stars: <strong data-es-hub-stars>--</strong></span>
+        </div>
+      </div>
+      <div class="es-hub__planet es-spin" aria-hidden="true"></div>
+    </section>
+
+    <div class="es-hub__pillars" aria-label="Pillar selector" style="display:flex; flex-wrap:wrap; gap:.65rem; margin-bottom: 2rem;">
+      <!-- Pillars loaded dynamically by JavaScript -->
+    </div>
+
+    <div class="es-hub__grades" aria-label="Grade selector">
+      <button class="es-hub__grade is-selected" data-grade="1">Class 1</button>
+      <button class="es-hub__grade" data-grade="2">Class 2</button>
+      <button class="es-hub__grade" data-grade="3">Class 3</button>
+      <button class="es-hub__grade" data-grade="4">Class 4</button>
+      <button class="es-hub__grade" data-grade="5">Class 5</button>
+      <button class="es-hub__grade" data-grade="6">Class 6</button>
+      <button class="es-hub__grade" data-grade="7">Class 7</button>
+      <button class="es-hub__grade" data-grade="8">Class 8</button>
+      <button class="es-hub__grade" data-grade="9">Class 9</button>
+      <button class="es-hub__grade" data-grade="10">Class 10</button>
+      <button class="es-hub__grade" data-grade="11">Class 11</button>
+      <button class="es-hub__grade" data-grade="12">Class 12</button>
+    </div>
+
+    <div class="es-hub__layout">
+      <section class="es-hub__topics" id="topics-container" aria-label="Topic cards">
+        <!-- Topics loaded dynamically by JavaScript -->
+      </section>
+
+      <aside class="es-card es-hub__sidebar" aria-label="Progress sidebar">
+        <div class="es-hub__ring" aria-hidden="true">
+          <svg viewBox="0 0 200 200">
+            <circle class="track" cx="100" cy="100" r="90"></circle>
+            <circle class="fill" cx="100" cy="100" r="90"></circle>
+          </svg>
+          <div class="es-hub__orbit"><span>🪐</span></div>
+        </div>
+        <h3 style="text-align:center; margin-bottom:.4rem;">Keep going</h3>
+        <p class="es-hub__message"><span class="es-glow" style="display:inline-block; border-radius:50%;">⭐</span> You are building strong learning habits.</p>
+      </aside>
+    </div>
+  </main>
+  <script src="edustar-starfield.js"></script>
+  <script src="edustar-client-api.js"></script>
+  <script>
+    (() => {
+      const gradeButtons = Array.from(document.querySelectorAll('[data-grade]'));
+      const topicCount = document.querySelector('[data-es-hub-topic-count]');
+      const starsCount = document.querySelector('[data-es-hub-stars]');
+      const topicsContainer = document.getElementById('topics-container');
+      const pillarsContainer = document.querySelector('.es-hub__pillars');
+      const pillarTitle = document.getElementById('pillar-title');
+      const pillarDesc = document.getElementById('pillar-desc');
+      const deviceId = window.EduStarAPI.getDeviceId();
+      let contentMap = [];
+      let selectedPillar = null;
+      let selectedGrade = '1';
+
+      const fallbackMap = [
+        {
+          "pillarId": "core-academics",
+          "pillarName": "Core Academics",
+          "pillarColor": "#FFD700",
+          "pillarIcon": "📚",
+          "topics": [
+            { "topicId": "math-foundations", "topicName": "Math Foundations", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Counting, numbers, patterns, and problem solving.", "difficultyLevel": "Easy", "estimatedMinutes": 30, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "science-explorers", "topicName": "Science Explorers", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Plants, animals, matter, energy, and the world.", "difficultyLevel": "Easy", "estimatedMinutes": 35, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "english-communication", "topicName": "English Communication", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Reading, writing, speaking, and vocabulary growth.", "difficultyLevel": "Easy", "estimatedMinutes": 28, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "social-studies", "topicName": "Social Studies", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Communities, history, maps, and citizenship.", "difficultyLevel": "Medium", "estimatedMinutes": 32, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "reading-skills", "topicName": "Reading Skills", "applicableGrades": [1,2,3,4,5,6], "shortDescription": "Fluency, understanding, and story meaning.", "difficultyLevel": "Easy", "estimatedMinutes": 22, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "writing-skills", "topicName": "Writing Skills", "applicableGrades": [3,4,5,6,7,8,9,10,11,12], "shortDescription": "Sentences, paragraphs, and clear expression.", "difficultyLevel": "Medium", "estimatedMinutes": 30, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "environment-awareness", "topicName": "Environment Awareness", "applicableGrades": [1,2,3,4,5,6,7,8], "shortDescription": "Nature, climate, recycling, and caring for Earth.", "difficultyLevel": "Easy", "estimatedMinutes": 26, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "exam-revision", "topicName": "Exam Revision", "applicableGrades": [7,8,9,10,11,12], "shortDescription": "Practice, recall, and confidence before tests.", "difficultyLevel": "Hard", "estimatedMinutes": 40, "quizAvailable": true, "videoAvailable": true }
+          ]
+        },
+        {
+          "pillarId": "ai-technology",
+          "pillarName": "AI & Technology",
+          "pillarColor": "#00D4FF",
+          "pillarIcon": "🤖",
+          "topics": [
+            { "topicId": "what-is-ai", "topicName": "What is AI?", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "AI is a computer system that learns patterns and helps people.", "difficultyLevel": "Easy", "estimatedMinutes": 20, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "prompt-writing", "topicName": "Prompt Writing", "applicableGrades": [5,6,7,8,9,10,11,12], "shortDescription": "Write clear instructions so AI gives better answers.", "difficultyLevel": "Medium", "estimatedMinutes": 25, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "coding-basics", "topicName": "Coding Basics", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Learn sequences, loops, and simple logic.", "difficultyLevel": "Easy", "estimatedMinutes": 30, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "robotics", "topicName": "Robotics", "applicableGrades": [5,6,7,8,9,10,11,12], "shortDescription": "Robots sense, think, and act with sensors and motors.", "difficultyLevel": "Medium", "estimatedMinutes": 35, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "digital-safety", "topicName": "Digital Safety", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Stay safe, kind, and careful online.", "difficultyLevel": "Easy", "estimatedMinutes": 18, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "computers-and-internet", "topicName": "Computers and Internet", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Understand devices, networks, and responsible use.", "difficultyLevel": "Easy", "estimatedMinutes": 24, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "future-tech", "topicName": "Future Tech", "applicableGrades": [6,7,8,9,10,11,12], "shortDescription": "Discover how new tools can help learning and life.", "difficultyLevel": "Medium", "estimatedMinutes": 22, "quizAvailable": true, "videoAvailable": true }
+          ]
+        },
+        {
+          "pillarId": "life-skills",
+          "pillarName": "Life Skills",
+          "pillarColor": "#39FF14",
+          "pillarIcon": "🌱",
+          "topics": [
+            { "topicId": "critical-thinking", "topicName": "Critical Thinking", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Think carefully, ask questions, and check ideas.", "difficultyLevel": "Medium", "estimatedMinutes": 26, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "communication", "topicName": "Communication", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Listen well, speak clearly, and work with others.", "difficultyLevel": "Easy", "estimatedMinutes": 24, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "problem-solving", "topicName": "Problem Solving", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Find simple steps to solve hard situations.", "difficultyLevel": "Medium", "estimatedMinutes": 28, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "teamwork", "topicName": "Teamwork", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Share, help, and build together.", "difficultyLevel": "Easy", "estimatedMinutes": 20, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "self-management", "topicName": "Self Management", "applicableGrades": [4,5,6,7,8,9,10,11,12], "shortDescription": "Plan time, keep calm, and stay on task.", "difficultyLevel": "Medium", "estimatedMinutes": 23, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "goal-setting", "topicName": "Goal Setting", "applicableGrades": [3,4,5,6,7,8,9,10,11,12], "shortDescription": "Set a target and take small steps to reach it.", "difficultyLevel": "Easy", "estimatedMinutes": 21, "quizAvailable": true, "videoAvailable": true }
+          ]
+        },
+        {
+          "pillarId": "values-character",
+          "pillarName": "Values & Character",
+          "pillarColor": "#FFD18A",
+          "pillarIcon": "💛",
+          "topics": [
+            { "topicId": "respect-elders", "topicName": "Respecting Elders", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Speak kindly and listen to older people with care.", "difficultyLevel": "Easy", "estimatedMinutes": 15, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "cleanliness", "topicName": "Cleanliness", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Keep yourself, your room, and your surroundings neat.", "difficultyLevel": "Easy", "estimatedMinutes": 15, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "discipline", "topicName": "Discipline", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Follow routines, finish work, and stay steady.", "difficultyLevel": "Medium", "estimatedMinutes": 18, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "empathy", "topicName": "Empathy", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Understand how others feel and be supportive.", "difficultyLevel": "Easy", "estimatedMinutes": 16, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "kindness", "topicName": "Kindness", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Small kind actions can make a big difference.", "difficultyLevel": "Easy", "estimatedMinutes": 14, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "honesty", "topicName": "Honesty", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Tell the truth and keep promises.", "difficultyLevel": "Easy", "estimatedMinutes": 14, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "responsibility", "topicName": "Responsibility", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Own your actions and finish what you start.", "difficultyLevel": "Medium", "estimatedMinutes": 18, "quizAvailable": true, "videoAvailable": true },
+            { "topicId": "team-spirit", "topicName": "Team Spirit", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Work together with respect and shared purpose.", "difficultyLevel": "Easy", "estimatedMinutes": 15, "quizAvailable": true, "videoAvailable": true }
+          ]
+        }
+      ];
+
+      window.EduStarAPI.requestJson('/api/content-map').then((data) => {
+        contentMap = data;
+        renderPillars();
+        selectPillar(contentMap[0]?.pillarId);
+      }).catch((err) => {
+        console.warn('Failed to load content map from backend, using fallback map:', err);
+        contentMap = fallbackMap;
+        renderPillars();
+        selectPillar(contentMap[0]?.pillarId);
+      });
+
+      function renderPillars() {
+        pillarsContainer.innerHTML = contentMap.map((pillar) => 
+          `<button class="es-hub__pillar-btn" data-pillar-id="${pillar.pillarId}">${pillar.pillarIcon} ${pillar.pillarName}</button>`
+        ).join('');
+        pillarsContainer.querySelectorAll('[data-pillar-id]').forEach((btn) => {
+          btn.addEventListener('click', () => selectPillar(btn.dataset.pillarId));
+        });
+      }
+
+      function selectPillar(pillarId) {
+        selectedPillar = contentMap.find((p) => p.pillarId === pillarId);
+        if (!selectedPillar) return;
+        document.querySelectorAll('.es-hub__pillar-btn').forEach((btn) => {
+          btn.classList.toggle('is-selected', btn.dataset.pillarId === pillarId);
+        });
+        pillarTitle.textContent = selectedPillar.pillarName;
+        pillarDesc.textContent = `Explore ${selectedPillar.pillarName.toLowerCase()} topics for Class ${selectedGrade}.`;
+        topicCount.textContent = String(selectedPillar.topics.length);
+        renderTopics();
+      }
+
+      function renderTopics() {
+        if (!selectedPillar) return;
+        const gradeNum = String(selectedGrade);
+        const topicsHtml = selectedPillar.topics
+          .filter((topic) => topic.applicableGrades.includes(Number(gradeNum)))
+              .map((topic, index) => `
+                <article class="es-card-3d es-hub__card" data-grades="${topic.applicableGrades.join(',')}" data-topic-id="${topic.topicId}" data-topic-name="${topic.topicName.replaceAll('"','&quot;')}" data-video-available="${topic.videoAvailable ? '1' : '0'}" data-quiz-available="${topic.quizAvailable ? '1' : '0'}" data-pillar-id="${selectedPillar.pillarId}" data-pillar-name="${selectedPillar.pillarName.replaceAll('"','&quot;')}">
+                  <div class="es-hub__icon"><span>${selectedPillar.pillarIcon}</span></div>
+                  <h3>${topic.topicName}</h3>
+                  <p>${topic.shortDescription}</p>
+                  <div class="es-hub__actions">
+                    <button class="es-btn-secondary es-hub__watch" ${topic.videoAvailable ? '' : 'disabled'}><span class="es-hub__rocket">🚀</span> Watch</button>
+                    <button class="es-btn-secondary es-hub__quiz" ${topic.quizAvailable ? '' : 'disabled'}>Quiz</button>
+                  </div>
+                </article>
+              `).join('');
+        topicsContainer.innerHTML = topicsHtml || '<p style="grid-column:1/-1; text-align:center; opacity:0.6;">No topics available for this class yet.</p>';
+
+        // attach handlers for Watch and Quiz buttons
+        topicsContainer.querySelectorAll('.es-hub__card').forEach((article) => {
+          const topicId = article.dataset.topicId;
+          const pillarId = article.dataset.pillarId;
+          const pillarName = article.dataset.pillarName;
+          const watchBtn = article.querySelector('.es-hub__watch');
+          const quizBtn = article.querySelector('.es-hub__quiz');
+          if (watchBtn) {
+            watchBtn.addEventListener('click', () => {
+              const url = `edustar-video-player.html?pillarId=${encodeURIComponent(pillarId)}&pillarName=${encodeURIComponent(pillarName)}&topicId=${encodeURIComponent(topicId)}`;
+              window.location.href = url;
+            });
+          }
+          if (quizBtn) {
+            quizBtn.addEventListener('click', () => {
+              const url = `edustar-quiz.html?pillarName=${encodeURIComponent(pillarName)}&topicId=${encodeURIComponent(topicId)}&grade=${encodeURIComponent(selectedGrade)}`;
+              window.location.href = url;
+            });
+          }
+        });
+      }
+
+      window.EduStarAPI.requestJson(`/api/progress?deviceId=${encodeURIComponent(deviceId)}`).then((summary) => {
+        starsCount.textContent = String(summary.progress?.stars ?? 0);
+      }).catch(() => {
+        starsCount.textContent = '0';
+      });
+
+      function updateGrade(grade) {
+        selectedGrade = grade;
+        gradeButtons.forEach((button) => button.classList.toggle('is-selected', button.dataset.grade === grade));
+        window.localStorage.setItem('edustar-grade', grade);
+        window.EduStarAPI.requestJson('/api/settings', {
+          method: 'POST',
+          body: JSON.stringify({ deviceId, selectedGrade: grade }),
+        }).catch(() => {});
+        renderTopics();
+        pillarDesc.textContent = `Explore ${selectedPillar?.pillarName.toLowerCase() || 'learning'} topics for Class ${grade}.`;
+      }
+      gradeButtons.forEach((button) => button.addEventListener('click', () => updateGrade(button.dataset.grade)));
+      updateGrade('1');
+    })();
+  </script>
+  <!-- Footer -->
+  <footer class="es-shell" style="padding:1.2rem 0; border-top:1px solid rgba(255,255,255,.07); margin-top:2rem; text-align:center;">
+    <small>EduStar &copy; 2025 &mdash; Safe, ad-free, joyful learning for young explorers. &nbsp;
+      <a href="edustar-home.html" style="color:var(--es-color-star-gold); text-decoration:none;">↩ Back to Home</a>
+    </small>
+  </footer>
+</body>
+</html>

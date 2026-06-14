@@ -1,0 +1,19 @@
+# EduStar - .gitignore
+
+# SQLite database (Railway will create a fresh one — don't commit data)
+edustar-data.sqlite
+edustar-data.sqlite-shm
+edustar-data.sqlite-wal
+
+# Node
+node_modules/
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp

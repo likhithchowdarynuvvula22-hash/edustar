@@ -1,0 +1,17 @@
+{
+  "name": "edustar",
+  "version": "1.0.0",
+  "description": "EduStar - Space-themed AI learning platform for children",
+  "type": "module",
+  "main": "edustar-backend.mjs",
+  "scripts": {
+    "start": "node --experimental-sqlite edustar-backend.mjs",
+    "dev": "node --experimental-sqlite edustar-backend.mjs"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "keywords": ["education", "ai", "learning", "kids"],
+  "author": "EduStar",
+  "license": "MIT"
+}

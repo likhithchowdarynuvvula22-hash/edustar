@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0A0E27">
+  <title>EduStar | Video Lesson Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="edustar-design-system.css">
+  <style>
+    /* Navbar */
+    .es-topbar { display:flex; align-items:center; justify-content:space-between; padding:.75rem 0; gap:1rem; flex-wrap:wrap; }
+    .es-topbar__brand { display:flex; align-items:center; gap:.5rem; font-family: var(--es-font-heading); font-size:1.35rem; color: var(--es-color-star-gold); text-decoration:none; }
+    .es-topbar__nav { display:flex; gap:.75rem; flex-wrap:wrap; }
+    .es-topbar__link { font-size:.9rem; padding:.4rem .8rem; border-radius:999px; color:rgba(245,247,255,.8); text-decoration:none; transition: background var(--es-transition-fast), color var(--es-transition-fast); }
+    .es-topbar__link:hover, .es-topbar__link.is-active { background:rgba(255,215,0,.12); color:var(--es-color-star-gold); }
+    .es-video { padding: 2rem 0 4rem; }
+    .es-video__layout { display:grid; grid-template-columns: minmax(0,1fr) 320px; gap: 1.2rem; align-items:start; }
+    .es-video__player { padding: 1rem; }
+    .es-video__frame { aspect-ratio: 16/9; border-radius: 28px; background: #000; overflow:hidden; position: relative; box-shadow: var(--es-shadow-card); border: 1px solid rgba(255, 255, 255, 0.08); transition: box-shadow var(--es-transition-med); }
+    .es-video__frame:hover { box-shadow: var(--es-shadow-cyan); }
+    .es-video__frame iframe { width: 100%; height: 100%; border: 0; opacity: 0; transition: opacity var(--es-transition-med); }
+    .es-video__frame iframe.is-loaded { opacity: 1; }
+    .es-video__loader { position: absolute; inset: 0; display: grid; place-items: center; background: radial-gradient(circle at center, #111847 0%, #0a0e27 100%); z-index: 2; transition: opacity var(--es-transition-med); }
+    .es-video__spinner { width: 52px; height: 52px; border: 3px dashed var(--es-color-orbit-cyan); border-radius: 50%; animation: es-spin-slow 5s linear infinite; box-shadow: var(--es-shadow-cyan); }
+    .es-video__points { display:grid; gap: .8rem; margin-top: 1rem; }
+    .es-video__point { opacity: 0; transform: translateY(24px); transition: opacity .5s ease, transform .5s ease; }
+    .es-video__point.is-visible { opacity:1; transform: translateY(0); }
+    .es-video__quiz { margin-top: 1rem; }
+    .es-video__quiz .es-btn-primary { width: 100%; }
+    .es-video__sidebar { position: sticky; top: 96px; display:grid; gap: .8rem; max-height: calc(100vh - 120px); overflow-y: auto; padding-right: 4px; }
+    /* Premium scrollbar for sidebar playlist */
+    .es-video__sidebar::-webkit-scrollbar { width: 6px; }
+    .es-video__sidebar::-webkit-scrollbar-track { background: transparent; }
+    .es-video__sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 99px; }
+    .es-video__sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
+    .es-video__lesson { display:grid; grid-template-columns: 72px 1fr; gap: .8rem; padding: .8rem; align-items:center; transition: transform var(--es-transition-fast), border-left-width var(--es-transition-med), opacity var(--es-transition-med), background-color var(--es-transition-fast); border-left: 0 solid var(--es-color-star-gold); cursor: pointer; }
+    .es-video__lesson.is-active { border-left-width: 4px; opacity: 1; background: rgba(255, 255, 255, 0.04); }
+    .es-video__thumb { width: 72px; height: 54px; border-radius: 16px; overflow:hidden; background: rgba(255,255,255,.08); display:grid; place-items:center; transition: transform var(--es-transition-fast), background var(--es-transition-fast); }
+    .es-video__lesson:hover .es-video__thumb { transform: scale(1.05); background: rgba(255, 255, 255, 0.12); }
+    .es-video__lesson.is-done .es-video__check { display:inline-block; animation: es-spin-slow .4s ease both; }
+    .es-video__check { display:none; }
+    .es-video__notes { position: fixed; inset: auto 1rem 1rem 1rem; max-width: 720px; margin: 0 auto; transform: translateY(100%); transition: transform var(--es-transition-med); z-index: var(--es-z-overlay); }
+    .es-video__notes.is-open { transform: translateY(0); }
+    .es-video__notes-panel { padding: 1rem; }
+    .es-video__notes textarea { width: 100%; min-height: 120px; resize: vertical; background: rgba(255,255,255,.04); color: var(--es-color-ink); border: 1px solid rgba(255,255,255,.1); border-radius: 22px; padding: .9rem 1rem; }
+    .es-video__count { transition: color var(--es-transition-fast); }
+    .es-video__count.is-warn { color: var(--es-color-warning); }
+    .es-video__count.is-danger { color: #ff6b6b; }
+    .es-video__saved { display:inline-block; margin-left:.4rem; opacity:0; transform: scale(.8); }
+    .es-video__saved.is-show { animation: es-pulse-glow .4s ease both; opacity:1; }
+    @media (max-width: 960px) { .es-video__layout { grid-template-columns: 1fr; } .es-video__sidebar { position: static; } }
+  </style>
+</head>
+<body>
+  <header class="es-shell" style="border-bottom:1px solid rgba(255,255,255,.07);">
+    <div class="es-topbar">
+      <a class="es-topbar__brand" href="edustar-home.html">🚀⭐ EduStar</a>
+      <nav class="es-topbar__nav" aria-label="Main navigation">
+        <a class="es-topbar__link" href="edustar-home.html">Home</a>
+        <a class="es-topbar__link" href="edustar-subject-hub.html">Subjects</a>
+        <a class="es-topbar__link" href="edustar-ai-tech-learning-centre.html">AI Centre</a>
+        <a class="es-topbar__link" href="edustar-ai-tutor.html">AI Tutor</a>
+        <a class="es-topbar__link" href="edustar-quiz.html">Quiz</a>
+        <a class="es-topbar__link" href="edustar-progress-tracker.html">Progress</a>
+      </nav>
+    </div>
+  </header>
+  <main class="es-video es-shell">
+    <div class="es-video__layout">
+      <section class="es-card es-video__player es-slide-up">
+        <h1 id="lesson-title" style="font-size: var(--es-text-2xl); margin-bottom: 0.8rem; color: var(--es-color-star-gold); transition: opacity var(--es-transition-fast);">Lesson 1: What is AI?</h1>
+        <div class="es-video__frame" id="video-frame">
+          <div class="es-video__loader" id="video-loader">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.8rem;">
+              <div class="es-video__spinner"></div>
+              <span style="font-size: 0.9rem; color: var(--es-color-orbit-cyan); font-weight: 600; letter-spacing: 0.05em;">LOADING LESSON VIDEO...</span>
+            </div>
+          </div>
+          <iframe id="video-iframe" allowfullscreen allow="autoplay" src=""></iframe>
+        </div>
+        <div class="es-video__points" id="points">
+          <!-- Dynamically populated key points -->
+        </div>
+        <div class="es-video__quiz"><button class="es-btn-primary es-glow">Take the Quiz →</button></div>
+      </section>
+
+      <aside class="es-video__sidebar" aria-label="Playlist sidebar">
+        <!-- Dynamically populated playlist of lessons in this pillar -->
+      </aside>
+    </div>
+
+    <section class="es-video__notes es-card" id="notes-panel" aria-label="Notes panel">
+      <div class="es-video__notes-panel">
+        <div style="display:flex;justify-content:space-between;gap:1rem;align-items:center;">
+          <h3>Open Notes</h3>
+          <button class="es-btn-secondary" id="close-notes">Close</button>
+        </div>
+        <textarea id="notes" maxlength="240" placeholder="Write a few learning notes..."></textarea>
+        <p><span class="es-video__count" id="count">0 / 240</span><span class="es-video__saved" id="saved">✓ Saved</span></p>
+        <button class="es-btn-primary" id="save-notes">Save Notes</button>
+      </div>
+    </section>
+    <div style="margin-top:1rem;"><button class="es-btn-secondary" id="open-notes">Open Notes</button></div>
+  </main>
+  <script src="edustar-client-api.js"></script>
+  <script>
+    (() => {
+      // 1. Topic details with YouTube IDs and key points
+      const topicDetails = {
+        // Core Academics
+        'math-foundations': {
+          youtubeId: 'UZG50n0Sp1o', // Math Antics - Place Value
+          keyPoints: [
+            { title: 'Numbers have places', text: 'The position of a digit tells us how much it is worth (ones, tens, hundreds).' },
+            { title: 'Base 10 system', text: 'Our number system uses ten digits (0-9) and increases by tens.' },
+            { title: 'Patterns help', text: 'Noticing patterns in numbers makes adding and subtracting much easier.' }
+          ]
+        },
+        'science-explorers': {
+          youtubeId: 'KIFz_-K1n9k', // Steps of Scientific Method by Scratch Garden
+          keyPoints: [
+            { title: 'Make observations', text: 'Science starts by looking closely at the world and asking questions.' },
+            { title: 'Form a hypothesis', text: 'A hypothesis is a smart guess that you can test with an experiment.' },
+            { title: 'Test and share', text: 'Perform your test, record the results, and tell others what you learned.' }
+          ]
+        },
+        'english-communication': {
+          youtubeId: 'h4Q7E6hyTMc', // Parts of Speech by Scratch Garden
+          keyPoints: [
+            { title: 'Nouns and Verbs', text: 'Nouns name people, places, or things, while verbs show actions.' },
+            { title: 'Adjectives describe', text: 'Adjectives give us extra details about nouns (e.g., a "shiny" star).' },
+            { title: 'Clear sentences', text: 'Connecting parts of speech correctly helps us share our ideas clearly.' }
+          ]
+        },
+        'social-studies': {
+          youtubeId: 'Co9x4j_V9T0', // What is a Map?
+          keyPoints: [
+            { title: 'Maps show paths', text: 'Maps are drawings of places from above that help us navigate.' },
+            { title: 'Compass rose', text: 'The compass rose shows directions: North, South, East, and West.' },
+            { title: 'Symbols and legend', text: 'Map legends explain what symbols (like rivers or roads) represent.' }
+          ]
+        },
+        'reading-skills': {
+          youtubeId: 'W0l31G-cns4', // Reading Comprehension for Kids
+          keyPoints: [
+            { title: 'Active reading', text: 'Ask yourself questions about the story as you read.' },
+            { title: 'Find main ideas', text: 'Look for the most important message or event in the text.' },
+            { title: 'New vocabulary', text: 'Use clues in the sentence to guess the meaning of new words.' }
+          ]
+        },
+        'writing-skills': {
+          youtubeId: '01I1nZ7yrcg', // How to Write a Paragraph
+          keyPoints: [
+            { title: 'Topic sentence', text: 'Start with a main idea that tells the reader what the paragraph is about.' },
+            { title: 'Supporting details', text: 'Add 3-4 sentences that explain, prove, or describe your main idea.' },
+            { title: 'Concluding sentence', text: 'Wrap up your paragraph with a nice summary sentence.' }
+          ]
+        },
+        'environment-awareness': {
+          youtubeId: 'OasbYWF4_S8', // Reduce, Reuse and Recycle
+          keyPoints: [
+            { title: 'The Three Rs', text: 'Reduce the waste you make, Reuse items, and Recycle materials.' },
+            { title: 'Save energy', text: 'Turn off lights and save water to help protect our natural resources.' },
+            { title: 'Nature connection', text: 'Taking care of plants and animals keeps our ecosystem healthy.' }
+          ]
+        },
+        'exam-revision': {
+          youtubeId: 'TjPFZa15Rj8', // How to Study for Exams (TED-Ed)
+          keyPoints: [
+            { title: 'Active recall', text: 'Test yourself with flashcards or practice questions instead of just rereading.' },
+            { title: 'Spaced repetition', text: 'Study in short sessions over several days rather than cramming all at once.' },
+            { title: 'Healthy body', text: 'Get plenty of sleep and eat a good meal before the test day.' }
+          ]
+        },
+
+        // AI & Technology
+        'what-is-ai': {
+          youtubeId: 'g_78i_ZgL5s', // What is Artificial Intelligence? - Peekaboo Kidz
+          keyPoints: [
+            { title: 'Pattern matching', text: 'AI is a computer helper that finds patterns in massive amounts of data.' },
+            { title: 'Machine learning', text: 'AI improves by looking at many examples, similar to how humans learn.' },
+            { title: 'Human check', text: 'AI makes mistakes, so we must always check its answers with trusted sources.' }
+          ]
+        },
+        'prompt-writing': {
+          youtubeId: '2rG-8xG_5j4', // How to Write a Prompt
+          keyPoints: [
+            { title: 'Role and task', text: 'Tell the AI who it is pretending to be and exactly what you want it to do.' },
+            { title: 'Specific details', text: 'Give clear steps, constraints, and instructions to get the best outcome.' },
+            { title: 'Iterative feedback', text: 'If the first answer is not perfect, ask the AI to refine it.' }
+          ]
+        },
+        'coding-basics': {
+          youtubeId: 'OAx_6-wdslM', // What is Coding? - Code.org
+          keyPoints: [
+            { title: 'Step-by-step', text: 'Coding is writing a list of instructions for a computer to follow in order.' },
+            { title: 'Loops repeat', text: 'Loops tell the computer to repeat instructions without writing them again.' },
+            { title: 'Debugging', text: 'Finding and fixing errors in your code is a normal part of programming.' }
+          ]
+        },
+        'robotics': {
+          youtubeId: '8_4S5m8S_qM', // How Do Robots Work?
+          keyPoints: [
+            { title: 'Sense and act', text: 'Robots gather info using sensors and perform actions using motors.' },
+            { title: 'Microcontrollers', text: 'A small computer chip acts as the brain of the robot, processing commands.' },
+            { title: 'Real-world helpers', text: 'Robots do jobs that are repetitive, difficult, or dangerous for humans.' }
+          ]
+        },
+        'digital-safety': {
+          youtubeId: 'HxySrSbSy7o', // Internet Safety for Kids
+          keyPoints: [
+            { title: 'Private passwords', text: 'Never share passwords with anyone except your parents or guardians.' },
+            { title: 'Kindness online', text: 'Treat people with respect in chats, games, and online classrooms.' },
+            { title: 'Trusted adults', text: 'If something feels weird, uncomfortable, or scary, tell a trusted adult immediately.' }
+          ]
+        },
+        'computers-and-internet': {
+          youtubeId: 'Dxcc6ycZ73M', // How the Internet Works - Code.org
+          keyPoints: [
+            { title: 'Global network', text: 'The internet connects millions of computers worldwide to share information.' },
+            { title: 'Data packets', text: 'Webpages are chopped into small packets, sent across wires/air, and reassembled.' },
+            { title: 'Safe browsing', text: 'Only visit safe, approved websites recommended by teachers or parents.' }
+          ]
+        },
+        'future-tech': {
+          youtubeId: 'QrrzB9f4F90', // Future Tech
+          keyPoints: [
+            { title: 'Smart tools', text: 'Future technologies like virtual reality and AI will change how we learn.' },
+            { title: 'Clean energy', text: 'Solar, wind, and smart grids will help power our cities cleanly.' },
+            { title: 'Space exploration', text: 'Reusable rockets and autonomous rovers will help us learn about other planets.' }
+          ]
+        },
+
+        // Life Skills
+        'critical-thinking': {
+          youtubeId: 'L4Q3K9sVzXw', // Critical Thinking for Kids
+          keyPoints: [
+            { title: 'Ask questions', text: 'Always ask "why" and "how do we know this is true?"' },
+            { title: 'Compare sources', text: 'Look at different opinions and facts before making up your mind.' },
+            { title: 'Avoid bias', text: 'Try to see things from other perspectives without jumping to conclusions.' }
+          ]
+        },
+        'communication': {
+          youtubeId: 'S7m5V1924L4', // Effective Communication
+          keyPoints: [
+            { title: 'Active listening', text: 'Pay full attention to the speaker instead of just thinking of your reply.' },
+            { title: 'Clear speaking', text: 'Explain your ideas in simple, calm sentences that others can follow.' },
+            { title: 'Body language', text: 'Use friendly eye contact, nodding, and open posture when communicating.' }
+          ]
+        },
+        'problem-solving': {
+          youtubeId: 'xX_M8aW5oVw', // Problem Solving for Kids
+          keyPoints: [
+            { title: 'Define the problem', text: 'Understand exactly what is wrong before trying to fix it.' },
+            { title: 'Brainstorm options', text: 'Think of 3-4 different ways to solve the problem.' },
+            { title: 'Pick a solution', text: 'Try the best option, and if it does not work, learn and try another.' }
+          ]
+        },
+        'teamwork': {
+          youtubeId: 't8zYI58v6x8', // Teamwork for Kids
+          keyPoints: [
+            { title: 'Share roles', text: 'Every team member has unique strengths; agree on who does what.' },
+            { title: 'Encourage others', text: 'Celebrate your teammates successes and support them when they struggle.' },
+            { title: 'Solve disagreements', text: 'Talk calmly and compromise when team members have different ideas.' }
+          ]
+        },
+        'self-management': {
+          youtubeId: 'H4H2kE8f1Xo', // Self-Discipline for Kids
+          keyPoints: [
+            { title: 'Prioritize tasks', text: 'Do your most important chores or homework before playing games.' },
+            { title: 'Take breaks', text: 'Use a timer to study for 20-25 minutes, then take a short active break.' },
+            { title: 'Stay calm', text: 'Take deep breaths when you feel overwhelmed or frustrated.' }
+          ]
+        },
+        'goal-setting': {
+          youtubeId: 'T5Qf0n_tMXg', // Goal Setting
+          keyPoints: [
+            { title: 'Set SMART goals', text: 'Make goals Specific, Measurable, Actionable, Relevant, and Time-bound.' },
+            { title: 'Small milestones', text: 'Break a big goal into small daily or weekly actions.' },
+            { title: 'Track progress', text: 'Check off your tasks on a calendar to see how far you have come.' }
+          ]
+        },
+
+        // Values & Character
+        'respect-elders': {
+          youtubeId: 'Iu_9wF4jJ3k', // Respect for Kids
+          keyPoints: [
+            { title: 'Polite words', text: 'Use respectful words like "please", "thank you", and speak in a gentle tone.' },
+            { title: 'Listen to advice', text: 'Elders have lived longer and can share valuable wisdom to help us.' },
+            { title: 'Offer assistance', text: 'Help older family members or neighbors with heavy tasks or simple chores.' }
+          ]
+        },
+        'cleanliness': {
+          youtubeId: 'OasbYWF4_S8', // Cleanliness
+          keyPoints: [
+            { title: 'Personal hygiene', text: 'Wash hands before meals, brush teeth twice a day, and keep clean.' },
+            { title: 'Tidy spaces', text: 'Put toys, books, and clothes back in their places after using them.' },
+            { title: 'Care for shared areas', text: 'Keep classrooms, parks, and dining tables clean for everyone.' }
+          ]
+        },
+        'discipline': {
+          youtubeId: 'H4H2kE8f1Xo', // Self-Discipline
+          keyPoints: [
+            { title: 'Daily routines', text: 'Go to bed and wake up at the same time to build a healthy rhythm.' },
+            { title: 'Finish tasks', text: 'Commit to completing your responsibilities even when you do not feel like it.' },
+            { title: 'Self-control', text: 'Wait patiently for your turn and think before you speak or act.' }
+          ]
+        },
+        'empathy': {
+          youtubeId: '1PgmU9S6M_A', // Empathy for Kids
+          keyPoints: [
+            { title: 'Put yourself first', text: 'Imagine how you would feel if you were in the other person\'s shoes.' },
+            { title: 'Notice feelings', text: 'Look at facial expressions and body language to tell how others feel.' },
+            { title: 'Kind support', text: 'Offer comfort, a kind word, or a listening ear to someone who is upset.' }
+          ]
+        },
+        'kindness': {
+          youtubeId: 'x7K38Sf5k3E', // Kindness for Kids
+          keyPoints: [
+            { title: 'Small gestures', text: 'A smile, a compliment, or sharing a snack can brighten someone\'s day.' },
+            { title: 'Help without asking', text: 'Look for opportunities to support family and friends in small ways.' },
+            { title: 'Be kind online', text: 'Send encouraging messages and avoid speaking meanly on digital chats.' }
+          ]
+        },
+        'honesty': {
+          youtubeId: 'Iu_9wF4jJ3k', // Honesty for Kids
+          keyPoints: [
+            { title: 'Tell the truth', text: 'Admit mistakes calmly and speak honestly even when it is difficult.' },
+            { title: 'Keep promises', text: 'If you say you will do something, follow through and keep your word.' },
+            { title: 'Build trust', text: 'Being honest helps friends, teachers, and parents trust you completely.' }
+          ]
+        },
+        'responsibility': {
+          youtubeId: 'Co9x4j_V9T0', // Responsibility for Kids
+          keyPoints: [
+            { title: 'Own your actions', text: 'Take credit for your wins and accept the consequences of your mistakes.' },
+            { title: 'Take care of belongings', text: 'Keep track of your school bag, books, and personal items.' },
+            { title: 'Contribute to family', text: 'Do your assigned household chores regularly to help out.' }
+          ]
+        },
+        'team-spirit': {
+          youtubeId: 't8zYI58v6x8', // Sportsmanship / Team Spirit
+          keyPoints: [
+            { title: 'Good sportsmanship', text: 'Celebrate opponent wins and play by the rules with a positive attitude.' },
+            { title: 'Encourage teammates', text: 'Say "good job" or "nice try" to support your friends during activities.' },
+            { title: 'Pillar of support', text: 'Remember that winning is fun, but learning and playing together is what matters.' }
+          ]
+        }
+      };
+
+      const notesPanel = document.getElementById('notes-panel');
+      const openNotes = document.getElementById('open-notes');
+      const closeNotes = document.getElementById('close-notes');
+      const notes = document.getElementById('notes');
+      const count = document.getElementById('count');
+      const saved = document.getElementById('saved');
+      const saveButton = document.getElementById('save-notes');
+      const deviceId = window.EduStarAPI.getDeviceId();
+
+      const titleEl = document.getElementById('lesson-title');
+      const pointsEl = document.getElementById('points');
+      const quizButton = document.querySelector('.es-video__quiz .es-btn-primary');
+      const videoLoader = document.getElementById('video-loader');
+      const videoIframe = document.getElementById('video-iframe');
+
+      // Wire iframe load handler to dismiss spinner
+      if (videoIframe) {
+        videoIframe.addEventListener('load', () => {
+          if (videoLoader) videoLoader.style.opacity = '0';
+          setTimeout(() => {
+            if (videoLoader) videoLoader.style.display = 'none';
+          }, 400);
+          videoIframe.classList.add('is-loaded');
+        });
+      }
+
+      let currentTopicId = 'what-is-ai';
+      let activePillar = null;
+      let activePillarName = 'AI & Technology';
+
+      function switchTopic(targetTopicId, pillar) {
+        currentTopicId = targetTopicId;
+        const details = topicDetails[targetTopicId] || { youtubeId: 'g_78i_ZgL5s', keyPoints: [] };
+
+        // 1. Update playlist items active classes
+        const lessonsList = Array.from(document.querySelectorAll('[data-lesson-id]'));
+        lessonsList.forEach((item) => {
+          const itemTopicId = item.dataset.lessonId;
+          const isActive = itemTopicId === targetTopicId;
+          item.classList.toggle('is-active', isActive);
+          const thumb = item.querySelector('.es-video__thumb');
+          if (thumb) {
+            thumb.textContent = isActive ? '▶' : (pillar.pillarIcon || '📘');
+          }
+          const small = item.querySelector('small');
+          if (small) {
+            small.innerHTML = isActive ? 'Current lesson' : '<span class="es-video__check">✓</span> Ready';
+          }
+        });
+
+        // 2. Find the topic details in map
+        const topic = pillar.topics.find((t) => t.topicId === targetTopicId);
+        if (!topic) return;
+
+        // 3. Update title
+        if (titleEl) {
+          titleEl.style.opacity = '0';
+          setTimeout(() => {
+            titleEl.textContent = topic.topicName;
+            titleEl.style.opacity = '1';
+          }, 200);
+        }
+
+        // 4. Update URL params dynamically
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.set('topicId', targetTopicId);
+        window.history.pushState({}, '', newUrl);
+
+        // 5. Load YouTube video
+        if (videoLoader && videoIframe) {
+          videoLoader.style.display = 'grid';
+          videoLoader.style.opacity = '1';
+          videoIframe.classList.remove('is-loaded');
+          videoIframe.src = `https://www.youtube.com/embed/${details.youtubeId}?autoplay=1&rel=0`;
+        }
+
+        // 6. Update key points with animations
+        if (pointsEl) {
+          const kps = details.keyPoints.length > 0 ? details.keyPoints : [
+            { title: 'Key point 1', text: topic.shortDescription || 'Learn the essentials of this lesson.' },
+            { title: 'Key point 2', text: 'Engage with the lesson content to build understanding.' },
+            { title: 'Key point 3', text: 'Test your knowledge by taking the quiz after watching.' }
+          ];
+          
+          pointsEl.innerHTML = kps
+            .map((p) => `<div class="es-card es-video__point"><strong>${p.title}:</strong> ${p.text}</div>`)
+            .join('');
+
+          // trigger slide-up animations
+          const pointNodes = Array.from(pointsEl.querySelectorAll('.es-video__point'));
+          pointNodes.forEach((node, index) => {
+            setTimeout(() => {
+              node.classList.add('is-visible');
+            }, index * 100);
+          });
+        }
+      }
+
+      // Notes panel functionality
+      openNotes.addEventListener('click', () => notesPanel.classList.add('is-open'));
+      closeNotes.addEventListener('click', () => notesPanel.classList.remove('is-open'));
+      notes.addEventListener('input', () => {
+        const remaining = notes.value.length;
+        count.textContent = `${remaining} / 240`;
+        count.classList.toggle('is-warn', remaining > 170);
+        count.classList.toggle('is-danger', remaining > 210);
+      });
+      saveButton.addEventListener('click', () => {
+        window.EduStarAPI.requestJson('/api/notes', {
+          method: 'POST',
+          body: JSON.stringify({ deviceId, noteText: notes.value }),
+        }).catch(() => {});
+        saved.classList.remove('is-show');
+        void saved.offsetWidth;
+        saved.classList.add('is-show');
+      });
+      window.EduStarAPI.requestJson(`/api/notes?deviceId=${encodeURIComponent(deviceId)}`)
+        .then((data) => {
+          notes.value = data.note_text || '';
+          notes.dispatchEvent(new Event('input'));
+        })
+        .catch(() => {
+          notes.dispatchEvent(new Event('input'));
+        });
+
+      // Parse params and initialize layout
+      const params = new URLSearchParams(window.location.search);
+      const topicId = params.get('topicId');
+      const pillarId = params.get('pillarId');
+      const pillarName = params.get('pillarName');
+
+      // Setup Quiz Button Listener
+      if (quizButton) {
+        quizButton.addEventListener('click', () => {
+          const url = `edustar-quiz.html?pillarName=${encodeURIComponent(activePillarName)}&topicId=${encodeURIComponent(currentTopicId)}&grade=${encodeURIComponent(window.localStorage.getItem('edustar-grade') || '1')}`;
+          window.location.href = url;
+        });
+      }
+
+      function initializeWithMap(map) {
+        const pillar = map.find((p) => p.pillarId === pillarId || p.pillarName === pillarName);
+        activePillar = pillar || map[1] || map[0]; // fallback to AI & Tech or first pillar
+        activePillarName = activePillar.pillarName;
+
+        const initialTopicId = topicId || activePillar.topics[0]?.topicId;
+
+        // Render dynamic playlist
+        const sidebar = document.querySelector('.es-video__sidebar');
+        if (sidebar && activePillar) {
+          sidebar.innerHTML = activePillar.topics.map((t) => {
+            const isActive = t.topicId === initialTopicId;
+            const icon = activePillar.pillarIcon || '📚';
+            return `
+              <article class="es-card es-video__lesson ${isActive ? 'is-active' : ''}" data-lesson-id="${t.topicId}">
+                <div class="es-video__thumb">${isActive ? '▶' : icon}</div>
+                <div><strong>${t.topicName}</strong><br><small>${isActive ? 'Current lesson' : 'Ready'}</small></div>
+              </article>
+            `;
+          }).join('');
+
+          // Bind playlist item clicks
+          sidebar.querySelectorAll('[data-lesson-id]').forEach((item) => {
+            item.addEventListener('click', () => {
+              const targetId = item.dataset.lessonId;
+              if (targetId !== currentTopicId) {
+                switchTopic(targetId, activePillar);
+              }
+            });
+          });
+        }
+
+        // Initialize first topic
+        if (initialTopicId) {
+          switchTopic(initialTopicId, activePillar);
+        }
+      }
+
+      // Fetch dynamic content map
+      window.EduStarAPI.requestJson('/api/content-map').then((map) => {
+        initializeWithMap(map);
+      }).catch((err) => {
+        console.warn('Failed to load content map from backend, using fallback map:', err);
+        const fallbackMap = [
+          {
+            "pillarId": "core-academics",
+            "pillarName": "Core Academics",
+            "pillarColor": "#FFD700",
+            "pillarIcon": "📚",
+            "topics": [
+              { "topicId": "math-foundations", "topicName": "Math Foundations", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Counting, numbers, patterns, and problem solving." },
+              { "topicId": "science-explorers", "topicName": "Science Explorers", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Plants, animals, matter, energy, and the world." },
+              { "topicId": "english-communication", "topicName": "English Communication", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Reading, writing, speaking, and vocabulary growth." },
+              { "topicId": "social-studies", "topicName": "Social Studies", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Communities, history, maps, and citizenship." },
+              { "topicId": "reading-skills", "topicName": "Reading Skills", "applicableGrades": [1,2,3,4,5,6], "shortDescription": "Fluency, understanding, and story meaning." },
+              { "topicId": "writing-skills", "topicName": "Writing Skills", "applicableGrades": [3,4,5,6,7,8,9,10,11,12], "shortDescription": "Sentences, paragraphs, and clear expression." },
+              { "topicId": "environment-awareness", "topicName": "Environment Awareness", "applicableGrades": [1,2,3,4,5,6,7,8], "shortDescription": "Nature, climate, recycling, and caring for Earth." },
+              { "topicId": "exam-revision", "topicName": "Exam Revision", "applicableGrades": [7,8,9,10,11,12], "shortDescription": "Practice, recall, and confidence before tests." }
+            ]
+          },
+          {
+            "pillarId": "ai-technology",
+            "pillarName": "AI & Technology",
+            "pillarColor": "#00D4FF",
+            "pillarIcon": "🤖",
+            "topics": [
+              { "topicId": "what-is-ai", "topicName": "What is AI?", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "AI is a computer system that learns patterns and helps people." },
+              { "topicId": "prompt-writing", "topicName": "Prompt Writing", "applicableGrades": [5,6,7,8,9,10,11,12], "shortDescription": "Write clear instructions so AI gives better answers." },
+              { "topicId": "coding-basics", "topicName": "Coding Basics", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Learn sequences, loops, and simple logic." },
+              { "topicId": "robotics", "topicName": "Robotics", "applicableGrades": [5,6,7,8,9,10,11,12], "shortDescription": "Robots sense, think, and act with sensors and motors." },
+              { "topicId": "digital-safety", "topicName": "Digital Safety", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Stay safe, kind, and careful online." },
+              { "topicId": "computers-and-internet", "topicName": "Computers and Internet", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Understand devices, networks, and responsible use." },
+              { "topicId": "future-tech", "topicName": "Future Tech", "applicableGrades": [6,7,8,9,10,11,12], "shortDescription": "Discover how new tools can help learning and life." }
+            ]
+          },
+          {
+            "pillarId": "life-skills",
+            "pillarName": "Life Skills",
+            "pillarColor": "#39FF14",
+            "pillarIcon": "🌱",
+            "topics": [
+              { "topicId": "critical-thinking", "topicName": "Critical Thinking", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Think carefully, ask questions, and check ideas." },
+              { "topicId": "communication", "topicName": "Communication", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Listen well, speak clearly, and work with others." },
+              { "topicId": "problem-solving", "topicName": "Problem Solving", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Find simple steps to solve hard situations." },
+              { "topicId": "teamwork", "topicName": "Teamwork", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Share, help, and build together." },
+              { "topicId": "self-management", "topicName": "Self Management", "applicableGrades": [4,5,6,7,8,9,10,11,12], "shortDescription": "Plan time, keep calm, and stay on task." },
+              { "topicId": "goal-setting", "topicName": "Goal Setting", "applicableGrades": [3,4,5,6,7,8,9,10,11,12], "shortDescription": "Set a target and take small steps to reach it." }
+            ]
+          },
+          {
+            "pillarId": "values-character",
+            "pillarName": "Values & Character",
+            "pillarColor": "#FFD18A",
+            "pillarIcon": "💛",
+            "topics": [
+              { "topicId": "respect-elders", "topicName": "Respecting Elders", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Speak kindly and listen to older people with care." },
+              { "topicId": "cleanliness", "topicName": "Cleanliness", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Keep yourself, your room, and your surroundings neat." },
+              { "topicId": "discipline", "topicName": "Discipline", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Follow routines, finish work, and stay steady." },
+              { "topicId": "empathy", "topicName": "Empathy", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Understand how others feel and be supportive." },
+              { "topicId": "kindness", "topicName": "Kindness", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Small kind actions can make a big difference." },
+              { "topicId": "honesty", "topicName": "Honesty", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Tell the truth and keep promises." },
+              { "topicId": "responsibility", "topicName": "Responsibility", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Own your actions and finish what you start." },
+              { "topicId": "team-spirit", "topicName": "Team Spirit", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Work together with respect and shared purpose." }
+            ]
+          }
+        ];
+        initializeWithMap(fallbackMap);
+      });
+    })();
+  </script>
+  <!-- Footer -->
+  <footer class="es-shell" style="padding:1.2rem 0; border-top:1px solid rgba(255,255,255,.07); margin-top:2rem; text-align:center;">
+    <small>EduStar &copy; 2025 &mdash; Safe, ad-free, joyful learning for young explorers. &nbsp;
+      <a href="edustar-subject-hub.html" style="color:var(--es-color-star-gold); text-decoration:none;">↩ Back to Subjects</a>
+    </small>
+  </footer>
+</body>
+</html>

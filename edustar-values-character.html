@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0A0E27">
+  <title>EduStar | Values & Character</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="edustar-design-system.css">
+  <style>
+    .es-values { padding: 2rem 0 4rem; color: #fff5e6; }
+    .es-values__tone { color: #fff1c9; }
+    .es-values__carousel { display:flex; gap: 1rem; overflow:auto; scroll-snap-type: x mandatory; padding-bottom: .5rem; }
+    .es-values__card { min-width: 260px; padding: 1rem; scroll-snap-align: center; background: linear-gradient(180deg, rgba(255,209,138,.16), rgba(75,45,143,.12)); }
+    .es-values__card.is-active { transform: scale(1.05); box-shadow: 0 0 28px rgba(255, 209, 138, .28); }
+    .es-values__icon { width: 56px; height: 56px; border-radius: 20px; display:grid; place-items:center; background: rgba(255,255,255,.08); margin-bottom:.8rem; }
+    .es-values__icon.is-bounce { animation: value-bounce .55s cubic-bezier(.2,.9,.2,1.2); }
+    .es-values__grid { display:grid; grid-template-columns: 1.1fr .9fr; gap: 1rem; margin-top: 1rem; }
+    .es-values__stories { display:grid; gap: .8rem; }
+    .es-values__story { padding: 1rem; }
+    .es-values__story-content { max-height: 0; overflow:hidden; transition: max-height .35s ease; }
+    .es-values__story-content.is-open { max-height: 180px; }
+    .es-values__reflection { opacity: 0; transition: opacity .5s ease; width:100%; min-height: 90px; border-radius: 20px; background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color: inherit; padding:.8rem; }
+    .es-values__reflection.is-show { opacity:1; }
+    .es-values__deed { display:grid; gap: .8rem; }
+    .es-values__journal { display:grid; grid-template-columns: repeat(7, minmax(0,1fr)); gap: .6rem; }
+    .es-values__day { min-height: 58px; border-radius: 18px; display:grid; place-items:center; background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); }
+    .es-values__day.is-done { box-shadow: var(--es-shadow-glow); color: #241900; background: linear-gradient(180deg, #ffe98b, #ffd700); }
+    .es-values__day.is-empty { animation: day-pulse 2s ease-in-out infinite; }
+    .es-values__quote { min-height: 140px; display:grid; place-items:center; text-align:center; }
+    .es-values__quote p { opacity:.92; }
+    .es-values__quote.is-out { animation: quote-out .4s ease both; }
+    .es-values__quote.is-in { animation: quote-in .4s ease both; }
+    .es-values__burst { position:relative; overflow:hidden; }
+    .es-values__burst i { position:absolute; top: 50%; left: 50%; width: 10px; height: 10px; background: var(--c); border-radius: 2px; transform: translate(-50%, -50%); animation: burst .7s ease-out both; }
+    @keyframes value-bounce { 0%{ transform: translateY(-8px);} 100%{ transform: translateY(0);} }
+    @keyframes day-pulse { 0%,100%{ opacity:.8; } 50%{ opacity:1; box-shadow: var(--es-shadow-glow); } }
+    @keyframes quote-out { to { transform: translateX(-24px); opacity:0; } }
+    @keyframes quote-in { from { transform: translateX(24px); opacity:0; } to { transform: translateX(0); opacity:1; } }
+    @keyframes burst { to { transform: translate(var(--x), var(--y)) rotate(360deg); opacity:0; } }
+    @media (max-width: 900px) { .es-values__grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="es-values es-shell">
+    <section>
+      <span class="es-kicker es-slide-up">Values & Character</span>
+      <h1 class="es-values__tone es-slide-up">Warm hearts, steady habits</h1>
+      <p class="es-slide-up">This page leans warmer and softer, with gentle golds, kind stories, and encouraging routines.</p>
+    </section>
+
+    <section class="es-values__carousel" id="carousel" aria-label="Values carousel">
+      <article class="es-card es-values__card is-active" data-card><div class="es-values__icon">👵</div><h3>Respect for Elders</h3></article>
+      <article class="es-card es-values__card" data-card><div class="es-values__icon">🧼</div><h3>Cleanliness</h3></article>
+      <article class="es-card es-values__card" data-card><div class="es-values__icon">🤝</div><h3>Honesty</h3></article>
+      <article class="es-card es-values__card" data-card><div class="es-values__icon">💛</div><h3>Kindness</h3></article>
+      <article class="es-card es-values__card" data-card><div class="es-values__icon">📚</div><h3>Discipline</h3></article>
+      <article class="es-card es-values__card" data-card><div class="es-values__icon">🌼</div><h3>Empathy</h3></article>
+      <article class="es-card es-values__card" data-card><div class="es-values__icon">🧑‍🤝‍🧑</div><h3>Teamwork</h3></article>
+      <article class="es-card es-values__card" data-card><div class="es-values__icon">⭐</div><h3>Responsibility</h3></article>
+    </section>
+
+    <section class="es-values__grid">
+      <div class="es-values__stories">
+        <article class="es-card es-values__story">
+          <button class="es-btn-secondary" data-story>Read Story</button>
+          <div class="es-values__story-content">A girl helped her grandfather cross the road and learned that small respectful acts can brighten a whole day.</div>
+          <textarea class="es-values__reflection" placeholder="What did this story remind you to do?"></textarea>
+        </article>
+        <article class="es-card es-values__story">
+          <button class="es-btn-secondary" data-story>Read Story</button>
+          <div class="es-values__story-content">A class kept its room clean for one week and everyone found it easier to learn and play together.</div>
+          <textarea class="es-values__reflection" placeholder="What habit will you practise?"></textarea>
+        </article>
+        <article class="es-card es-values__story">
+          <button class="es-btn-secondary" data-story>Read Story</button>
+          <div class="es-values__story-content">Two friends solved a problem by listening to each other and sharing the work fairly.</div>
+          <textarea class="es-values__reflection" placeholder="How can you be a better friend?"></textarea>
+        </article>
+      </div>
+
+      <div class="es-values__deed">
+        <article class="es-card es-values__burst" style="padding:1rem;">
+          <h2>Good Deed Widget</h2>
+          <input id="deed" type="text" placeholder="Write one good deed..." style="width:100%;margin:.7rem 0;padding:.85rem 1rem;border-radius:20px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:inherit;">
+          <button class="es-btn-primary" id="submit-deed">Add Deed</button>
+          <div id="badge" style="opacity:0;transform:translateY(20px);margin-top:.8rem;">You are a Star Explorer!</div>
+        </article>
+        <article class="es-card" style="padding:1rem;">
+          <h2>7-Day Journal</h2>
+          <div class="es-values__journal" id="journal">
+            <div class="es-values__day is-done">Mon</div><div class="es-values__day is-done">Tue</div><div class="es-values__day is-empty">Wed</div><div class="es-values__day is-done">Thu</div><div class="es-values__day is-empty">Fri</div><div class="es-values__day is-empty">Sat</div><div class="es-values__day is-done">Sun</div>
+          </div>
+        </article>
+        <article class="es-card es-values__quote" id="quote-box">
+          <div>
+            <h2>Quote Rotator</h2>
+            <p id="quote">The future belongs to those who believe in the beauty of their dreams. - APJ Abdul Kalam</p>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+  <script src="edustar-client-api.js"></script>
+  <script>
+    (() => {
+      const cards = Array.from(document.querySelectorAll('[data-card]'));
+      const carousel = document.getElementById('carousel');
+      const storyButtons = Array.from(document.querySelectorAll('[data-story]'));
+      const quoteBox = document.getElementById('quote-box');
+      const quoteText = document.getElementById('quote');
+      const badge = document.getElementById('badge');
+      const deed = document.getElementById('deed');
+      const submit = document.getElementById('submit-deed');
+      const deviceId = window.EduStarAPI.getDeviceId();
+      const quotes = [
+        'The future belongs to those who believe in the beauty of their dreams. - APJ Abdul Kalam',
+        'You cannot cross the sea merely by standing and staring at the water. - Rabindranath Tagore',
+        'Cultivation of mind should be the ultimate aim of human existence. - Dr B. R. Ambedkar',
+        'The best way to find yourself is to lose yourself in the service of others. - Mahatma Gandhi',
+        'Education is the most powerful weapon which you can use to change the world. - Nelson Mandela',
+        'A kind heart is a fountain of gladness, making everything in its vicinity freshen into smiles. - Washington Irving',
+        'Children must be taught how to think, not what to think. - Margaret Mead',
+        'We learn more by looking for the answer to a question and not finding it than we do from learning the answer itself. - Lloyd Alexander'
+      ];
+      let quoteIndex = 0;
+      function setActiveCard(index) {
+        cards.forEach((card, cardIndex) => {
+          const icon = card.querySelector('.es-values__icon');
+          const active = cardIndex === index;
+          card.classList.toggle('is-active', active);
+          if (active) {
+            icon.classList.remove('is-bounce');
+            void icon.offsetWidth;
+            icon.classList.add('is-bounce');
+          }
+        });
+      }
+      carousel.addEventListener('scroll', () => {
+        const cardWidth = cards[0].getBoundingClientRect().width + 16;
+        const index = Math.round(carousel.scrollLeft / cardWidth);
+        setActiveCard(Math.max(0, Math.min(cards.length - 1, index)));
+      }, { passive: true });
+      setInterval(() => {
+        const next = (cards.findIndex((card) => card.classList.contains('is-active')) + 1) % cards.length;
+        cards[next].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        setActiveCard(next);
+      }, 5000);
+      storyButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const story = button.nextElementSibling;
+          const reflection = story.nextElementSibling;
+          story.classList.toggle('is-open');
+          reflection.classList.toggle('is-show');
+        });
+      });
+      submit.addEventListener('click', () => {
+        const value = deed.value.trim();
+        if (!value) return;
+        window.EduStarAPI.requestJson('/api/journal', {
+          method: 'POST',
+          body: JSON.stringify({ deviceId, entryText: value }),
+        }).catch(() => {});
+        badge.style.opacity = '1';
+        badge.style.transform = 'translateY(0)';
+        const burst = submit.closest('.es-values__burst');
+        burst.querySelectorAll('i').forEach((node) => node.remove());
+        Array.from({ length: 12 }, (_, index) => {
+          const particle = document.createElement('i');
+          const angle = (Math.PI * 2 * index) / 12;
+          particle.style.setProperty('--x', `${Math.cos(angle) * 90}px`);
+          particle.style.setProperty('--y', `${Math.sin(angle) * 90}px`);
+          particle.style.setProperty('--c', ['#ffd700','#ffcf8b','#fff4bb'][index % 3]);
+          burst.appendChild(particle);
+        });
+      });
+      setInterval(() => {
+        quoteBox.classList.add('is-out');
+        setTimeout(() => {
+          quoteIndex = (quoteIndex + 1) % quotes.length;
+          quoteText.textContent = quotes[quoteIndex];
+          quoteBox.classList.remove('is-out');
+          quoteBox.classList.add('is-in');
+          setTimeout(() => quoteBox.classList.remove('is-in'), 420);
+        }, 400);
+      }, 10000);
+      setActiveCard(0);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0A0E27">
+  <title>EduStar | Progress Tracker & Certificates</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="edustar-design-system.css">
+  <style>
+    /* Navbar */
+    .es-topbar { display:flex; align-items:center; justify-content:space-between; padding:.75rem 0; gap:1rem; flex-wrap:wrap; }
+    .es-topbar__brand { display:flex; align-items:center; gap:.5rem; font-family: var(--es-font-heading); font-size:1.35rem; color: var(--es-color-star-gold); text-decoration:none; }
+    .es-topbar__nav { display:flex; gap:.75rem; flex-wrap:wrap; }
+    .es-topbar__link { font-size:.9rem; padding:.4rem .8rem; border-radius:999px; color:rgba(245,247,255,.8); text-decoration:none; transition: background var(--es-transition-fast), color var(--es-transition-fast); }
+    .es-topbar__link:hover, .es-topbar__link.is-active { background:rgba(255,215,0,.12); color:var(--es-color-star-gold); }
+    .es-progress { padding: 2rem 0 4rem; }
+    .es-progress__banner { padding: 1.2rem; margin-bottom: 1rem; transform: translateY(-20px); animation: banner-drop .3s ease forwards; }
+    .es-progress__top { display:grid; grid-template-columns: auto 1fr auto; gap: 1rem; align-items:center; }
+    .es-progress__badge { width: 110px; height: 110px; border-radius: 34px; display:grid; place-items:center; background: linear-gradient(180deg, #ffe98b, #ffd700); color:#241900; box-shadow: var(--es-shadow-glow); animation: badge-pop .5s cubic-bezier(.2,.9,.2,1.2) both; }
+    .es-progress__badge:hover { transform: rotate(10deg); }
+    .es-progress__stats { display:flex; flex-wrap:wrap; gap:1rem; }
+    .es-progress__ring-grid { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; margin: 1.2rem 0; }
+    .es-progress__ring { padding: 1rem; text-align:center; position:relative; }
+    .es-progress__ring svg { width: 180px; height: 180px; transform: rotate(-90deg); }
+    .es-progress__ring circle { fill:none; stroke-width: 10; }
+    .es-progress__ring .track { stroke: rgba(255,255,255,.12); }
+    .es-progress__ring .fill { stroke: var(--c); stroke-dasharray: 565; stroke-dashoffset: 565; animation: fill-ring 1.4s ease forwards; animation-delay: var(--d); }
+    .es-progress__planet { position:absolute; inset: 32px; display:grid; place-items:center; font-size: 1.25rem; animation: es-orbit 12s linear infinite; }
+    .es-progress__bars { display:grid; gap: .8rem; }
+    .es-progress__bar { height: 16px; border-radius: 999px; background: rgba(255,255,255,.08); overflow:hidden; }
+    .es-progress__bar > span { display:block; height:100%; width:0; border-radius:inherit; background: linear-gradient(90deg, var(--c), rgba(255,255,255,.8)); animation: bar-fill .8s ease forwards; animation-delay: var(--d); }
+    .es-progress__badges { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: .8rem; margin-top: 1rem; opacity:0; animation: fade-in .8s ease .8s forwards; }
+    .es-progress__badge-card { padding: .9rem; text-align:center; }
+    .es-progress__badge-card.is-locked { filter: grayscale(1) blur(1px); opacity: .7; }
+    .es-progress__earned { animation: es-pulse-glow 2s ease-in-out infinite; }
+    .es-progress__certificate { margin-top: 1.2rem; padding: 1rem; position: relative; overflow:hidden; }
+    .es-progress__certificate::before { content:''; position:absolute; inset: 12px; border: 2px dashed rgba(255,215,0,.72); border-radius: 22px; animation: draw-border 1.8s ease forwards; }
+    .es-progress__certificate::after { content:''; position:absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent); transform: translateX(-120%); animation: shimmer 3s linear infinite; }
+    .es-progress__seal { position:absolute; right: 18px; top: 18px; width: 72px; height: 72px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #fff4bb, #ffd700); display:grid; place-items:center; color:#241900; animation: es-spin-slow 20s linear infinite; }
+    .es-progress__download .icon { display:inline-block; transition: transform var(--es-transition-fast); }
+    .es-progress__download:hover .icon { transform: translateY(4px); }
+    .es-progress__up { display:none; margin-left:.4rem; }
+    .es-progress__up.is-show { display:inline; }
+    @keyframes banner-drop { to { transform: translateY(0); } }
+    @keyframes badge-pop { from { transform: scale(0); } to { transform: scale(1); } }
+    @keyframes fill-ring { to { stroke-dashoffset: var(--offset); } }
+    @keyframes bar-fill { to { width: var(--w); } }
+    @keyframes fade-in { to { opacity:1; } }
+    @keyframes draw-border { to { stroke-dashoffset: 0; } }
+    @keyframes shimmer { 0% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+    @media (max-width: 1000px) { .es-progress__top, .es-progress__ring-grid, .es-progress__badges { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="es-shell" style="border-bottom:1px solid rgba(255,255,255,.07);">
+    <div class="es-topbar">
+      <a class="es-topbar__brand" href="edustar-home.html">🚀⭐ EduStar</a>
+      <nav class="es-topbar__nav" aria-label="Main navigation">
+        <a class="es-topbar__link" href="edustar-home.html">Home</a>
+        <a class="es-topbar__link" href="edustar-subject-hub.html">Subjects</a>
+        <a class="es-topbar__link" href="edustar-ai-tech-learning-centre.html">AI Centre</a>
+        <a class="es-topbar__link" href="edustar-ai-tutor.html">AI Tutor</a>
+        <a class="es-topbar__link" href="edustar-quiz.html">Quiz</a>
+        <a class="es-topbar__link is-active" href="edustar-progress-tracker.html">Progress</a>
+      </nav>
+    </div>
+  </header>
+  <main class="es-progress es-shell">
+    <section class="es-card es-progress__banner">
+      <div class="es-progress__top">
+        <div class="es-progress__badge" id="level-badge"><strong>Level 5</strong></div>
+        <div>
+          <span class="es-kicker">Progress Tracker</span>
+          <h1>Keep climbing, explorer</h1>
+          <div class="es-progress__stats">
+            <div class="es-pill">Stars: <strong id="stars-count">0</strong></div>
+            <div class="es-pill">Level: <strong id="level-count">5</strong></div>
+            <div class="es-pill es-progress__up" id="level-up">LEVEL UP!</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="es-progress__ring-grid">
+      <article class="es-card es-progress__ring" style="--c:#FFD700; --d:0.2s; --offset: 190;">
+        <svg viewBox="0 0 200 200"><circle class="track" cx="100" cy="100" r="90"></circle><circle class="fill" cx="100" cy="100" r="90"></circle></svg>
+        <div class="es-progress__planet">🪐</div>
+        <p>Core Academics</p>
+      </article>
+      <article class="es-card es-progress__ring" style="--c:#00D4FF; --d:0.4s; --offset: 240;">
+        <svg viewBox="0 0 200 200"><circle class="track" cx="100" cy="100" r="90"></circle><circle class="fill" cx="100" cy="100" r="90"></circle></svg>
+        <div class="es-progress__planet">🤖</div>
+        <p>AI & Technology</p>
+      </article>
+      <article class="es-card es-progress__ring" style="--c:#39FF14; --d:0.6s; --offset: 140;">
+        <svg viewBox="0 0 200 200"><circle class="track" cx="100" cy="100" r="90"></circle><circle class="fill" cx="100" cy="100" r="90"></circle></svg>
+        <div class="es-progress__planet">🌱</div>
+        <p>Life Skills</p>
+      </article>
+    </section>
+
+    <section class="es-card" style="padding:1rem;">
+      <h2>Progress Bars</h2>
+      <div class="es-progress__bars" id="bars">
+        <div class="es-progress__bar" style="--c:#FFD700; --d:0s; --w:80%;"><span></span></div>
+        <div class="es-progress__bar" style="--c:#00D4FF; --d:.2s; --w:68%;"><span></span></div>
+        <div class="es-progress__bar" style="--c:#39FF14; --d:.4s; --w:54%;"><span></span></div>
+      </div>
+    </section>
+
+    <section class="es-progress__badges" aria-label="Badges grid">
+      <div class="es-card es-progress__badge-card es-progress__earned">⭐ Earned badge</div>
+      <div class="es-card es-progress__badge-card es-progress__earned">🚀 Space Explorer</div>
+      <div class="es-card es-progress__badge-card is-locked">🔒 Locked badge</div>
+      <div class="es-card es-progress__badge-card es-progress__earned">🏅 Focus Star</div>
+    </section>
+
+    <section class="es-card es-progress__certificate" style="padding:1.4rem; margin-top:1.2rem; min-height: 280px;">
+      <div class="es-progress__seal">★</div>
+      <h2>Certificate of Progress</h2>
+      <p>Ready to celebrate learning milestones and download a certificate when the learner completes a level.</p>
+      <button class="es-btn-primary es-progress__download" id="download-cert"><span class="icon">🖨️</span> Download Certificate</button>
+    </section>
+  </main>
+  <script src="edustar-client-api.js"></script>
+  <script>
+    (() => {
+      const starsCount = document.getElementById('stars-count');
+      const levelUp = document.getElementById('level-up');
+      const levelBadge = document.getElementById('level-badge');
+      const levelCount = document.getElementById('level-count');
+      const deviceId = window.EduStarAPI.getDeviceId();
+      let stars = 0;
+      let interval = 0;
+
+      function startAnimation(targetStars, targetLevel) {
+        levelCount.textContent = String(targetLevel);
+        starsCount.textContent = '0';
+        if (interval) {
+          clearInterval(interval);
+        }
+        interval = setInterval(() => {
+          stars += 1;
+          starsCount.textContent = String(stars);
+          if (stars >= targetStars) {
+            clearInterval(interval);
+            window.EduStarAPI.requestJson('/api/progress', {
+              method: 'POST',
+              body: JSON.stringify({
+                deviceId,
+                stars: targetStars,
+                level: targetLevel,
+                completedLessons: targetStars,
+              }),
+            }).catch(() => {});
+          }
+        }, 125);
+      }
+
+      window.EduStarAPI.requestJson(`/api/progress?deviceId=${encodeURIComponent(deviceId)}`)
+        .then((data) => {
+          const targetStars = data.progress?.stars ?? 12;
+          const targetLevel = data.progress?.level ?? 5;
+          startAnimation(targetStars, targetLevel);
+        })
+        .catch(() => {
+          startAnimation(12, 5);
+        });
+      setTimeout(() => {
+        levelUp.classList.add('is-show');
+        levelBadge.style.boxShadow = '0 0 40px rgba(255,215,0,.55)';
+        setTimeout(() => levelUp.classList.remove('is-show'), 1400);
+      }, 1600);
+    })();
+    // Download Certificate button - generate a simple printable certificate
+    document.getElementById('download-cert').addEventListener('click', () => {
+      const grade = localStorage.getItem('edustar-grade') || '5';
+      const html = `<!doctype html><html><head><meta charset='utf-8'><title>EduStar Certificate</title><style>
+        body{font-family:Georgia,serif;background:#fffef4;display:grid;place-items:center;min-height:100vh;margin:0;}
+        .cert{border:6px double #ffd700;padding:3rem 4rem;text-align:center;max-width:680px;}
+        h1{color:#1a1200;font-size:2.4rem;margin:0 0 .5rem;} h2{color:#7a5c00;font-size:1.4rem;}
+        .seal{font-size:3.5rem;} p{color:#444;} .gold{color:#ffd700;} @media print{body{background:#fff;}}
+      </style></head><body><div class='cert'><div class='seal'>⭐</div>
+      <h1>EduStar</h1><h2>Certificate of Progress</h2>
+      <p>This certifies that an EduStar Explorer</p>
+      <p>has completed learning milestones in<br><strong>Core Academics &bull; AI &amp; Technology &bull; Life Skills</strong></p>
+      <p>Grade ${grade} &mdash; Level 5</p>
+      <p style='font-size:1.5rem;margin:1rem 0;'>&#10022; Explorer Rank &#10022;</p>
+      <p style='color:#888;font-size:.85rem;'>EduStar &copy; 2025 &mdash; Keep Learning, Keep Growing!</p></div>
+      <script>window.print();<\/script></body></html>`;
+      const blob = new Blob([html], {type: 'text/html'});
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    });
+  </script>
+  <!-- Footer -->
+  <footer class="es-shell" style="padding:1.2rem 0; border-top:1px solid rgba(255,255,255,.07); margin-top:2rem; text-align:center;">
+    <small>EduStar &copy; 2025 &mdash; Safe, ad-free, joyful learning for young explorers. &nbsp;
+      <a href="edustar-home.html" style="color:var(--es-color-star-gold); text-decoration:none;">↩ Back to Home</a>
+    </small>
+  </footer>
+</body>
+</html>
