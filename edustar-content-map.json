@@ -8,7 +8,20 @@
       {
         "topicId": "math-foundations",
         "topicName": "Math Foundations",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Counting, numbers, patterns, and problem solving.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 30,
@@ -19,7 +32,20 @@
       {
         "topicId": "science-explorers",
         "topicName": "Science Explorers",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Plants, animals, matter, energy, and the world around us.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 35,
@@ -30,7 +56,20 @@
       {
         "topicId": "english-communication",
         "topicName": "English Communication",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Reading, writing, speaking, and vocabulary growth.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 28,
@@ -41,7 +80,20 @@
       {
         "topicId": "social-studies",
         "topicName": "Social Studies",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Communities, history, maps, and citizenship.",
         "difficultyLevel": "Medium",
         "estimatedMinutes": 32,
@@ -52,7 +104,14 @@
       {
         "topicId": "reading-skills",
         "topicName": "Reading Skills",
-        "applicableGrades": [1,2,3,4,5,6],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
         "shortDescription": "Fluency, understanding, and story meaning.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 22,
@@ -63,7 +122,18 @@
       {
         "topicId": "writing-skills",
         "topicName": "Writing Skills",
-        "applicableGrades": [3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Sentences, paragraphs, and clear expression.",
         "difficultyLevel": "Medium",
         "estimatedMinutes": 30,
@@ -74,7 +144,16 @@
       {
         "topicId": "environment-awareness",
         "topicName": "Environment Awareness",
-        "applicableGrades": [1,2,3,4,5,6,7,8],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
         "shortDescription": "Nature, climate, recycling, and caring for Earth.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 26,
@@ -85,7 +164,14 @@
       {
         "topicId": "exam-revision",
         "topicName": "Exam Revision",
-        "applicableGrades": [7,8,9,10,11,12],
+        "applicableGrades": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Practice, recall, and confidence before tests.",
         "difficultyLevel": "Hard",
         "estimatedMinutes": 40,
@@ -104,7 +190,20 @@
       {
         "topicId": "what-is-ai",
         "topicName": "What is AI?",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "AI is a computer system that learns patterns and helps people.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 20,
@@ -115,7 +214,16 @@
       {
         "topicId": "prompt-writing",
         "topicName": "Prompt Writing",
-        "applicableGrades": [5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Write clear instructions so AI gives better answers.",
         "difficultyLevel": "Medium",
         "estimatedMinutes": 25,
@@ -126,7 +234,20 @@
       {
         "topicId": "coding-basics",
         "topicName": "Coding Basics",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Learn sequences, loops, and simple logic.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 30,
@@ -137,7 +258,16 @@
       {
         "topicId": "robotics",
         "topicName": "Robotics",
-        "applicableGrades": [5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Robots sense, think, and act with sensors and motors.",
         "difficultyLevel": "Medium",
         "estimatedMinutes": 35,
@@ -148,7 +278,20 @@
       {
         "topicId": "digital-safety",
         "topicName": "Digital Safety",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Stay safe, kind, and careful online.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 18,
@@ -159,7 +302,20 @@
       {
         "topicId": "computers-and-internet",
         "topicName": "Computers and Internet",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Understand devices, networks, and responsible use.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 24,
@@ -170,13 +326,123 @@
       {
         "topicId": "future-tech",
         "topicName": "Future Tech",
-        "applicableGrades": [6,7,8,9,10,11,12],
+        "applicableGrades": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Discover how new tools can help learning and life.",
         "difficultyLevel": "Medium",
         "estimatedMinutes": 22,
         "quizAvailable": true,
         "videoAvailable": true,
         "animationHint": "Use es-glow on the icon for a futuristic signal."
+      },
+      {
+        "topicId": "ai-foundations-advanced",
+        "topicName": "AI Foundations (Advanced)",
+        "applicableGrades": [
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "shortDescription": "Explore how large language models and neural networks are built.",
+        "difficultyLevel": "Hard",
+        "estimatedMinutes": 45,
+        "quizAvailable": true,
+        "videoAvailable": true,
+        "animationHint": "Use es-orbit on the icon to suggest a deeper learning path."
+      },
+      {
+        "topicId": "machine-learning-basics",
+        "topicName": "Machine Learning Basics",
+        "applicableGrades": [
+          9,
+          10,
+          11,
+          12
+        ],
+        "shortDescription": "Learn how computers find patterns from examples and data.",
+        "difficultyLevel": "Hard",
+        "estimatedMinutes": 35,
+        "quizAvailable": true,
+        "videoAvailable": true,
+        "animationHint": "Use es-float on the icon to show pattern learning in motion."
+      },
+      {
+        "topicId": "deep-learning",
+        "topicName": "Deep Learning",
+        "applicableGrades": [
+          9,
+          10,
+          11,
+          12
+        ],
+        "shortDescription": "See how layered neural networks can learn from data.",
+        "difficultyLevel": "Hard",
+        "estimatedMinutes": 38,
+        "quizAvailable": true,
+        "videoAvailable": true,
+        "animationHint": "Use es-pulse-glow on the icon to feel like neurons are firing."
+      },
+      {
+        "topicId": "prompt-engineering",
+        "topicName": "Prompt Engineering",
+        "applicableGrades": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "shortDescription": "Write better prompts so AI gives clearer, more useful answers.",
+        "difficultyLevel": "Medium",
+        "estimatedMinutes": 28,
+        "quizAvailable": true,
+        "videoAvailable": true,
+        "animationHint": "Use es-slide-up on the icon to show ideas being refined."
+      },
+      {
+        "topicId": "ai-ethics",
+        "topicName": "AI Ethics",
+        "applicableGrades": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "shortDescription": "Think about fairness, safety, privacy, and responsible AI use.",
+        "difficultyLevel": "Medium",
+        "estimatedMinutes": 26,
+        "quizAvailable": true,
+        "videoAvailable": true,
+        "animationHint": "Use es-glow on the icon to signal careful thinking."
+      },
+      {
+        "topicId": "computer-science-fundamentals",
+        "topicName": "Computer Science Fundamentals",
+        "applicableGrades": [
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "shortDescription": "Build a foundation in algorithms, logic, and computing ideas.",
+        "difficultyLevel": "Medium",
+        "estimatedMinutes": 32,
+        "quizAvailable": true,
+        "videoAvailable": true,
+        "animationHint": "Use es-spin-slow on the icon to feel structured and precise."
       }
     ]
   },
@@ -189,7 +455,20 @@
       {
         "topicId": "critical-thinking",
         "topicName": "Critical Thinking",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Think carefully, ask questions, and check ideas.",
         "difficultyLevel": "Medium",
         "estimatedMinutes": 26,
@@ -200,7 +479,20 @@
       {
         "topicId": "communication",
         "topicName": "Communication",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Listen well, speak clearly, and work with others.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 24,
@@ -211,7 +503,20 @@
       {
         "topicId": "problem-solving",
         "topicName": "Problem Solving",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Find simple steps to solve hard situations.",
         "difficultyLevel": "Medium",
         "estimatedMinutes": 28,
@@ -222,7 +527,20 @@
       {
         "topicId": "teamwork",
         "topicName": "Teamwork",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Share, help, and build together.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 20,
@@ -233,7 +551,17 @@
       {
         "topicId": "self-management",
         "topicName": "Self Management",
-        "applicableGrades": [4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Plan time, keep calm, and stay on task.",
         "difficultyLevel": "Medium",
         "estimatedMinutes": 23,
@@ -244,7 +572,18 @@
       {
         "topicId": "goal-setting",
         "topicName": "Goal Setting",
-        "applicableGrades": [3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Set a target and take small steps to reach it.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 21,
@@ -263,7 +602,20 @@
       {
         "topicId": "respect-elders",
         "topicName": "Respecting Elders",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Speak kindly and listen to older people with care.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 15,
@@ -274,7 +626,20 @@
       {
         "topicId": "cleanliness",
         "topicName": "Cleanliness",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Keep yourself, your room, and your surroundings neat.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 15,
@@ -285,7 +650,20 @@
       {
         "topicId": "discipline",
         "topicName": "Discipline",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Follow routines, finish work, and stay steady.",
         "difficultyLevel": "Medium",
         "estimatedMinutes": 18,
@@ -296,7 +674,20 @@
       {
         "topicId": "empathy",
         "topicName": "Empathy",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Understand how others feel and be supportive.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 16,
@@ -307,7 +698,20 @@
       {
         "topicId": "kindness",
         "topicName": "Kindness",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Small kind actions can make a big difference.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 14,
@@ -318,7 +722,20 @@
       {
         "topicId": "honesty",
         "topicName": "Honesty",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Tell the truth and keep promises.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 14,
@@ -329,7 +746,20 @@
       {
         "topicId": "responsibility",
         "topicName": "Responsibility",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Own your actions and finish what you start.",
         "difficultyLevel": "Medium",
         "estimatedMinutes": 18,
@@ -340,7 +770,20 @@
       {
         "topicId": "team-spirit",
         "topicName": "Team Spirit",
-        "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "applicableGrades": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
         "shortDescription": "Work together with respect and shared purpose.",
         "difficultyLevel": "Easy",
         "estimatedMinutes": 15,

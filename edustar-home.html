@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,52 +10,261 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="edustar-design-system.css">
   <style>
-    .es-page { position: relative; min-height: 100vh; }
-    .es-scroll-progress { position: fixed; inset: 0 0 auto 0; height: 4px; z-index: var(--es-z-overlay); background: rgba(255,255,255,0.05); }
-    .es-scroll-progress__bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--es-color-star-gold), #fff4aa); box-shadow: var(--es-shadow-glow); }
-    .es-home { position: relative; overflow: clip; }
-    .es-home__hero { padding: 4rem 0 3rem; min-height: 100vh; display: grid; align-items: center; }
-    .es-home__hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 2rem; align-items: center; }
-    .es-home__eyebrow { display: inline-flex; margin-bottom: 1rem; }
-    .es-home__title { max-width: 12ch; color: var(--es-color-star-gold); text-shadow: 0 0 18px rgba(255, 215, 0, 0.16); }
-    .es-home__copy { max-width: 58ch; margin-top: 1rem; }
-    .es-home__actions { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 1.75rem; }
-    .es-home__backend-pills { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.2rem; }
-    .es-home__backend-pills .es-pill { background: rgba(255,255,255,.06); }
-    .es-home__scene { position: relative; min-height: 520px; }
-    .es-home__rocket { position: absolute; top: 18%; left: 0; font-size: 4rem; filter: drop-shadow(0 14px 24px rgba(0,0,0,.25)); }
-    .es-home__planet { position: absolute; border-radius: 50%; box-shadow: inset -12px -18px 28px rgba(0,0,0,0.22), 0 18px 42px rgba(0,0,0,0.25); }
-    .es-home__planet--left { width: 130px; height: 130px; left: 3%; bottom: 15%; background: radial-gradient(circle at 30% 30%, #b9ffe7, #39ff14 42%, #1b5d1f 100%); animation-duration: 4s; animation-delay: -1s; }
-    .es-home__planet--right { width: 88px; height: 88px; right: 8%; top: 14%; background: radial-gradient(circle at 28% 28%, #fff8c0, #ffd700 44%, #8d6900 100%); animation-duration: 5s; animation-delay: -2.5s; }
-    .es-home__planet--top { width: 110px; height: 110px; right: 24%; top: 0; background: radial-gradient(circle at 32% 32%, #d9c7ff, #4b2d8f 44%, #24124f 100%); animation-duration: 6s; animation-delay: -4s; }
-    .es-home__planet::after { content: ''; position: absolute; inset: -14px; border-radius: inherit; border: 2px solid rgba(255,255,255,.15); transform: rotate(18deg); }
-    .es-home__section { padding: 1rem 0 4rem; }
-    .es-home__section-head { margin-bottom: 1.5rem; display: flex; align-items: end; justify-content: space-between; gap: 1rem; }
-    .es-home__section-head p { max-width: 42ch; }
-    .es-home__pillars .es-card-3d { padding: 1.2rem; min-height: 230px; cursor: pointer; transform-origin: center; }
-    .es-home__pillars .es-card-3d:hover { transform: perspective(800px) rotateX(3deg) rotateY(var(--es-tilt-y, 0deg)) translateY(-6px); }
-    .es-home__icon { display: inline-grid; place-items: center; width: 60px; height: 60px; border-radius: 22px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); margin-bottom: 1rem; }
-    .es-home__icon i { font-style: normal; font-size: 1.8rem; }
-    .es-home__pillars h3 { color: var(--es-color-star-gold); margin-bottom: .5rem; }
-    .es-home__pillars p { color: rgba(245,247,255,.8); }
-    .es-home__features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
-    .es-home__feature { padding: 1rem 1.1rem; display: flex; gap: 1rem; align-items: center; }
-    .es-home__feature-icon { width: 52px; height: 52px; border-radius: 18px; display:grid; place-items:center; background: rgba(255,215,0,.08); border: 1px solid rgba(255,215,0,.18); transition: transform var(--es-transition-fast), box-shadow var(--es-transition-fast); }
-    .es-home__feature:hover .es-home__feature-icon { box-shadow: var(--es-shadow-glow); }
-    .es-home__feature-icon.is-hover-spin { animation: es-spin-slow 20s linear infinite; }
-    .es-home__feature h4 { font-size: 1.1rem; margin-bottom: .2rem; }
-    .es-home__feature p { font-size: .95rem; }
-    .es-home__reveal { opacity: 0; transform: translateY(28px); transition: opacity .6s ease, transform .6s ease; }
-    .es-home__reveal.is-visible { opacity: 1; transform: translateY(0); }
+    .es-page {
+      position: relative;
+      min-height: 100vh;
+    }
+
+    .es-scroll-progress {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 4px;
+      z-index: var(--es-z-overlay);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .es-scroll-progress__bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--es-color-star-gold), #fff4aa);
+      box-shadow: var(--es-shadow-glow);
+    }
+
+    .es-home {
+      position: relative;
+      overflow: clip;
+    }
+
+    .es-home__hero {
+      padding: 4rem 0 3rem;
+      min-height: 100vh;
+      display: grid;
+      align-items: center;
+    }
+
+    .es-home__hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .es-home__eyebrow {
+      display: inline-flex;
+      margin-bottom: 1rem;
+    }
+
+    .es-home__title {
+      max-width: 12ch;
+      color: var(--es-color-star-gold);
+      text-shadow: 0 0 18px rgba(255, 215, 0, 0.16);
+    }
+
+    .es-home__copy {
+      max-width: 58ch;
+      margin-top: 1rem;
+    }
+
+    .es-home__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      margin-top: 1.75rem;
+    }
+
+    .es-home__backend-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      margin-top: 1.2rem;
+    }
+
+    .es-home__backend-pills .es-pill {
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .es-home__scene {
+      position: relative;
+      min-height: 520px;
+    }
+
+    .es-home__rocket {
+      position: absolute;
+      top: 18%;
+      left: 0;
+      font-size: 4rem;
+      filter: drop-shadow(0 14px 24px rgba(0, 0, 0, .25));
+    }
+
+    .es-home__planet {
+      position: absolute;
+      border-radius: 50%;
+      box-shadow: inset -12px -18px 28px rgba(0, 0, 0, 0.22), 0 18px 42px rgba(0, 0, 0, 0.25);
+    }
+
+    .es-home__planet--left {
+      width: 130px;
+      height: 130px;
+      left: 3%;
+      bottom: 15%;
+      background: radial-gradient(circle at 30% 30%, #b9ffe7, #39ff14 42%, #1b5d1f 100%);
+      animation-duration: 4s;
+      animation-delay: -1s;
+    }
+
+    .es-home__planet--right {
+      width: 88px;
+      height: 88px;
+      right: 8%;
+      top: 14%;
+      background: radial-gradient(circle at 28% 28%, #fff8c0, #ffd700 44%, #8d6900 100%);
+      animation-duration: 5s;
+      animation-delay: -2.5s;
+    }
+
+    .es-home__planet--top {
+      width: 110px;
+      height: 110px;
+      right: 24%;
+      top: 0;
+      background: radial-gradient(circle at 32% 32%, #d9c7ff, #4b2d8f 44%, #24124f 100%);
+      animation-duration: 6s;
+      animation-delay: -4s;
+    }
+
+    .es-home__planet::after {
+      content: '';
+      position: absolute;
+      inset: -14px;
+      border-radius: inherit;
+      border: 2px solid rgba(255, 255, 255, .15);
+      transform: rotate(18deg);
+    }
+
+    .es-home__section {
+      padding: 1rem 0 4rem;
+    }
+
+    .es-home__section-head {
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .es-home__section-head p {
+      max-width: 42ch;
+    }
+
+    .es-home__pillars .es-card-3d {
+      padding: 1.2rem;
+      min-height: 230px;
+      cursor: pointer;
+      transform-origin: center;
+    }
+
+    .es-home__pillars .es-card-3d:hover {
+      transform: perspective(800px) rotateX(3deg) rotateY(var(--es-tilt-y, 0deg)) translateY(-6px);
+    }
+
+    .es-home__icon {
+      display: inline-grid;
+      place-items: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .1);
+      margin-bottom: 1rem;
+    }
+
+    .es-home__icon i {
+      font-style: normal;
+      font-size: 1.8rem;
+    }
+
+    .es-home__pillars h3 {
+      color: var(--es-color-star-gold);
+      margin-bottom: .5rem;
+    }
+
+    .es-home__pillars p {
+      color: rgba(245, 247, 255, .8);
+    }
+
+    .es-home__features {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .es-home__feature {
+      padding: 1rem 1.1rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .es-home__feature-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 215, 0, .08);
+      border: 1px solid rgba(255, 215, 0, .18);
+      transition: transform var(--es-transition-fast), box-shadow var(--es-transition-fast);
+    }
+
+    .es-home__feature:hover .es-home__feature-icon {
+      box-shadow: var(--es-shadow-glow);
+    }
+
+    .es-home__feature-icon.is-hover-spin {
+      animation: es-spin-slow 20s linear infinite;
+    }
+
+    .es-home__feature h4 {
+      font-size: 1.1rem;
+      margin-bottom: .2rem;
+    }
+
+    .es-home__feature p {
+      font-size: .95rem;
+    }
+
+    .es-home__reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .es-home__reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     @media (max-width: 900px) {
-      .es-home__hero-grid { grid-template-columns: 1fr; }
-      .es-home__scene { min-height: 360px; }
-      .es-home__features { grid-template-columns: 1fr; }
+      .es-home__hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .es-home__scene {
+        min-height: 360px;
+      }
+
+      .es-home__features {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
+
 <body>
-  <div class="es-scroll-progress" aria-hidden="true"><div class="es-scroll-progress__bar" data-es-scroll-bar></div></div>
+  <div class="es-scroll-progress" aria-hidden="true">
+    <div class="es-scroll-progress__bar" data-es-scroll-bar></div>
+  </div>
   <canvas id="es-starfield" aria-hidden="true"></canvas>
 
   <div class="es-page">
@@ -64,9 +274,10 @@
           <span class="es-nav__logo es-float" aria-hidden="true">🚀⭐</span>
           <span class="es-nav__name">EduStar</span>
         </a>
-        <nav class="es-nav__menu" aria-label="Main links" style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:flex-end;">
+        <nav class="es-nav__menu" aria-label="Main links"
+          style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:flex-end;">
           <a class="es-nav__link is-active" href="edustar-home.html">Home</a>
-          <a class="es-nav__link" href="edustar-subject-hub.html">Subjects</a>
+          <a class="es-nav__link" href="edustar-cbse-class-hub.html">CBSE Classes</a>
           <a class="es-nav__link" href="edustar-ai-tutor.html">AI Tutor</a>
           <a class="es-nav__link" href="edustar-quiz.html">Quizzes</a>
           <a class="es-nav__link" href="edustar-progress-tracker.html">My Progress</a>
@@ -78,11 +289,14 @@
       <section class="es-home__hero es-shell">
         <div class="es-home__hero-grid">
           <div>
-            <span class="es-pill es-kicker es-home__eyebrow es-slide-up">Space & Adventure Learning for Class 1 to 12</span>
+            <span class="es-pill es-kicker es-home__eyebrow es-slide-up">Space & Adventure Learning for Class 1 to
+              12</span>
             <h1 class="es-home__title es-slide-up" style="animation-delay:0s;">Blast Off Into Learning!</h1>
-            <p class="es-home__copy es-slide-up" style="animation-delay:.3s;">A free, safe, login-free learning platform with joyful lessons in core academics, AI, life skills, and values. Everything is built for children, families, and classrooms.</p>
+            <p class="es-home__copy es-slide-up" style="animation-delay:.3s;">Hello, <strong id="es-home-username" style="color:var(--es-color-star-gold);"></strong> — A free, safe, learning platform
+              with joyful lessons in core academics, AI, life skills, and values. Everything is built for children,
+              families, and classrooms.</p>
             <div class="es-home__actions es-slide-up" style="animation-delay:.6s;">
-              <a class="es-btn-primary es-glow" href="edustar-subject-hub.html">Start Exploring</a>
+              <a class="es-btn-primary es-glow" href="edustar-cbse-class-hub.html">Start Exploring</a>
               <a class="es-btn-secondary" href="edustar-ai-tutor.html">Meet Astro</a>
             </div>
             <div class="es-home__backend-pills es-slide-up" style="animation-delay:.75s;">
@@ -106,25 +320,30 @@
             <span class="es-kicker">Subject Pillars</span>
             <h2>Four Paths to Grow</h2>
           </div>
-          <p>Each pillar opens a clear path with friendly cards, short lessons, and quizzes that keep learning simple and encouraging.</p>
+          <p>Each pillar opens a clear path with friendly cards, short lessons, and quizzes that keep learning simple
+            and encouraging.</p>
         </div>
         <div class="es-grid es-grid-4 es-home__pillars">
-          <article class="es-card-3d es-home__reveal" data-es-tilt-card style="cursor:pointer;" onclick="location.href='edustar-subject-hub.html?pillar=Core+Academics'">
+          <article class="es-card-3d es-home__reveal" data-es-tilt-card style="cursor:pointer;"
+            onclick="location.href='edustar-cbse-class-hub.html'">
             <div class="es-home__icon es-float"><i>📚</i></div>
             <h3>Core Academics</h3>
             <p>Mathematics, Science, English, and Social Studies.</p>
           </article>
-          <article class="es-card-3d es-home__reveal" data-es-tilt-card style="cursor:pointer;" onclick="location.href='edustar-ai-tech-learning-centre.html'">
+          <article class="es-card-3d es-home__reveal" data-es-tilt-card style="cursor:pointer;"
+            onclick="location.href='edustar-ai-tech-learning-centre.html'">
             <div class="es-home__icon es-float" style="animation-delay:-1s;"><i>🤖</i></div>
             <h3>AI &amp; Technology</h3>
             <p>AI basics, prompt writing, coding, and robotics.</p>
           </article>
-          <article class="es-card-3d es-home__reveal" data-es-tilt-card style="cursor:pointer;" onclick="location.href='edustar-subject-hub.html?pillar=Life+Skills'">
+          <article class="es-card-3d es-home__reveal" data-es-tilt-card style="cursor:pointer;"
+            onclick="location.href='edustar-cbse-class-hub.html'">
             <div class="es-home__icon es-float" style="animation-delay:-2s;"><i>🌱</i></div>
             <h3>Life Skills</h3>
             <p>Thinking, speaking, solving problems, and teamwork.</p>
           </article>
-          <article class="es-card-3d es-home__reveal" data-es-tilt-card style="cursor:pointer;" onclick="location.href='edustar-subject-hub.html?pillar=Values+%26+Character'">
+          <article class="es-card-3d es-home__reveal" data-es-tilt-card style="cursor:pointer;"
+            onclick="location.href='edustar-values-character.html'">
             <div class="es-home__icon es-float" style="animation-delay:-3s;"><i>💛</i></div>
             <h3>Values &amp; Character</h3>
             <p>Respect, kindness, discipline, empathy, and honesty.</p>
@@ -142,15 +361,24 @@
         <div class="es-home__features">
           <article class="es-card es-home__feature es-home__reveal">
             <div class="es-home__feature-icon" data-es-hover-spin>🛡️</div>
-            <div><h4>Safe by default</h4><p>Ad-free learning with a child-friendly tone.</p></div>
+            <div>
+              <h4>Safe by default</h4>
+              <p>Ad-free learning with a child-friendly tone.</p>
+            </div>
           </article>
           <article class="es-card es-home__feature es-home__reveal">
             <div class="es-home__feature-icon" data-es-hover-spin>📱</div>
-            <div><h4>Responsive everywhere</h4><p>Built to work on mobile, tablet, and desktop.</p></div>
+            <div>
+              <h4>Responsive everywhere</h4>
+              <p>Built to work on mobile, tablet, and desktop.</p>
+            </div>
           </article>
           <article class="es-card es-home__feature es-home__reveal">
             <div class="es-home__feature-icon" data-es-hover-spin>⭐</div>
-            <div><h4>Progress feels rewarding</h4><p>Stars, badges, and small wins keep momentum going.</p></div>
+            <div>
+              <h4>Progress feels rewarding</h4>
+              <p>Stars, badges, and small wins keep momentum going.</p>
+            </div>
           </article>
         </div>
       </section>
@@ -216,6 +444,16 @@
       window.addEventListener('resize', onScroll, { passive: true });
       onScroll();
 
+      // Show name modal on first visit, then load data
+      window.EduStarAPI.initNameModal().then((name) => {
+        const usernameEl = document.getElementById('es-home-username');
+        if (usernameEl) {
+          usernameEl.textContent = name ? `${name}!` : '';
+          if (!name) usernameEl.parentElement.innerHTML = usernameEl.parentElement.innerHTML
+            .replace(/Hello,.*?—\s*/, '');
+        }
+      });
+
       Promise.all([
         window.EduStarAPI.requestJson('/api/content-map'),
         window.EduStarAPI.requestJson(`/api/progress?deviceId=${encodeURIComponent(deviceId)}`),
@@ -232,4 +470,5 @@
     })();
   </script>
 </body>
+
 </html>

@@ -1,65 +1,198 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0A0E27">
-  <title>EduStar | Progress Tracker & Certificates</title>
+  <title>EduStar | Progress Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="edustar-design-system.css">
   <style>
     /* Navbar */
-    .es-topbar { display:flex; align-items:center; justify-content:space-between; padding:.75rem 0; gap:1rem; flex-wrap:wrap; }
-    .es-topbar__brand { display:flex; align-items:center; gap:.5rem; font-family: var(--es-font-heading); font-size:1.35rem; color: var(--es-color-star-gold); text-decoration:none; }
-    .es-topbar__nav { display:flex; gap:.75rem; flex-wrap:wrap; }
-    .es-topbar__link { font-size:.9rem; padding:.4rem .8rem; border-radius:999px; color:rgba(245,247,255,.8); text-decoration:none; transition: background var(--es-transition-fast), color var(--es-transition-fast); }
-    .es-topbar__link:hover, .es-topbar__link.is-active { background:rgba(255,215,0,.12); color:var(--es-color-star-gold); }
-    .es-progress { padding: 2rem 0 4rem; }
-    .es-progress__banner { padding: 1.2rem; margin-bottom: 1rem; transform: translateY(-20px); animation: banner-drop .3s ease forwards; }
-    .es-progress__top { display:grid; grid-template-columns: auto 1fr auto; gap: 1rem; align-items:center; }
-    .es-progress__badge { width: 110px; height: 110px; border-radius: 34px; display:grid; place-items:center; background: linear-gradient(180deg, #ffe98b, #ffd700); color:#241900; box-shadow: var(--es-shadow-glow); animation: badge-pop .5s cubic-bezier(.2,.9,.2,1.2) both; }
-    .es-progress__badge:hover { transform: rotate(10deg); }
-    .es-progress__stats { display:flex; flex-wrap:wrap; gap:1rem; }
-    .es-progress__ring-grid { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; margin: 1.2rem 0; }
-    .es-progress__ring { padding: 1rem; text-align:center; position:relative; }
-    .es-progress__ring svg { width: 180px; height: 180px; transform: rotate(-90deg); }
-    .es-progress__ring circle { fill:none; stroke-width: 10; }
-    .es-progress__ring .track { stroke: rgba(255,255,255,.12); }
-    .es-progress__ring .fill { stroke: var(--c); stroke-dasharray: 565; stroke-dashoffset: 565; animation: fill-ring 1.4s ease forwards; animation-delay: var(--d); }
-    .es-progress__planet { position:absolute; inset: 32px; display:grid; place-items:center; font-size: 1.25rem; animation: es-orbit 12s linear infinite; }
-    .es-progress__bars { display:grid; gap: .8rem; }
-    .es-progress__bar { height: 16px; border-radius: 999px; background: rgba(255,255,255,.08); overflow:hidden; }
-    .es-progress__bar > span { display:block; height:100%; width:0; border-radius:inherit; background: linear-gradient(90deg, var(--c), rgba(255,255,255,.8)); animation: bar-fill .8s ease forwards; animation-delay: var(--d); }
-    .es-progress__badges { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: .8rem; margin-top: 1rem; opacity:0; animation: fade-in .8s ease .8s forwards; }
-    .es-progress__badge-card { padding: .9rem; text-align:center; }
-    .es-progress__badge-card.is-locked { filter: grayscale(1) blur(1px); opacity: .7; }
-    .es-progress__earned { animation: es-pulse-glow 2s ease-in-out infinite; }
-    .es-progress__certificate { margin-top: 1.2rem; padding: 1rem; position: relative; overflow:hidden; }
-    .es-progress__certificate::before { content:''; position:absolute; inset: 12px; border: 2px dashed rgba(255,215,0,.72); border-radius: 22px; animation: draw-border 1.8s ease forwards; }
-    .es-progress__certificate::after { content:''; position:absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent); transform: translateX(-120%); animation: shimmer 3s linear infinite; }
-    .es-progress__seal { position:absolute; right: 18px; top: 18px; width: 72px; height: 72px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #fff4bb, #ffd700); display:grid; place-items:center; color:#241900; animation: es-spin-slow 20s linear infinite; }
-    .es-progress__download .icon { display:inline-block; transition: transform var(--es-transition-fast); }
-    .es-progress__download:hover .icon { transform: translateY(4px); }
-    .es-progress__up { display:none; margin-left:.4rem; }
-    .es-progress__up.is-show { display:inline; }
-    @keyframes banner-drop { to { transform: translateY(0); } }
-    @keyframes badge-pop { from { transform: scale(0); } to { transform: scale(1); } }
-    @keyframes fill-ring { to { stroke-dashoffset: var(--offset); } }
-    @keyframes bar-fill { to { width: var(--w); } }
-    @keyframes fade-in { to { opacity:1; } }
-    @keyframes draw-border { to { stroke-dashoffset: 0; } }
-    @keyframes shimmer { 0% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
-    @media (max-width: 1000px) { .es-progress__top, .es-progress__ring-grid, .es-progress__badges { grid-template-columns: 1fr; } }
+    .es-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .75rem 0;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .es-topbar__brand {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: var(--es-font-heading);
+      font-size: 1.35rem;
+      color: var(--es-color-star-gold);
+      text-decoration: none;
+    }
+
+    .es-topbar__nav {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+
+    .es-topbar__link {
+      font-size: .9rem;
+      padding: .4rem .8rem;
+      border-radius: 999px;
+      color: rgba(245, 247, 255, .8);
+      text-decoration: none;
+      transition: background var(--es-transition-fast), color var(--es-transition-fast);
+    }
+
+    .es-topbar__link:hover,
+    .es-topbar__link.is-active {
+      background: rgba(255, 215, 0, .12);
+      color: var(--es-color-star-gold);
+    }
+
+
+    /* ── Progress page ──────────────────────────────────────── */
+    .es-progress {
+      padding: 2rem 0 4rem;
+    }
+
+    .es-progress__banner {
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      transform: translateY(-20px);
+      animation: banner-drop .3s ease forwards;
+    }
+
+    .es-progress__top {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.2rem;
+      align-items: center;
+    }
+
+    .es-progress__badge {
+      width: 110px;
+      height: 110px;
+      border-radius: 34px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, #ffe98b, #ffd700);
+      color: #241900;
+      box-shadow: var(--es-shadow-glow);
+      animation: badge-pop .5s cubic-bezier(.2, .9, .2, 1.2) both;
+    }
+
+    .es-progress__badge:hover {
+      transform: rotate(10deg);
+    }
+
+    .es-progress__greeting { font-size: 1.1rem; opacity: .8; margin: 0 0 .2rem; }
+    .es-progress__name { color: var(--es-color-star-gold); }
+
+    .es-progress__stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin-top: .6rem;
+    }
+
+    .es-progress__ring-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 1.2rem 0;
+    }
+
+    .es-progress__ring {
+      padding: 1rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .es-progress__ring svg {
+      width: 160px;
+      height: 160px;
+      transform: rotate(-90deg);
+    }
+
+    .es-progress__ring circle {
+      fill: none;
+      stroke-width: 10;
+    }
+
+    .es-progress__ring .track {
+      stroke: rgba(255, 255, 255, .12);
+    }
+
+    .es-progress__ring .fill {
+      stroke: var(--c);
+      stroke-dasharray: 565;
+      stroke-dashoffset: 565;
+      animation: fill-ring 1.4s ease forwards;
+      animation-delay: var(--d);
+    }
+
+    .es-progress__ring-label { font-size: .9rem; margin-top: .5rem; }
+    .es-progress__ring-pct { font-size: 1.5rem; font-weight: 700; color: var(--es-color-star-gold); display: block; margin-top: -.3rem; }
+
+    /* Recent quizzes table */
+    .es-progress__quizzes { width: 100%; border-collapse: collapse; margin-top: .8rem; }
+    .es-progress__quizzes th, .es-progress__quizzes td { padding: .6rem .8rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,.06); font-size: .88rem; }
+    .es-progress__quizzes th { opacity: .6; font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+    .es-progress__quizzes td:last-child { text-align: right; }
+    .es-progress__score-bar { display: inline-block; height: 8px; border-radius: 99px; background: linear-gradient(90deg, #ffd700, #39ff14); min-width: 20px; vertical-align: middle; margin-right: .5rem; }
+
+    .es-progress__empty { opacity: .5; text-align: center; padding: 2rem 1rem; }
+
+    .es-progress__up {
+      display: none;
+      margin-left: .4rem;
+    }
+
+    .es-progress__up.is-show {
+      display: inline;
+    }
+
+    @keyframes banner-drop {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes badge-pop {
+      from { transform: scale(0); }
+      to { transform: scale(1); }
+    }
+
+    @keyframes fill-ring {
+      to {
+        stroke-dashoffset: var(--offset);
+      }
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 700px) {
+      .es-progress__top { grid-template-columns: 1fr; text-align: center; }
+      .es-progress__badge { margin: 0 auto; }
+      .es-progress__stats { justify-content: center; }
+    }
   </style>
 </head>
+
 <body>
+  <!-- Name modal injected by shared JS if first visit -->
+
   <header class="es-shell" style="border-bottom:1px solid rgba(255,255,255,.07);">
     <div class="es-topbar">
       <a class="es-topbar__brand" href="edustar-home.html">🚀⭐ EduStar</a>
       <nav class="es-topbar__nav" aria-label="Main navigation">
         <a class="es-topbar__link" href="edustar-home.html">Home</a>
-        <a class="es-topbar__link" href="edustar-subject-hub.html">Subjects</a>
+        <a class="es-topbar__link" href="edustar-cbse-class-hub.html">CBSE Classes</a>
         <a class="es-topbar__link" href="edustar-ai-tech-learning-centre.html">AI Centre</a>
         <a class="es-topbar__link" href="edustar-ai-tutor.html">AI Tutor</a>
         <a class="es-topbar__link" href="edustar-quiz.html">Quiz</a>
@@ -67,139 +200,215 @@
       </nav>
     </div>
   </header>
+
   <main class="es-progress es-shell">
+    <!-- Banner -->
     <section class="es-card es-progress__banner">
       <div class="es-progress__top">
-        <div class="es-progress__badge" id="level-badge"><strong>Level 5</strong></div>
+        <div class="es-progress__badge" id="level-badge"><strong id="level-text">Level 1</strong></div>
         <div>
+          <p class="es-progress__greeting">Welcome back, <span class="es-progress__name" id="user-name">Explorer</span>! 👋</p>
           <span class="es-kicker">Progress Tracker</span>
           <h1>Keep climbing, explorer</h1>
           <div class="es-progress__stats">
-            <div class="es-pill">Stars: <strong id="stars-count">0</strong></div>
-            <div class="es-pill">Level: <strong id="level-count">5</strong></div>
+            <div class="es-pill">⭐ Stars: <strong id="stars-count">0</strong></div>
+            <div class="es-pill">🏆 Level: <strong id="level-count">1</strong></div>
+            <div class="es-pill">📝 Quizzes: <strong id="quiz-count">0</strong></div>
             <div class="es-pill es-progress__up" id="level-up">LEVEL UP!</div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="es-progress__ring-grid">
-      <article class="es-card es-progress__ring" style="--c:#FFD700; --d:0.2s; --offset: 190;">
-        <svg viewBox="0 0 200 200"><circle class="track" cx="100" cy="100" r="90"></circle><circle class="fill" cx="100" cy="100" r="90"></circle></svg>
-        <div class="es-progress__planet">🪐</div>
-        <p>Core Academics</p>
-      </article>
-      <article class="es-card es-progress__ring" style="--c:#00D4FF; --d:0.4s; --offset: 240;">
-        <svg viewBox="0 0 200 200"><circle class="track" cx="100" cy="100" r="90"></circle><circle class="fill" cx="100" cy="100" r="90"></circle></svg>
-        <div class="es-progress__planet">🤖</div>
-        <p>AI & Technology</p>
-      </article>
-      <article class="es-card es-progress__ring" style="--c:#39FF14; --d:0.6s; --offset: 140;">
-        <svg viewBox="0 0 200 200"><circle class="track" cx="100" cy="100" r="90"></circle><circle class="fill" cx="100" cy="100" r="90"></circle></svg>
-        <div class="es-progress__planet">🌱</div>
-        <p>Life Skills</p>
-      </article>
+    <!-- Progress Rings -->
+    <section class="es-progress__ring-grid" id="rings-section">
+      <!-- Filled dynamically -->
     </section>
 
-    <section class="es-card" style="padding:1rem;">
-      <h2>Progress Bars</h2>
-      <div class="es-progress__bars" id="bars">
-        <div class="es-progress__bar" style="--c:#FFD700; --d:0s; --w:80%;"><span></span></div>
-        <div class="es-progress__bar" style="--c:#00D4FF; --d:.2s; --w:68%;"><span></span></div>
-        <div class="es-progress__bar" style="--c:#39FF14; --d:.4s; --w:54%;"><span></span></div>
+    <!-- Recent Quiz Attempts -->
+    <section class="es-card" style="padding:1.2rem;" id="quiz-history-section">
+      <h2>📊 Recent Quiz Scores</h2>
+      <div id="quiz-history">
+        <p class="es-progress__empty">Loading your quiz history…</p>
       </div>
     </section>
-
-    <section class="es-progress__badges" aria-label="Badges grid">
-      <div class="es-card es-progress__badge-card es-progress__earned">⭐ Earned badge</div>
-      <div class="es-card es-progress__badge-card es-progress__earned">🚀 Space Explorer</div>
-      <div class="es-card es-progress__badge-card is-locked">🔒 Locked badge</div>
-      <div class="es-card es-progress__badge-card es-progress__earned">🏅 Focus Star</div>
-    </section>
-
-    <section class="es-card es-progress__certificate" style="padding:1.4rem; margin-top:1.2rem; min-height: 280px;">
-      <div class="es-progress__seal">★</div>
-      <h2>Certificate of Progress</h2>
-      <p>Ready to celebrate learning milestones and download a certificate when the learner completes a level.</p>
-      <button class="es-btn-primary es-progress__download" id="download-cert"><span class="icon">🖨️</span> Download Certificate</button>
-    </section>
   </main>
+
   <script src="edustar-client-api.js"></script>
   <script>
     (() => {
-      const starsCount = document.getElementById('stars-count');
-      const levelUp = document.getElementById('level-up');
-      const levelBadge = document.getElementById('level-badge');
-      const levelCount = document.getElementById('level-count');
-      const deviceId = window.EduStarAPI.getDeviceId();
-      let stars = 0;
-      let interval = 0;
+      /* ── Name: use shared modal from client-api, update greeting ── */
+      const userNameEl = document.getElementById('user-name');
 
-      function startAnimation(targetStars, targetLevel) {
-        levelCount.textContent = String(targetLevel);
-        starsCount.textContent = '0';
-        if (interval) {
-          clearInterval(interval);
-        }
-        interval = setInterval(() => {
-          stars += 1;
-          starsCount.textContent = String(stars);
-          if (stars >= targetStars) {
-            clearInterval(interval);
-            window.EduStarAPI.requestJson('/api/progress', {
-              method: 'POST',
-              body: JSON.stringify({
-                deviceId,
-                stars: targetStars,
-                level: targetLevel,
-                completedLessons: targetStars,
-              }),
-            }).catch(() => {});
+      // Show the shared modal if this is a first visit;
+      // it resolves immediately if name is already saved.
+      window.EduStarAPI.initNameModal().then((name) => {
+        if (userNameEl) userNameEl.textContent = name || 'Explorer';
+      });
+
+      // Also set immediately from localStorage (no flash)
+      const savedName = window.EduStarAPI.getUserName();
+      if (userNameEl && savedName) userNameEl.textContent = savedName;
+
+      /* ── Load Progress Data ───────────────────────────────── */
+      const deviceId    = window.EduStarAPI.getDeviceId();
+      const starsCount  = document.getElementById('stars-count');
+      const levelCount  = document.getElementById('level-count');
+      const levelText   = document.getElementById('level-text');
+      const quizCountEl = document.getElementById('quiz-count');
+      const levelUp     = document.getElementById('level-up');
+      const levelBadge  = document.getElementById('level-badge');
+      const ringsSection = document.getElementById('rings-section');
+      const quizHistory  = document.getElementById('quiz-history');
+
+      async function loadProgress() {
+        try {
+          const data = await window.EduStarAPI.requestJson(`/api/progress?deviceId=${encodeURIComponent(deviceId)}`);
+          const quizAttempts = data.quizAttempts || [];
+          const progress = data.progress || { stars: 0, level: 1, completed_lessons: 0 };
+
+          // Calculate real stats from quiz attempts
+          const totalQuizzes = quizAttempts.length;
+          const totalCorrect = quizAttempts.reduce((sum, q) => sum + q.score, 0);
+          const totalQuestions = quizAttempts.reduce((sum, q) => sum + q.total, 0);
+
+          // Stars = total correct answers
+          const stars = totalCorrect || progress.stars || 0;
+          // Level = based on stars thresholds
+          const level = stars >= 50 ? 10 : stars >= 40 ? 8 : stars >= 30 ? 6 : stars >= 20 ? 5 : stars >= 15 ? 4 : stars >= 10 ? 3 : stars >= 5 ? 2 : 1;
+
+          // Animate stars count
+          animateCounter(starsCount, stars);
+          levelCount.textContent = String(level);
+          levelText.textContent = `Level ${level}`;
+          quizCountEl.textContent = String(totalQuizzes);
+
+          // Save updated progress back
+          window.EduStarAPI.requestJson('/api/progress', {
+            method: 'POST',
+            body: JSON.stringify({ deviceId, stars, level, completedLessons: totalQuizzes }),
+          }).catch((err) => {
+            console.error('[EduStar] progress save failed:', err.message);
+          });
+
+          // Show level up animation if level > 1
+          if (level > 1) {
+            setTimeout(() => {
+              levelUp.classList.add('is-show');
+              levelBadge.style.boxShadow = '0 0 40px rgba(255,215,0,.55)';
+              setTimeout(() => levelUp.classList.remove('is-show'), 1800);
+            }, 1200);
           }
-        }, 125);
+
+          // Build subject rings from quiz data
+          buildRings(quizAttempts, totalQuestions);
+
+          // Build quiz history table
+          buildQuizHistory(quizAttempts);
+
+        } catch (e) {
+          starsCount.textContent = '0';
+          levelCount.textContent = '1';
+          quizCountEl.textContent = '0';
+          quizHistory.innerHTML = '<p class="es-progress__empty">No progress data yet. Take a quiz to get started!</p>';
+          buildRings([], 0);
+        }
       }
 
-      window.EduStarAPI.requestJson(`/api/progress?deviceId=${encodeURIComponent(deviceId)}`)
-        .then((data) => {
-          const targetStars = data.progress?.stars ?? 12;
-          const targetLevel = data.progress?.level ?? 5;
-          startAnimation(targetStars, targetLevel);
-        })
-        .catch(() => {
-          startAnimation(12, 5);
+      function animateCounter(el, target) {
+        let current = 0;
+        const step = Math.max(1, Math.ceil(target / 30));
+        const interval = setInterval(() => {
+          current += step;
+          if (current >= target) {
+            current = target;
+            clearInterval(interval);
+          }
+          el.textContent = String(current);
+        }, 50);
+      }
+
+      function buildRings(quizAttempts, totalQuestions) {
+        // Group by subject/pillar
+        const subjects = {};
+        quizAttempts.forEach(q => {
+          const key = q.pillar || 'General';
+          if (!subjects[key]) subjects[key] = { correct: 0, total: 0, count: 0 };
+          subjects[key].correct += q.score;
+          subjects[key].total += q.total;
+          subjects[key].count += 1;
         });
-      setTimeout(() => {
-        levelUp.classList.add('is-show');
-        levelBadge.style.boxShadow = '0 0 40px rgba(255,215,0,.55)';
-        setTimeout(() => levelUp.classList.remove('is-show'), 1400);
-      }, 1600);
+
+        const colors = ['#FFD700', '#00D4FF', '#39FF14', '#FF8D5C', '#A855F7', '#F472B6', '#22D3EE', '#F59E0B'];
+        const emojis = ['📐', '🔬', '📖', '🌍', '💻', '🧮', '🎨', '📊'];
+
+        if (Object.keys(subjects).length === 0) {
+          ringsSection.innerHTML = `
+            <article class="es-card es-progress__ring" style="--c:#FFD700; --d:0.2s; --offset:565;">
+              <svg viewBox="0 0 200 200"><circle class="track" cx="100" cy="100" r="90"></circle><circle class="fill" cx="100" cy="100" r="90"></circle></svg>
+              <p class="es-progress__ring-label">No quizzes taken yet</p>
+              <span class="es-progress__ring-pct">0%</span>
+            </article>`;
+          return;
+        }
+
+        ringsSection.innerHTML = '';
+        Object.entries(subjects).forEach(([name, data], i) => {
+          const pct = data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0;
+          const offset = Math.round(565 - (565 * pct / 100));
+          const color = colors[i % colors.length];
+          const emoji = emojis[i % emojis.length];
+          const delay = (0.2 + i * 0.2).toFixed(1);
+
+          const article = document.createElement('article');
+          article.className = 'es-card es-progress__ring';
+          article.setAttribute('style', `--c:${color}; --d:${delay}s; --offset:${offset};`);
+          article.innerHTML = `
+            <svg viewBox="0 0 200 200">
+              <circle class="track" cx="100" cy="100" r="90"></circle>
+              <circle class="fill" cx="100" cy="100" r="90"></circle>
+            </svg>
+            <p class="es-progress__ring-label">${emoji} ${name}</p>
+            <span class="es-progress__ring-pct">${pct}%</span>
+            <small style="opacity:.5;">${data.correct}/${data.total} correct · ${data.count} quiz${data.count !== 1 ? 'zes' : ''}</small>`;
+          ringsSection.appendChild(article);
+        });
+      }
+
+      function buildQuizHistory(quizAttempts) {
+        if (!quizAttempts.length) {
+          quizHistory.innerHTML = '<p class="es-progress__empty">No quizzes taken yet. Head to the <a href="edustar-quiz.html" style="color:var(--es-color-star-gold);">Quiz page</a> to start!</p>';
+          return;
+        }
+
+        let html = `<table class="es-progress__quizzes">
+          <thead><tr><th>Subject</th><th>Score</th><th>Date</th></tr></thead><tbody>`;
+
+        quizAttempts.slice(0, 10).forEach(q => {
+          const pct = q.total > 0 ? Math.round((q.score / q.total) * 100) : 0;
+          const date = q.created_at ? new Date(q.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '—';
+          const barWidth = Math.max(20, pct);
+          html += `<tr>
+            <td>${q.pillar || 'General'}</td>
+            <td><span class="es-progress__score-bar" style="width:${barWidth}px;"></span>${q.score}/${q.total}</td>
+            <td style="text-align:right;">${date}</td>
+          </tr>`;
+        });
+
+        html += '</tbody></table>';
+        quizHistory.innerHTML = html;
+      }
+
+      loadProgress();
     })();
-    // Download Certificate button - generate a simple printable certificate
-    document.getElementById('download-cert').addEventListener('click', () => {
-      const grade = localStorage.getItem('edustar-grade') || '5';
-      const html = `<!doctype html><html><head><meta charset='utf-8'><title>EduStar Certificate</title><style>
-        body{font-family:Georgia,serif;background:#fffef4;display:grid;place-items:center;min-height:100vh;margin:0;}
-        .cert{border:6px double #ffd700;padding:3rem 4rem;text-align:center;max-width:680px;}
-        h1{color:#1a1200;font-size:2.4rem;margin:0 0 .5rem;} h2{color:#7a5c00;font-size:1.4rem;}
-        .seal{font-size:3.5rem;} p{color:#444;} .gold{color:#ffd700;} @media print{body{background:#fff;}}
-      </style></head><body><div class='cert'><div class='seal'>⭐</div>
-      <h1>EduStar</h1><h2>Certificate of Progress</h2>
-      <p>This certifies that an EduStar Explorer</p>
-      <p>has completed learning milestones in<br><strong>Core Academics &bull; AI &amp; Technology &bull; Life Skills</strong></p>
-      <p>Grade ${grade} &mdash; Level 5</p>
-      <p style='font-size:1.5rem;margin:1rem 0;'>&#10022; Explorer Rank &#10022;</p>
-      <p style='color:#888;font-size:.85rem;'>EduStar &copy; 2025 &mdash; Keep Learning, Keep Growing!</p></div>
-      <script>window.print();<\/script></body></html>`;
-      const blob = new Blob([html], {type: 'text/html'});
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
-    });
   </script>
   <!-- Footer -->
-  <footer class="es-shell" style="padding:1.2rem 0; border-top:1px solid rgba(255,255,255,.07); margin-top:2rem; text-align:center;">
+  <footer class="es-shell"
+    style="padding:1.2rem 0; border-top:1px solid rgba(255,255,255,.07); margin-top:2rem; text-align:center;">
     <small>EduStar &copy; 2025 &mdash; Safe, ad-free, joyful learning for young explorers. &nbsp;
       <a href="edustar-home.html" style="color:var(--es-color-star-gold); text-decoration:none;">↩ Back to Home</a>
     </small>
   </footer>
 </body>
+
 </html>

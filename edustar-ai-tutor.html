@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,60 +11,343 @@
   <link rel="stylesheet" href="edustar-design-system.css">
   <style>
     /* Navbar */
-    .es-topbar { display:flex; align-items:center; justify-content:space-between; padding:.75rem 0; gap:1rem; flex-wrap:wrap; }
-    .es-topbar__brand { display:flex; align-items:center; gap:.5rem; font-family: var(--es-font-heading); font-size:1.35rem; color: var(--es-color-star-gold); text-decoration:none; }
-    .es-topbar__nav { display:flex; gap:.75rem; flex-wrap:wrap; }
-    .es-topbar__link { font-size:.9rem; padding:.4rem .8rem; border-radius:999px; color:rgba(245,247,255,.8); text-decoration:none; transition: background var(--es-transition-fast), color var(--es-transition-fast); }
-    .es-topbar__link:hover, .es-topbar__link.is-active { background:rgba(255,215,0,.12); color:var(--es-color-star-gold); }
-    .es-ai { padding: 2rem 0 4rem; }
-    .es-ai__layout { display:grid; grid-template-columns: 340px minmax(0,1fr); gap: 1.5rem; }
-    .astro { position: relative; min-height: 420px; display:grid; place-items:center; }
-    .astro__body { width: 220px; height: 250px; border-radius: 36px; background: linear-gradient(180deg, #243d9a, #1b2a6b); border: 1px solid rgba(255,255,255,.12); box-shadow: var(--es-shadow-card); position: relative; }
-    .astro__head { position:absolute; top: -30px; left: 50%; width: 180px; height: 150px; transform: translateX(-50%); border-radius: 42px; background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02)); border: 1px solid rgba(255,255,255,.12); }
-    .astro__eyes { position:absolute; inset: 50px 42px auto; display:flex; justify-content:space-between; }
-    .astro__eye { width: 34px; height: 34px; border-radius: 50%; background: #fff; overflow:hidden; }
-    .astro__eye::after { content:''; display:block; width:100%; height:100%; background:#0a0e27; transform-origin:center; animation: astro-blink 4s infinite; }
-    .astro__antenna { position:absolute; top: -42px; left: 50%; width: 4px; height: 36px; transform: translateX(-50%); background: var(--es-color-star-gold); border-radius: 999px; }
-    .astro__antenna::before { content:''; position:absolute; top: -12px; left:50%; width: 16px; height: 16px; transform: translateX(-50%); border-radius:50%; background: var(--es-color-star-gold); box-shadow: var(--es-shadow-glow); }
-    .astro__arms { position:absolute; inset: 84px -18px auto; display:flex; justify-content:space-between; }
-    .astro__arm { width: 44px; height: 12px; border-radius: 999px; background: rgba(245,247,255,.8); transform-origin:center; transition: transform var(--es-transition-med); }
-    .astro-thinking .astro__arm--left { transform: translateY(-10px) rotate(-15deg); }
-    .astro-thinking .astro__arm--right { transform: translateY(-10px) rotate(15deg); }
-    .astro-thinking .astro__antenna { animation: astro-think 0.7s ease-in-out infinite; }
-    .astro-thinking .astro__eye::after { animation: astro-spin 1s linear infinite; }
-    .astro__typing { position:absolute; bottom: 24px; left: 50%; transform: translateX(-50%); display:none; gap: .35rem; padding: .45rem .7rem; border-radius: 999px; background: rgba(255,255,255,.08); }
-    .astro-thinking .astro__typing { display:flex; }
-    .astro__typing span { width: 8px; height: 8px; border-radius: 50%; background: var(--es-color-star-gold); animation: es-float 1.3s infinite; }
-    .astro__typing span:nth-child(2) { animation-delay: .2s; }
-    .astro__typing span:nth-child(3) { animation-delay: .4s; }
-    .es-chat { min-height: 70vh; display:grid; grid-template-rows: auto 1fr auto; gap: 1rem; }
-    .es-chat__messages { display:grid; gap: .8rem; align-content:start; }
-    .es-chat__bubble { max-width: min(80%, 42rem); padding: .95rem 1.05rem; border-radius: 24px; box-shadow: var(--es-shadow-soft); }
-    .es-chat__bubble.is-user { margin-left:auto; background: linear-gradient(180deg, #ffe98b, #ffd700); color:#2c1f00; }
-    .es-chat__bubble.is-astro { background: linear-gradient(180deg, rgba(75,45,143,.9), rgba(27,42,107,.9)); border: 1px solid rgba(255,255,255,.12); }
-    .es-chat__bubble.is-new { animation: es-slide-up .5s ease both, bubble-pop .5s ease both; }
-    .es-chips { display:flex; flex-wrap:wrap; gap: .7rem; }
-    .es-chip { padding: .65rem .95rem; border-radius: var(--es-radius-pill); background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); transition: transform var(--es-transition-fast), box-shadow var(--es-transition-fast); }
-    .es-chip:hover { transform: translateY(-3px); box-shadow: var(--es-shadow-glow); }
-    .es-chip.is-launch { transform: translate(18px, 36px) scale(.2); opacity: 0; }
-    .es-chat__composer { display:flex; gap:.7rem; padding: .8rem; border-radius: 28px; background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); }
-    .es-chat__input { flex:1; min-height: 56px; background: transparent; border:0; color: var(--es-color-ink); }
-    .es-chat__input::placeholder { color: rgba(245,247,255,.55); }
-    .es-chat__status { color: rgba(245,247,255,.7); min-height: 1.4em; }
-    @keyframes astro-blink { 0%, 96%, 100% { transform: scaleY(1); } 98% { transform: scaleY(.1); } }
-    @keyframes astro-think { 0%,100% { transform: translateX(-50%) rotate(-5deg); } 50% { transform: translateX(-50%) rotate(5deg); } }
-    @keyframes astro-spin { to { transform: rotate(360deg); } }
-    @keyframes bubble-pop { 0% { transform: scale(.96); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
-    @media (max-width: 900px) { .es-ai__layout { grid-template-columns: 1fr; } }
+    .es-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .75rem 0;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .es-topbar__brand {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: var(--es-font-heading);
+      font-size: 1.35rem;
+      color: var(--es-color-star-gold);
+      text-decoration: none;
+    }
+
+    .es-topbar__nav {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+
+    .es-topbar__link {
+      font-size: .9rem;
+      padding: .4rem .8rem;
+      border-radius: 999px;
+      color: rgba(245, 247, 255, .8);
+      text-decoration: none;
+      transition: background var(--es-transition-fast), color var(--es-transition-fast);
+    }
+
+    .es-topbar__link:hover,
+    .es-topbar__link.is-active {
+      background: rgba(255, 215, 0, .12);
+      color: var(--es-color-star-gold);
+    }
+
+    .es-ai {
+      padding: 2rem 0 4rem;
+    }
+
+    .es-ai__layout {
+      display: grid;
+      grid-template-columns: 340px minmax(0, 1fr);
+      gap: 1.5rem;
+    }
+
+    .astro {
+      position: relative;
+      min-height: 420px;
+      display: grid;
+      place-items: center;
+    }
+
+    .astro__body {
+      width: 220px;
+      height: 250px;
+      border-radius: 36px;
+      background: linear-gradient(180deg, #243d9a, #1b2a6b);
+      border: 1px solid rgba(255, 255, 255, .12);
+      box-shadow: var(--es-shadow-card);
+      position: relative;
+    }
+
+    .astro__head {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      width: 180px;
+      height: 150px;
+      transform: translateX(-50%);
+      border-radius: 42px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .02));
+      border: 1px solid rgba(255, 255, 255, .12);
+    }
+
+    .astro__eyes {
+      position: absolute;
+      inset: 50px 42px auto;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .astro__eye {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .astro__eye::after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #0a0e27;
+      transform-origin: center;
+      animation: astro-blink 4s infinite;
+    }
+
+    .astro__antenna {
+      position: absolute;
+      top: -42px;
+      left: 50%;
+      width: 4px;
+      height: 36px;
+      transform: translateX(-50%);
+      background: var(--es-color-star-gold);
+      border-radius: 999px;
+    }
+
+    .astro__antenna::before {
+      content: '';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      width: 16px;
+      height: 16px;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: var(--es-color-star-gold);
+      box-shadow: var(--es-shadow-glow);
+    }
+
+    .astro__arms {
+      position: absolute;
+      inset: 84px -18px auto;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .astro__arm {
+      width: 44px;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(245, 247, 255, .8);
+      transform-origin: center;
+      transition: transform var(--es-transition-med);
+    }
+
+    .astro-thinking .astro__arm--left {
+      transform: translateY(-10px) rotate(-15deg);
+    }
+
+    .astro-thinking .astro__arm--right {
+      transform: translateY(-10px) rotate(15deg);
+    }
+
+    .astro-thinking .astro__antenna {
+      animation: astro-think 0.7s ease-in-out infinite;
+    }
+
+    .astro-thinking .astro__eye::after {
+      animation: astro-spin 1s linear infinite;
+    }
+
+    .astro__typing {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      gap: .35rem;
+      padding: .45rem .7rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .08);
+    }
+
+    .astro-thinking .astro__typing {
+      display: flex;
+    }
+
+    .astro__typing span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--es-color-star-gold);
+      animation: es-float 1.3s infinite;
+    }
+
+    .astro__typing span:nth-child(2) {
+      animation-delay: .2s;
+    }
+
+    .astro__typing span:nth-child(3) {
+      animation-delay: .4s;
+    }
+
+    .es-chat {
+      min-height: 70vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 1rem;
+    }
+
+    .es-chat__messages {
+      display: grid;
+      gap: .8rem;
+      align-content: start;
+    }
+
+    .es-chat__bubble {
+      max-width: min(80%, 42rem);
+      padding: .95rem 1.05rem;
+      border-radius: 24px;
+      box-shadow: var(--es-shadow-soft);
+    }
+
+    .es-chat__bubble.is-user {
+      margin-left: auto;
+      background: linear-gradient(180deg, #ffe98b, #ffd700);
+      color: #2c1f00;
+    }
+
+    .es-chat__bubble.is-astro {
+      background: linear-gradient(180deg, rgba(75, 45, 143, .9), rgba(27, 42, 107, .9));
+      border: 1px solid rgba(255, 255, 255, .12);
+    }
+
+    .es-chat__bubble.is-new {
+      animation: es-slide-up .5s ease both, bubble-pop .5s ease both;
+    }
+
+    .es-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .7rem;
+    }
+
+    .es-chip {
+      padding: .65rem .95rem;
+      border-radius: var(--es-radius-pill);
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .1);
+      transition: transform var(--es-transition-fast), box-shadow var(--es-transition-fast);
+    }
+
+    .es-chip:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--es-shadow-glow);
+    }
+
+    .es-chip.is-launch {
+      transform: translate(18px, 36px) scale(.2);
+      opacity: 0;
+    }
+
+    .es-chat__composer {
+      display: flex;
+      gap: .7rem;
+      padding: .8rem;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .1);
+    }
+
+    .es-chat__input {
+      flex: 1;
+      min-height: 56px;
+      background: transparent;
+      border: 0;
+      color: var(--es-color-ink);
+    }
+
+    .es-chat__input::placeholder {
+      color: rgba(245, 247, 255, .55);
+    }
+
+    .es-chat__status {
+      color: rgba(245, 247, 255, .7);
+      min-height: 1.4em;
+    }
+
+    @keyframes astro-blink {
+
+      0%,
+      96%,
+      100% {
+        transform: scaleY(1);
+      }
+
+      98% {
+        transform: scaleY(.1);
+      }
+    }
+
+    @keyframes astro-think {
+
+      0%,
+      100% {
+        transform: translateX(-50%) rotate(-5deg);
+      }
+
+      50% {
+        transform: translateX(-50%) rotate(5deg);
+      }
+    }
+
+    @keyframes astro-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes bubble-pop {
+      0% {
+        transform: scale(.96);
+      }
+
+      50% {
+        transform: scale(1.02);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .es-ai__layout {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
+
 <body>
   <header class="es-shell" style="border-bottom:1px solid rgba(255,255,255,.07);">
     <div class="es-topbar">
       <a class="es-topbar__brand" href="edustar-home.html">🚀⭐ EduStar</a>
       <nav class="es-topbar__nav" aria-label="Main navigation">
         <a class="es-topbar__link" href="edustar-home.html">Home</a>
-        <a class="es-topbar__link" href="edustar-subject-hub.html">Subjects</a>
+        <a class="es-topbar__link" href="edustar-cbse-class-hub.html">CBSE Classes</a>
         <a class="es-topbar__link" href="edustar-ai-tech-learning-centre.html">AI Centre</a>
         <a class="es-topbar__link is-active" href="edustar-ai-tutor.html">AI Tutor</a>
         <a class="es-topbar__link" href="edustar-quiz.html">Quiz</a>
@@ -77,9 +361,15 @@
         <div class="astro__body">
           <div class="astro__head">
             <div class="astro__antenna"></div>
-            <div class="astro__eyes"><div class="astro__eye"></div><div class="astro__eye"></div></div>
+            <div class="astro__eyes">
+              <div class="astro__eye"></div>
+              <div class="astro__eye"></div>
+            </div>
           </div>
-          <div class="astro__arms"><div class="astro__arm astro__arm--left"></div><div class="astro__arm astro__arm--right"></div></div>
+          <div class="astro__arms">
+            <div class="astro__arm astro__arm--left"></div>
+            <div class="astro__arm astro__arm--right"></div>
+          </div>
           <div class="astro__typing" aria-hidden="true"><span></span><span></span><span></span></div>
         </div>
       </section>
@@ -90,7 +380,8 @@
           <h1 class="es-slide-up">Ask Astro anything simple</h1>
         </div>
         <div class="es-chat__messages" id="messages" aria-live="polite">
-          <div class="es-chat__bubble is-astro is-new">Hello explorer. I can help with lessons, practice, and clear explanations.</div>
+          <div class="es-chat__bubble is-astro is-new">Hello explorer. I can help with lessons, practice, and clear
+            explanations.</div>
         </div>
         <div>
           <div class="es-chips" id="chips">
@@ -100,7 +391,8 @@
             <button class="es-chip">Quiz me now</button>
           </div>
           <div class="es-chat__composer es-slide-up" style="margin-top: .9rem;">
-            <input class="es-chat__input" id="prompt" type="text" placeholder="Type your question for Astro..." aria-label="Chat with Astro">
+            <input class="es-chat__input" id="prompt" type="text" placeholder="Type your question for Astro..."
+              aria-label="Chat with Astro">
             <button class="es-btn-primary" id="send">Send</button>
           </div>
           <p class="es-chat__status" id="status">Mock API is local only. No data is sent externally.</p>
@@ -172,10 +464,12 @@
     })();
   </script>
   <!-- Footer -->
-  <footer class="es-shell" style="padding:1.2rem 0; border-top:1px solid rgba(255,255,255,.07); margin-top:2rem; text-align:center;">
+  <footer class="es-shell"
+    style="padding:1.2rem 0; border-top:1px solid rgba(255,255,255,.07); margin-top:2rem; text-align:center;">
     <small>EduStar &copy; 2025 &mdash; Safe, ad-free, joyful learning for young explorers. &nbsp;
       <a href="edustar-home.html" style="color:var(--es-color-star-gold); text-decoration:none;">↩ Back to Home</a>
     </small>
   </footer>
 </body>
+
 </html>

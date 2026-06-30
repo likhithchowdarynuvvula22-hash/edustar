@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,63 +11,368 @@
   <link rel="stylesheet" href="edustar-design-system.css">
   <style>
     /* Navbar */
-    .es-topbar { display:flex; align-items:center; justify-content:space-between; padding:.75rem 0; gap:1rem; flex-wrap:wrap; }
-    .es-topbar__brand { display:flex; align-items:center; gap:.5rem; font-family: var(--es-font-heading); font-size:1.35rem; color: var(--es-color-star-gold); text-decoration:none; }
-    .es-topbar__nav { display:flex; gap:.75rem; flex-wrap:wrap; }
-    .es-topbar__link { font-size:.9rem; padding:.4rem .8rem; border-radius:999px; color:rgba(245,247,255,.8); text-decoration:none; transition: background var(--es-transition-fast), color var(--es-transition-fast); }
-    .es-topbar__link:hover, .es-topbar__link.is-active { background:rgba(255,215,0,.12); color:var(--es-color-star-gold); }
-    .es-quiz { min-height: 100vh; padding: 2rem 0 4rem; position: relative; }
-    .es-quiz__launch, .es-quiz__screen, .es-quiz__results { max-width: 980px; margin: 0 auto; }
-    .es-quiz__launch { min-height: 70vh; display:grid; place-items:center; text-align:center; }
-    .es-quiz__countdown { position: fixed; inset: 0; display:grid; place-items:center; background: rgba(10,14,39,.86); backdrop-filter: blur(10px); opacity: 0; pointer-events:none; transition: opacity .2s ease; z-index: 20; }
-    .es-quiz__countdown.is-show { opacity: 1; pointer-events:auto; }
-    .es-quiz__countdown span { font-family: var(--es-font-heading); font-size: clamp(4rem, 16vw, 8rem); color: var(--es-color-star-gold); animation: countdown-pop 1s ease both; }
-    .es-quiz__screen { display:none; grid-template-columns: minmax(0,1fr) 280px; gap: 1.2rem; align-items:start; }
-    .es-quiz__screen.is-show { display:grid; }
-    .es-quiz__question { min-height: 160px; }
-    .es-quiz__options { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
-    .es-quiz__option { padding: 1rem; text-align:left; min-height: 76px; }
-    .es-quiz__option:hover { transform: perspective(800px) rotateX(2deg) rotateY(3deg) translateY(-4px); }
-    .es-quiz__option.is-correct { background: rgba(72,255,137,.18); border-color: rgba(72,255,137,.55); box-shadow: 0 0 24px rgba(72,255,137,.25); animation: correct-pulse .5s ease; }
-    .es-quiz__option.is-wrong { animation: wobble .4s ease 3; }
-    .es-quiz__timer { width: 220px; height: 220px; margin: 0 auto; position: relative; }
-    .es-quiz__timer svg { width:100%; height:100%; transform: rotate(-90deg); }
-    .es-quiz__timer circle { fill:none; stroke-width: 10; }
-    .es-quiz__timer .track { stroke: rgba(255,255,255,.12); }
-    .es-quiz__timer .ring { stroke: var(--es-color-cosmic-green); stroke-dasharray: 565; stroke-dashoffset: 0; transition: stroke .25s ease; }
-    .es-quiz__timer.is-gold .ring { stroke: var(--es-color-star-gold); }
-    .es-quiz__timer.is-red .ring { stroke: #ff6b6b; }
-    .es-quiz__results { display:none; text-align:center; position:relative; min-height: 72vh; }
-    .es-quiz__results.is-show { display:grid; place-items:center; }
-    .es-quiz__rocket { font-size: 4rem; animation: rocket-launch 8s linear infinite; }
-    .es-quiz__stars { display:flex; justify-content:center; gap: .8rem; margin: 1rem 0 0; }
-    .es-quiz__star { width: 64px; height: 64px; display:grid; place-items:center; }
-    .es-quiz__star .star-front, .es-quiz__star .star-back { width:100%; height:100%; border-radius: 18px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.12); }
-    .es-quiz__star .star-front { background: rgba(255,255,255,.05); }
-    .es-quiz__star .star-back { background: linear-gradient(180deg, #ffe98b, #ffd700); color:#251900; }
-    .es-quiz__star.is-flip { perspective: 400px; }
-    .es-quiz__star.is-flip .star-inner { transform: rotateY(180deg); transition: transform .6s ease; width:100%; height:100%; position:relative; transform-style: preserve-3d; }
-    .es-quiz__star.is-flip .star-front, .es-quiz__star.is-flip .star-back { position:absolute; inset:0; backface-visibility:hidden; }
-    .es-quiz__star.is-flip .star-back { transform: rotateY(180deg); }
-    .es-quiz__confetti { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
-    .es-quiz__confetti i { position:absolute; top:-20px; width: 10px; height: 18px; border-radius: 2px; background: var(--c); animation: confetti-fall 2.8s linear infinite; left: var(--x); animation-delay: var(--d); transform: rotate(var(--r)); }
-    .es-quiz__message { margin-top: 1rem; min-height: 1.6em; }
-    #start:disabled { opacity: 0.6; cursor: not-allowed; }
-    @keyframes countdown-pop { 0% { transform: scale(.3); opacity:0; } 50% { transform: scale(1); opacity:1; } 100% { transform: scale(.8); opacity:0; } }
-    @keyframes correct-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-    @keyframes wobble { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
-    @keyframes rocket-launch { 0% { transform: translateY(140%); opacity:0; } 20% { opacity:1; } 100% { transform: translateY(-80vh); opacity:0; } }
-    @keyframes confetti-fall { to { transform: translateY(110vh) rotate(calc(var(--r) + 360deg)); } }
-    @media (max-width: 900px) { .es-quiz__screen { grid-template-columns: 1fr; } .es-quiz__options { grid-template-columns: 1fr; } }
+    .es-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .75rem 0;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .es-topbar__brand {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: var(--es-font-heading);
+      font-size: 1.35rem;
+      color: var(--es-color-star-gold);
+      text-decoration: none;
+    }
+
+    .es-topbar__nav {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+
+    .es-topbar__link {
+      font-size: .9rem;
+      padding: .4rem .8rem;
+      border-radius: 999px;
+      color: rgba(245, 247, 255, .8);
+      text-decoration: none;
+      transition: background var(--es-transition-fast), color var(--es-transition-fast);
+    }
+
+    .es-topbar__link:hover,
+    .es-topbar__link.is-active {
+      background: rgba(255, 215, 0, .12);
+      color: var(--es-color-star-gold);
+    }
+
+    .es-quiz {
+      min-height: 100vh;
+      padding: 2rem 0 4rem;
+      position: relative;
+    }
+
+    .es-quiz__launch,
+    .es-quiz__screen,
+    .es-quiz__results {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .es-quiz__launch {
+      min-height: 70vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .es-quiz__countdown {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(10, 14, 39, .86);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+      z-index: 20;
+    }
+
+    .es-quiz__countdown.is-show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .es-quiz__countdown span {
+      font-family: var(--es-font-heading);
+      font-size: clamp(4rem, 16vw, 8rem);
+      color: var(--es-color-star-gold);
+      animation: countdown-pop 1s ease both;
+    }
+
+    .es-quiz__screen {
+      display: none;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 1.2rem;
+      align-items: start;
+    }
+
+    .es-quiz__screen.is-show {
+      display: grid;
+    }
+
+    .es-quiz__question {
+      min-height: 160px;
+    }
+
+    .es-quiz__options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .8rem;
+    }
+
+    .es-quiz__option {
+      padding: 1rem;
+      text-align: left;
+      min-height: 76px;
+    }
+
+    .es-quiz__option:hover {
+      transform: perspective(800px) rotateX(2deg) rotateY(3deg) translateY(-4px);
+    }
+
+    .es-quiz__option.is-correct {
+      background: rgba(72, 255, 137, .18);
+      border-color: rgba(72, 255, 137, .55);
+      box-shadow: 0 0 24px rgba(72, 255, 137, .25);
+      animation: correct-pulse .5s ease;
+    }
+
+    .es-quiz__option.is-wrong {
+      animation: wobble .4s ease 3;
+    }
+
+    .es-quiz__timer {
+      width: 220px;
+      height: 220px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .es-quiz__timer svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .es-quiz__timer circle {
+      fill: none;
+      stroke-width: 10;
+    }
+
+    .es-quiz__timer .track {
+      stroke: rgba(255, 255, 255, .12);
+    }
+
+    .es-quiz__timer .ring {
+      stroke: var(--es-color-cosmic-green);
+      stroke-dasharray: 565;
+      stroke-dashoffset: 0;
+      transition: stroke .25s ease;
+    }
+
+    .es-quiz__timer.is-gold .ring {
+      stroke: var(--es-color-star-gold);
+    }
+
+    .es-quiz__timer.is-red .ring {
+      stroke: #ff6b6b;
+    }
+
+    .es-quiz__results {
+      display: none;
+      text-align: center;
+      position: relative;
+      min-height: 72vh;
+    }
+
+    .es-quiz__results.is-show {
+      display: grid;
+      place-items: center;
+    }
+
+    .es-quiz__rocket {
+      font-size: 4rem;
+      animation: rocket-launch 8s linear infinite;
+    }
+
+    .es-quiz__stars {
+      display: flex;
+      justify-content: center;
+      gap: .8rem;
+      margin: 1rem 0 0;
+    }
+
+    .es-quiz__star {
+      width: 64px;
+      height: 64px;
+      display: grid;
+      place-items: center;
+    }
+
+    .es-quiz__star .star-front,
+    .es-quiz__star .star-back {
+      width: 100%;
+      height: 100%;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .12);
+    }
+
+    .es-quiz__star .star-front {
+      background: rgba(255, 255, 255, .05);
+    }
+
+    .es-quiz__star .star-back {
+      background: linear-gradient(180deg, #ffe98b, #ffd700);
+      color: #251900;
+    }
+
+    .es-quiz__star.is-flip {
+      perspective: 400px;
+    }
+
+    .es-quiz__star.is-flip .star-inner {
+      transform: rotateY(180deg);
+      transition: transform .6s ease;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+    }
+
+    .es-quiz__star.is-flip .star-front,
+    .es-quiz__star.is-flip .star-back {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+    }
+
+    .es-quiz__star.is-flip .star-back {
+      transform: rotateY(180deg);
+    }
+
+    .es-quiz__confetti {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .es-quiz__confetti i {
+      position: absolute;
+      top: -20px;
+      width: 10px;
+      height: 18px;
+      border-radius: 2px;
+      background: var(--c);
+      animation: confetti-fall 2.8s linear infinite;
+      left: var(--x);
+      animation-delay: var(--d);
+      transform: rotate(var(--r));
+    }
+
+    .es-quiz__message {
+      margin-top: 1rem;
+      min-height: 1.6em;
+    }
+
+    #start:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    @keyframes countdown-pop {
+      0% {
+        transform: scale(.3);
+        opacity: 0;
+      }
+
+      50% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(.8);
+        opacity: 0;
+      }
+    }
+
+    @keyframes correct-pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    @keyframes wobble {
+
+      0%,
+      100% {
+        transform: rotate(0);
+      }
+
+      25% {
+        transform: rotate(-3deg);
+      }
+
+      75% {
+        transform: rotate(3deg);
+      }
+    }
+
+    @keyframes rocket-launch {
+      0% {
+        transform: translateY(140%);
+        opacity: 0;
+      }
+
+      20% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-80vh);
+        opacity: 0;
+      }
+    }
+
+    @keyframes confetti-fall {
+      to {
+        transform: translateY(110vh) rotate(calc(var(--r) + 360deg));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .es-quiz__screen {
+        grid-template-columns: 1fr;
+      }
+
+      .es-quiz__options {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Quiz Selectors */
+    .es-quiz__selectors { display:flex; flex-wrap:wrap; gap:.75rem; justify-content:center; margin:1.4rem 0; }
+    .es-quiz__select { padding:.65rem 1.1rem; border-radius:999px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--es-color-ink); font-size:.92rem; font-weight:600; cursor:pointer; appearance:none; -webkit-appearance:none; min-width:160px; text-align:center; transition: all var(--es-transition-fast); }
+    .es-quiz__select:hover { border-color:rgba(255,215,0,.4); }
+    .es-quiz__select:focus { outline:none; border-color:var(--es-color-star-gold); box-shadow:0 0 12px rgba(255,215,0,.2); }
+    .es-quiz__select option { background:#1b2a6b; color:#f5f7ff; }
+    .es-quiz__info { text-align:center; opacity:.7; font-size:.88rem; margin-bottom:1.2rem; min-height:1.4rem; }
   </style>
 </head>
+
 <body>
   <header class="es-shell" style="border-bottom:1px solid rgba(255,255,255,.07);">
     <div class="es-topbar">
       <a class="es-topbar__brand" href="edustar-home.html">🚀⭐ EduStar</a>
       <nav class="es-topbar__nav" aria-label="Main navigation">
         <a class="es-topbar__link" href="edustar-home.html">Home</a>
-        <a class="es-topbar__link" href="edustar-subject-hub.html">Subjects</a>
+        <a class="es-topbar__link" href="edustar-cbse-class-hub.html">CBSE Classes</a>
         <a class="es-topbar__link" href="edustar-ai-tech-learning-centre.html">AI Centre</a>
         <a class="es-topbar__link" href="edustar-ai-tutor.html">AI Tutor</a>
         <a class="es-topbar__link is-active" href="edustar-quiz.html">Quiz</a>
@@ -79,7 +385,36 @@
       <div>
         <span class="es-kicker es-slide-up">Quiz Mission</span>
         <h1 class="es-slide-up">Launch Quiz!</h1>
-        <p class="es-slide-up" style="max-width:52ch;margin:0 auto;">A short, friendly quiz with a countdown, timer ring, and star rewards.</p>
+        <p class="es-slide-up" style="max-width:52ch;margin:0 auto;">Pick your class and subject, then blast off into a fun quiz with countdown, timer, and star rewards.</p>
+
+        <div class="es-quiz__selectors es-slide-up" style="animation-delay:.2s;">
+          <select class="es-quiz__select" id="quiz-class" aria-label="Select Class">
+            <option value="">All Classes</option>
+            <option value="1">Class 1</option>
+            <option value="2">Class 2</option>
+            <option value="3">Class 3</option>
+            <option value="4">Class 4</option>
+            <option value="5">Class 5</option>
+            <option value="6">Class 6</option>
+            <option value="7">Class 7</option>
+            <option value="8">Class 8</option>
+            <option value="9">Class 9</option>
+            <option value="10">Class 10</option>
+            <option value="11">Class 11</option>
+            <option value="12">Class 12</option>
+          </select>
+          <select class="es-quiz__select" id="quiz-stream" aria-label="Select Stream" style="display:none;">
+            <option value="">All Streams</option>
+            <option value="science">Science</option>
+            <option value="commerce">Commerce</option>
+            <option value="humanities">Humanities</option>
+          </select>
+          <select class="es-quiz__select" id="quiz-subject" aria-label="Select Subject">
+            <option value="">All Subjects</option>
+          </select>
+        </div>
+        <p class="es-quiz__info es-slide-up" style="animation-delay:.3s;" id="quiz-info"></p>
+
         <button class="es-btn-primary es-glow" id="start">Launch Quiz!</button>
       </div>
     </section>
@@ -96,7 +431,10 @@
         <p class="es-quiz__message" id="feedback"></p>
       </article>
       <aside class="es-card" style="padding:1rem; text-align:center;">
-        <div class="es-quiz__timer" id="timer"><svg viewBox="0 0 200 200"><circle class="track" cx="100" cy="100" r="90"></circle><circle class="ring" cx="100" cy="100" r="90"></circle></svg></div>
+        <div class="es-quiz__timer" id="timer"><svg viewBox="0 0 200 200">
+            <circle class="track" cx="100" cy="100" r="90"></circle>
+            <circle class="ring" cx="100" cy="100" r="90"></circle>
+          </svg></div>
         <p style="margin-top:.8rem;">Time remaining</p>
         <h3 id="score">Score 0</h3>
       </aside>
@@ -118,47 +456,129 @@
   <script src="edustar-client-api.js"></script>
   <script>
     (() => {
+      /* ── Subject maps per class ─────────────────────────────────────────── */
+      const SUBJECTS_BY_CLASS = {
+        1:['Mathematics','English','EVS'],
+        2:['Mathematics','English','EVS'],
+        3:['Mathematics','English','EVS'],
+        4:['Mathematics','English','EVS'],
+        5:['Mathematics','English','EVS'],
+        6:['Mathematics','Science','Social Science','English','Computer Science'],
+        7:['Mathematics','Science','Social Science','English'],
+        8:['Mathematics','Science','Social Science','English'],
+        9:['Mathematics','Science','Social Science','English','Information Technology'],
+        10:['Mathematics','Science','Social Science','English','Information Technology'],
+      };
+      const STREAM_SUBJECTS = {
+        science:['Physics','Chemistry','Mathematics','Biology','Computer Science','English'],
+        commerce:['Accountancy','Business Studies','Economics','Mathematics','English'],
+        humanities:['History','Political Science','Geography','Psychology','English'],
+      };
+
+      /* ── DOM ─────────────────────────────────────────────────────────── */
+      const classSelect   = document.getElementById('quiz-class');
+      const streamSelect  = document.getElementById('quiz-stream');
+      const subjectSelect = document.getElementById('quiz-subject');
+      const quizInfo      = document.getElementById('quiz-info');
+      const startBtn      = document.getElementById('start');
+
+      let allQuestions = [];
       let questions = [];
-      // Load questions from JSON and filter by query params (pillarName, grade)
-      (async function loadQuestions() {
+
+      /* ── Load all questions ──────────────────────────────────────────── */
+      (async function loadAll() {
         try {
-          const params = new URLSearchParams(window.location.search);
-          const pillarName = params.get('pillarName');
-          const grade = Number(params.get('grade')) || Number(window.localStorage.getItem('edustar-grade')) || 1;
-          const all = await window.EduStarAPI.requestJson('/edustar-quiz-questions.json');
-          // filter by pillarName if provided
-          questions = all.filter((q) => {
-            if (pillarName && String(q.pillar).toLowerCase() !== String(pillarName).toLowerCase()) return false;
-            // check gradeRange
-            if (q.gradeRange) {
-              const parts = String(q.gradeRange).split('-').map((p) => Number(p));
-              if (parts.length === 2) {
-                const [min, max] = parts;
-                return grade >= min && grade <= max;
-              }
-            }
-            return true;
-          }).map((q) => ({ question: q.question, options: q.options, answer: Number(q.correctIndex) }));
-          if (!questions.length) {
-            // fallback to a small default set
-            questions = [
-              { question: 'What is AI?', options: ['A smart computer helper', 'A toy rocket', 'A kind of fruit', 'A school book'], answer: 0 },
-            ];
-          }
+          allQuestions = await window.EduStarAPI.requestJson('/edustar-quiz-questions.json');
         } catch (e) {
-          questions = [
-            { question: 'What does AI stand for?', options: ['Artificial Intelligence', 'Auto Idea', 'Animal Instinct', 'Awesome Interface'], answer: 0 },
-            { question: 'What is coding?', options: ['Writing instructions for a computer', 'Painting a picture', 'Reading a book', 'Singing a song'], answer: 0 },
-            { question: 'What do robots use to sense the world?', options: ['Sensors', 'Wings', 'Pencils', 'Books'], answer: 0 },
-            { question: 'How does AI learn?', options: ['From patterns in data', 'By watching TV', 'By sleeping', 'From magic'], answer: 0 },
-            { question: 'What is digital safety?', options: ['Keeping passwords private and safe online', 'A type of robot', 'A coding language', 'A computer game'], answer: 0 },
-          ];
+          allQuestions = [];
         }
+        updateSubjectOptions();
+        filterQuestions();
       })();
-      const start = document.getElementById('start');
-      // disable start until questions load
-      start.disabled = true;
-      const enableStartInterval = setInterval(() => { if (questions.length > 0) { start.disabled = false; clearInterval(enableStartInterval); } }, 100);
+
+      /* ── Selector logic ─────────────────────────────────────────────── */
+      function updateSubjectOptions() {
+        const cls = Number(classSelect.value);
+        subjectSelect.innerHTML = '<option value="">All Subjects</option>';
+
+        if (cls >= 11) {
+          streamSelect.style.display = '';
+          const stream = streamSelect.value || 'science';
+          const subs = STREAM_SUBJECTS[stream] || [];
+          subs.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; subjectSelect.appendChild(o); });
+        } else if (cls >= 1) {
+          streamSelect.style.display = 'none';
+          streamSelect.value = '';
+          const subs = SUBJECTS_BY_CLASS[cls] || [];
+          subs.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; subjectSelect.appendChild(o); });
+        } else {
+          streamSelect.style.display = 'none';
+          streamSelect.value = '';
+          // show all unique subjects
+          const all = [...new Set(allQuestions.map(q => q.subject).filter(Boolean))].sort();
+          all.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; subjectSelect.appendChild(o); });
+        }
+      }
+
+      function filterQuestions() {
+        const cls     = Number(classSelect.value) || 0;
+        const stream  = streamSelect.value;
+        const subject = subjectSelect.value;
+
+        let pool = allQuestions;
+
+        if (cls > 0) {
+          pool = pool.filter(q => {
+            // Class-specific questions (new format)
+            if (q.class) return q.class === cls && (!stream || !q.stream || q.stream === stream);
+            // Legacy pillar-based questions (gradeRange)
+            if (q.gradeRange) {
+              const parts = q.gradeRange.split('-').map(Number);
+              if (parts.length === 2) return cls >= parts[0] && cls <= parts[1];
+            }
+            return false;
+          });
+        }
+
+        if (subject) {
+          pool = pool.filter(q => q.subject === subject || (!q.subject && !q.class));
+        }
+
+        // Shuffle and pick up to 10
+        pool = pool.sort(() => Math.random() - 0.5).slice(0, 10);
+
+        questions = pool.map(q => ({
+          question: q.question,
+          options: q.options,
+          answer: Number(q.correctIndex),
+          explanation: q.explanation || '',
+          funFact: q.funFact || '',
+          subject: q.subject || q.pillar || '',
+          topic: q.topic || ''
+        }));
+
+        const label = cls > 0
+          ? `Class ${cls}${stream ? ' (' + stream.charAt(0).toUpperCase() + stream.slice(1) + ')' : ''}${subject ? ' — ' + subject : ''}`
+          : subject ? subject : 'All Topics';
+        quizInfo.textContent = `${questions.length} question${questions.length !== 1 ? 's' : ''} loaded for ${label}`;
+
+        startBtn.disabled = questions.length === 0;
+        if (questions.length === 0) quizInfo.textContent = 'No questions available for this selection. Try a different class or subject.';
+      }
+
+      classSelect.addEventListener('change', () => { updateSubjectOptions(); filterQuestions(); });
+      streamSelect.addEventListener('change', () => { updateSubjectOptions(); filterQuestions(); });
+      subjectSelect.addEventListener('change', filterQuestions);
+
+      // Restore saved grade
+      const savedGrade = window.localStorage.getItem('edustar-grade');
+      if (savedGrade) {
+        classSelect.value = savedGrade;
+        updateSubjectOptions();
+        filterQuestions();
+      }
+
+      /* ── Quiz Engine ─────────────────────────────────────────────────── */
       const launch = document.getElementById('launch-screen');
       const countdown = document.getElementById('countdown');
       const countdownNumber = document.getElementById('countdown-number');
@@ -255,14 +675,14 @@
           score += 1;
           scoreEl.textContent = `Score ${score}`;
           button.classList.add('is-correct');
-          feedback.textContent = 'Correct! Great job.';
+          feedback.textContent = questions[current].explanation || 'Correct! Great job.';
           speakBeep();
         } else {
           button.classList.add('is-wrong');
           optionButtons[correct].classList.add('is-correct');
-          feedback.textContent = 'Almost there, Explorer! You got this!';
+          feedback.textContent = questions[current].explanation || 'Almost there, Explorer! You got this!';
         }
-        setTimeout(() => nextQuestion(selected === correct), 900);
+        setTimeout(() => nextQuestion(selected === correct), 1200);
       }
 
       function nextQuestion() {
@@ -286,29 +706,32 @@
           star.style.animationDelay = `${index * 0.2}s`;
           stars.appendChild(star);
         }
+        const selectedSubject = subjectSelect.value || classSelect.value ? 'Class ' + classSelect.value : 'General';
         window.EduStarAPI.requestJson('/api/quiz-attempts', {
           method: 'POST',
           body: JSON.stringify({
             deviceId,
-            pillar: 'AI & Technology',
+            pillar: selectedSubject,
             score,
             total: questions.length,
           }),
-        }).catch(() => {});
+        }).catch((err) => {
+          console.error('[EduStar] quiz submission failed:', err.message);
+        });
         Array.from({ length: 30 }, (_, index) => {
           const conf = document.createElement('i');
           conf.style.setProperty('--x', `${Math.random() * 100}%`);
           conf.style.setProperty('--d', `${Math.random() * 1.8}s`);
           conf.style.setProperty('--r', `${Math.random() * 360}deg`);
-          conf.style.setProperty('--c', ['#ffd700','#39ff14','#00d4ff','#ff8d5c'][index % 4]);
+          conf.style.setProperty('--c', ['#ffd700', '#39ff14', '#00d4ff', '#ff8d5c'][index % 4]);
           confetti.appendChild(conf);
         });
       }
 
-      start.addEventListener('click', () => {
+      startBtn.addEventListener('click', () => {
         launch.style.display = 'none';
         countdown.classList.add('is-show');
-        [3,2,1].forEach((value, index) => {
+        [3, 2, 1].forEach((value, index) => {
           setTimeout(() => {
             countdownNumber.textContent = String(value);
             countdownNumber.style.animation = 'none';
@@ -327,10 +750,12 @@
     })();
   </script>
   <!-- Footer -->
-  <footer class="es-shell" style="padding:1.2rem 0; border-top:1px solid rgba(255,255,255,.07); margin-top:2rem; text-align:center;">
+  <footer class="es-shell"
+    style="padding:1.2rem 0; border-top:1px solid rgba(255,255,255,.07); margin-top:2rem; text-align:center;">
     <small>EduStar &copy; 2025 &mdash; Safe, ad-free, joyful learning for young explorers. &nbsp;
       <a href="edustar-home.html" style="color:var(--es-color-star-gold); text-decoration:none;">↩ Back to Home</a>
     </small>
   </footer>
 </body>
+
 </html>

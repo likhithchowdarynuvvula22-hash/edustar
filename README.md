@@ -64,3 +64,23 @@ The database file is created locally as `edustar-data.sqlite`.
 - No npm packages are required.
 - The backend uses the built-in SQLite support from Node 24.
 - The UI is designed to respect reduced-motion preferences.
+
+## Deploying to Railway
+
+Quick steps to deploy this project to Railway:
+
+1. Push this repository to GitHub.
+2. Create a new project on Railway and connect your GitHub repository.
+3. Railway will detect a Node project; it runs `npm start` by default (the included `Procfile` also specifies `web: npm start`).
+4. Railway provides the `PORT` environment variable — the backend respects `PORT`.
+
+Important notes about SQLite and Railway:
+
+- Railway dynos have an ephemeral filesystem. Any changes made to `edustar-data.sqlite` at runtime will not be preserved across deploys or instance restarts. For production use, migrate to a managed database (Postgres) and update the code accordingly.
+- For quick demos you can include `edustar-data.sqlite` in the repo, but accept that data is temporary.
+
+Environment variables you might set on Railway:
+
+- `EDUSTAR_PORT` (optional) — custom port if you need it (Railway sets `PORT` automatically).
+
+If you want, I can add a minimal Railway `service.json` or help switch the backend to Postgres for persistent storage.

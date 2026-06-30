@@ -40,9 +40,30 @@
     @keyframes quote-in { from { transform: translateX(24px); opacity:0; } to { transform: translateX(0); opacity:1; } }
     @keyframes burst { to { transform: translate(var(--x), var(--y)) rotate(360deg); opacity:0; } }
     @media (max-width: 900px) { .es-values__grid { grid-template-columns: 1fr; } }
+    
+    /* Topbar */
+    .es-topbar { display:flex; align-items:center; justify-content:space-between; padding:.75rem 0; gap:1rem; flex-wrap:wrap; }
+    .es-topbar__brand { display:flex; align-items:center; gap:.5rem; font-family: var(--es-font-heading); font-size:1.35rem; color: var(--es-color-star-gold); text-decoration:none; }
+    .es-topbar__nav { display:flex; gap:.75rem; flex-wrap:wrap; }
+    .es-topbar__link { font-size:.9rem; padding:.4rem .8rem; border-radius:999px; color:rgba(245,247,255,.8); text-decoration:none; transition: background var(--es-transition-fast), color var(--es-transition-fast); }
+    .es-topbar__link:hover, .es-topbar__link.is-active { background:rgba(255,215,0,.12); color:var(--es-color-star-gold); }
   </style>
 </head>
 <body>
+  <header class="es-shell" style="border-bottom:1px solid rgba(255,255,255,.07); margin-bottom: 1rem;">
+    <div class="es-topbar">
+      <a class="es-topbar__brand" href="edustar-home.html">🚀⭐ EduStar</a>
+      <nav class="es-topbar__nav" aria-label="Main navigation">
+        <a class="es-topbar__link" href="edustar-home.html">Home</a>
+        <a class="es-topbar__link" href="edustar-cbse-class-hub.html">CBSE Classes</a>
+        <a class="es-topbar__link" href="edustar-ai-tech-learning-centre.html">AI Centre</a>
+        <a class="es-topbar__link" href="edustar-ai-tutor.html">AI Tutor</a>
+        <a class="es-topbar__link" href="edustar-quiz.html">Quiz</a>
+        <a class="es-topbar__link" href="edustar-progress-tracker.html">Progress</a>
+      </nav>
+    </div>
+  </header>
+  <canvas id="es-starfield" aria-hidden="true"></canvas>
   <main class="es-values es-shell">
     <section>
       <span class="es-kicker es-slide-up">Values & Character</span>
@@ -188,5 +209,12 @@
       setActiveCard(0);
     })();
   </script>
+  <script src="edustar-starfield.js"></script>
+  <!-- Footer -->
+  <footer class="es-shell" style="padding:1.2rem 0; border-top:1px solid rgba(255,255,255,.07); margin-top:2rem; text-align:center;">
+    <small>EduStar &copy; 2025 &mdash; Safe, ad-free, joyful learning for young explorers. &nbsp;
+      <a href="edustar-home.html" style="color:var(--es-color-star-gold); text-decoration:none;">↩ Back to Home</a>
+    </small>
+  </footer>
 </body>
 </html>

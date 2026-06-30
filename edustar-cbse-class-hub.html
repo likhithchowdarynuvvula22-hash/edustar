@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0A0E27">
+  <meta name="description" content="EduStar CBSE Class Hub — Explore curated YouTube playlists for every subject from Class 1 to 12. Science, Commerce, Humanities streams and a dedicated AI Academy.">
+  <title>EduStar | CBSE Class Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="edustar-design-system.css">
+  <style>
+    /* Topbar */
+    .es-topbar { display:flex; align-items:center; justify-content:space-between; padding:.75rem 0; gap:1rem; flex-wrap:wrap; }
+    .es-topbar__brand { display:flex; align-items:center; gap:.5rem; font-family:var(--es-font-heading); font-size:1.35rem; color:var(--es-color-star-gold); text-decoration:none; }
+    .es-topbar__nav { display:flex; gap:.75rem; flex-wrap:wrap; }
+    .es-topbar__link { font-size:.9rem; padding:.4rem .8rem; border-radius:999px; color:rgba(245,247,255,.8); text-decoration:none; transition:background var(--es-transition-fast),color var(--es-transition-fast); }
+    .es-topbar__link:hover, .es-topbar__link.is-active { background:rgba(255,215,0,.12); color:var(--es-color-star-gold); }
+
+    /* Hero */
+    .cbse-hero { padding:2.5rem 0 2rem; display:grid; grid-template-columns:1fr auto; gap:2rem; align-items:center; }
+    .cbse-hero__badge { display:inline-flex; align-items:center; gap:.4rem; background:rgba(255,215,0,.1); border:1px solid rgba(255,215,0,.3); border-radius:999px; padding:.3rem .9rem; font-size:.78rem; font-weight:700; color:var(--es-color-star-gold); letter-spacing:.07em; text-transform:uppercase; margin-bottom:.8rem; }
+    .cbse-hero__title { font-size:clamp(1.8rem,4vw,2.8rem); color:var(--es-color-star-gold); line-height:1.1; margin-bottom:.6rem; }
+    .cbse-hero__sub { max-width:54ch; opacity:.75; line-height:1.65; }
+    .cbse-hero__planet { width:200px; height:200px; border-radius:50%; background:radial-gradient(circle at 30% 28%, rgba(255,255,255,.45), rgba(0,212,255,.15) 20%, #1b2a6b 42%, #0a0e27 100%); box-shadow:inset -24px -30px 42px rgba(0,0,0,.25),0 24px 48px rgba(0,0,0,.28); position:relative; }
+    .cbse-hero__planet::before { content:''; position:absolute; inset:24px -18px auto; height:30px; border:3px solid rgba(255,215,0,.55); border-radius:50%; transform:rotateX(75deg); animation:es-spin-slow 18s linear infinite; }
+    @media(max-width:800px){ .cbse-hero { grid-template-columns:1fr; } .cbse-hero__planet { display:none; } }
+
+    /* Class Selector Tabs */
+    .cbse-class-scroller { overflow-x:auto; padding-bottom:.4rem; margin-bottom:1.6rem; scrollbar-width:thin; scrollbar-color:rgba(255,215,0,.3) transparent; }
+    .cbse-class-scroller::-webkit-scrollbar { height:4px; }
+    .cbse-class-scroller::-webkit-scrollbar-track { background:transparent; }
+    .cbse-class-scroller::-webkit-scrollbar-thumb { background:rgba(255,215,0,.3); border-radius:99px; }
+    .cbse-class-tabs { display:flex; gap:.5rem; width:max-content; padding:.2rem 0; }
+    .cbse-class-tab { padding:.55rem 1.1rem; border-radius:999px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04); color:rgba(245,247,255,.75); cursor:pointer; font-size:.88rem; font-weight:600; transition:all var(--es-transition-fast); white-space:nowrap; }
+    .cbse-class-tab:hover { background:rgba(255,215,0,.1); border-color:rgba(255,215,0,.3); color:var(--es-color-star-gold); }
+    .cbse-class-tab.is-active { background:rgba(255,215,0,.18); border-color:rgba(255,215,0,.55); color:var(--es-color-star-gold); box-shadow:0 0 16px rgba(255,215,0,.2); transform:scale(1.04); }
+
+    /* Stream Tabs */
+    .cbse-stream-tabs { display:flex; gap:.5rem; margin-bottom:1.4rem; flex-wrap:wrap; }
+    .cbse-stream-tab { padding:.45rem 1rem; border-radius:999px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.04); color:rgba(245,247,255,.7); cursor:pointer; font-size:.84rem; font-weight:600; transition:all var(--es-transition-fast); }
+    .cbse-stream-tab:hover { border-color:rgba(0,212,255,.4); color:var(--es-color-orbit-cyan); }
+    .cbse-stream-tab.is-active { background:rgba(0,212,255,.15); border-color:var(--es-color-orbit-cyan); color:var(--es-color-orbit-cyan); box-shadow:0 0 14px rgba(0,212,255,.18); }
+
+    /* Subject Cards */
+    .cbse-subjects { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1rem; }
+    .cbse-subject-card { border-radius:var(--es-radius-card); padding:1.3rem 1.4rem; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); position:relative; overflow:hidden; transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease; animation:es-slide-up .45s ease both; display:flex; flex-direction:column; gap:.65rem; }
+    .cbse-subject-card:hover { transform:translateY(-5px) scale(1.015); box-shadow:0 12px 40px rgba(0,0,0,.35), 0 0 24px var(--card-glow, rgba(255,215,0,.12)); border-color:rgba(255,255,255,.16); }
+    .cbse-subject-card::before { content:''; position:absolute; inset:0; border-radius:inherit; background:linear-gradient(135deg, var(--card-accent, rgba(255,215,0,.06)) 0%, transparent 60%); pointer-events:none; }
+    .cbse-subject-icon { width:48px; height:48px; border-radius:16px; display:grid; place-items:center; font-size:1.5rem; background:rgba(255,255,255,.07); }
+    .cbse-subject-name { font-size:1.1rem; font-weight:700; color:var(--es-color-star-gold); }
+    .cbse-subject-channel { font-size:.82rem; opacity:.6; display:flex; align-items:center; gap:.3rem; }
+    .cbse-subject-channel::before { content:'📺'; font-size:.9rem; }
+    .cbse-subject-desc { font-size:.88rem; opacity:.7; line-height:1.55; flex:1; }
+    .cbse-learn-btn { display:inline-flex; align-items:center; gap:.5rem; padding:.65rem 1.25rem; border-radius:999px; background:linear-gradient(135deg, rgba(255,215,0,.18), rgba(255,215,0,.06)); border:1px solid rgba(255,215,0,.4); color:var(--es-color-star-gold); font-weight:700; font-size:.88rem; text-decoration:none; transition:all var(--es-transition-fast); margin-top:.3rem; width:fit-content; }
+    .cbse-learn-btn:hover { background:linear-gradient(135deg, rgba(255,215,0,.32), rgba(255,215,0,.14)); box-shadow:0 0 20px rgba(255,215,0,.25); transform:scale(1.03); }
+    .cbse-learn-btn .arrow { display:inline-block; transition:transform var(--es-transition-fast); }
+    .cbse-learn-btn:hover .arrow { transform:translateX(4px); }
+
+    /* AI Academy */
+    .cbse-ai-section { margin-top:3rem; padding-top:2rem; border-top:1px solid rgba(0,212,255,.15); }
+    .cbse-ai-header { display:flex; align-items:center; gap:.75rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+    .cbse-ai-badge { background:rgba(0,212,255,.15); border:1px solid rgba(0,212,255,.35); border-radius:999px; padding:.3rem .9rem; font-size:.78rem; font-weight:700; color:var(--es-color-orbit-cyan); letter-spacing:.07em; text-transform:uppercase; }
+    .cbse-ai-card { --card-accent: rgba(0,212,255,.08); --card-glow: rgba(0,212,255,.15); }
+    .cbse-ai-card .cbse-subject-name { color:var(--es-color-orbit-cyan); }
+    .cbse-ai-card .cbse-learn-btn { background:linear-gradient(135deg, rgba(0,212,255,.18), rgba(0,212,255,.06)); border-color:rgba(0,212,255,.4); color:var(--es-color-orbit-cyan); }
+    .cbse-ai-card .cbse-learn-btn:hover { background:linear-gradient(135deg, rgba(0,212,255,.32), rgba(0,212,255,.14)); box-shadow:0 0 20px rgba(0,212,255,.25); }
+
+    /* Section Heading */
+    .cbse-section-label { display:flex; align-items:center; gap:.75rem; margin-bottom:1.2rem; }
+    .cbse-section-label h2 { font-size:1.3rem; color:var(--es-color-star-gold); white-space:nowrap; }
+    .cbse-section-line { flex:1; height:1px; background:linear-gradient(90deg, rgba(255,215,0,.25), transparent); }
+
+    /* Stream colour coding */
+    .stream-science .cbse-subject-name { color:#7DF5FF; }
+    .stream-science .cbse-learn-btn { background:linear-gradient(135deg, rgba(125,245,255,.18), rgba(125,245,255,.06)); border-color:rgba(125,245,255,.4); color:#7DF5FF; }
+    .stream-science .cbse-learn-btn:hover { box-shadow:0 0 20px rgba(125,245,255,.25); }
+    .stream-science { --card-glow: rgba(125,245,255,.14); --card-accent: rgba(125,245,255,.07); }
+    .stream-commerce .cbse-subject-name { color:#FFD18A; }
+    .stream-commerce .cbse-learn-btn { background:linear-gradient(135deg, rgba(255,209,138,.18), rgba(255,209,138,.06)); border-color:rgba(255,209,138,.4); color:#FFD18A; }
+    .stream-commerce .cbse-learn-btn:hover { box-shadow:0 0 20px rgba(255,209,138,.25); }
+    .stream-commerce { --card-glow: rgba(255,209,138,.14); --card-accent: rgba(255,209,138,.07); }
+    .stream-humanities .cbse-subject-name { color:#C6A0FF; }
+    .stream-humanities .cbse-learn-btn { background:linear-gradient(135deg, rgba(198,160,255,.18), rgba(198,160,255,.06)); border-color:rgba(198,160,255,.4); color:#C6A0FF; }
+    .stream-humanities .cbse-learn-btn:hover { box-shadow:0 0 20px rgba(198,160,255,.25); }
+    .stream-humanities { --card-glow: rgba(198,160,255,.14); --card-accent: rgba(198,160,255,.07); }
+
+    @media(max-width:640px){ .cbse-subjects { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <header class="es-shell" style="border-bottom:1px solid rgba(255,255,255,.07);">
+    <div class="es-topbar">
+      <a class="es-topbar__brand" href="edustar-home.html">🚀⭐ EduStar</a>
+      <nav class="es-topbar__nav" aria-label="Main navigation">
+        <a class="es-topbar__link" href="edustar-home.html">Home</a>
+        <a class="es-topbar__link is-active" href="edustar-cbse-class-hub.html">CBSE Classes</a>
+        <a class="es-topbar__link" href="edustar-ai-tech-learning-centre.html">AI Centre</a>
+        <a class="es-topbar__link" href="edustar-ai-tutor.html">AI Tutor</a>
+        <a class="es-topbar__link" href="edustar-quiz.html">Quiz</a>
+        <a class="es-topbar__link" href="edustar-progress-tracker.html">Progress</a>
+      </nav>
+    </div>
+  </header>
+
+  <canvas id="es-starfield" aria-hidden="true"></canvas>
+
+  <main class="es-shell" style="padding:0 0 4rem;">
+    <!-- Hero Banner -->
+    <section class="cbse-hero">
+      <div>
+        <div class="cbse-hero__badge">🏫 CBSE Aligned</div>
+        <h1 class="cbse-hero__title">CBSE Class Hub</h1>
+        <p class="cbse-hero__sub">Curated YouTube channel playlists for every subject — from Primary to Senior Secondary. Select your class, pick your subject, and start learning instantly.</p>
+      </div>
+      <div class="cbse-hero__planet" aria-hidden="true"></div>
+    </section>
+
+    <!-- Class Selector Tabs -->
+    <div class="cbse-class-scroller" role="tablist" aria-label="Select CBSE Class">
+      <div class="cbse-class-tabs" id="class-tabs">
+        <button class="cbse-class-tab is-active" data-class="1"  role="tab" aria-selected="true">Class 1</button>
+        <button class="cbse-class-tab" data-class="2"  role="tab" aria-selected="false">Class 2</button>
+        <button class="cbse-class-tab" data-class="3"  role="tab" aria-selected="false">Class 3</button>
+        <button class="cbse-class-tab" data-class="4"  role="tab" aria-selected="false">Class 4</button>
+        <button class="cbse-class-tab" data-class="5"  role="tab" aria-selected="false">Class 5</button>
+        <button class="cbse-class-tab" data-class="6"  role="tab" aria-selected="false">Class 6</button>
+        <button class="cbse-class-tab" data-class="7"  role="tab" aria-selected="false">Class 7</button>
+        <button class="cbse-class-tab" data-class="8"  role="tab" aria-selected="false">Class 8</button>
+        <button class="cbse-class-tab" data-class="9"  role="tab" aria-selected="false">Class 9</button>
+        <button class="cbse-class-tab" data-class="10" role="tab" aria-selected="false">Class 10</button>
+        <button class="cbse-class-tab" data-class="11" role="tab" aria-selected="false">Class 11</button>
+        <button class="cbse-class-tab" data-class="12" role="tab" aria-selected="false">Class 12</button>
+      </div>
+    </div>
+
+    <!-- Stream Tabs (shown only for Class 11 & 12) -->
+    <div class="cbse-stream-tabs" id="stream-tabs" style="display:none;" role="tablist" aria-label="Select stream">
+      <button class="cbse-stream-tab is-active" data-stream="science"    role="tab">🔬 Science</button>
+      <button class="cbse-stream-tab"            data-stream="commerce"   role="tab">📈 Commerce</button>
+      <button class="cbse-stream-tab"            data-stream="humanities" role="tab">🌍 Humanities</button>
+    </div>
+
+    <!-- Section Heading + Subject Cards -->
+    <div class="cbse-section-label">
+      <h2 id="class-section-title">Class 1 — Primary Level</h2>
+      <div class="cbse-section-line"></div>
+    </div>
+    <section class="cbse-subjects" id="subjects-grid" aria-label="Subject cards"></section>
+
+    <!-- AI Academy (always visible) -->
+    <section class="cbse-ai-section">
+      <div class="cbse-ai-header">
+        <h2 style="font-size:1.3rem; color:var(--es-color-orbit-cyan);">🤖 AI Academy</h2>
+        <div class="cbse-ai-badge">Unique Feature</div>
+        <div class="cbse-section-line" style="background:linear-gradient(90deg, rgba(0,212,255,.25), transparent);"></div>
+      </div>
+      <p style="opacity:.7; margin-bottom:1.4rem; max-width:62ch; font-size:.92rem;">Master Artificial Intelligence through world-class playlists — from beginner foundations to Andrej Karpathy's Neural Networks: Zero to Hero.</p>
+      <div class="cbse-subjects" id="ai-academy-grid"></div>
+    </section>
+  </main>
+
+  <footer class="es-shell" style="padding:1.2rem 0; border-top:1px solid rgba(255,255,255,.07); margin-top:2rem; text-align:center;">
+    <small>EduStar &copy; 2025 &mdash; Safe, ad-free, joyful learning for young explorers. &nbsp;
+      <a href="edustar-home.html" style="color:var(--es-color-star-gold); text-decoration:none;">&#8617; Back to Home</a>
+    </small>
+  </footer>
+
+  <script src="edustar-starfield.js"></script>
+  <script>
+  (() => {
+    /* ── Static data maps ────────────────────────────────────────────────── */
+    const SUBJECT_ICONS = {
+      'Mathematics':          '🔢',
+      'English':              '📖',
+      'Hindi':                '🗣️',
+      'EVS':                  '🌿',
+      'Science':              '🔬',
+      'Social Science':       '🌐',
+      'Computer Science':     '💻',
+      'Information Technology':'🖥️',
+      'Physics':              '⚛️',
+      'Chemistry':            '🧪',
+      'Biology':              '🧬',
+      'Accountancy':          '📒',
+      'Business Studies':     '📊',
+      'Economics':            '📈',
+      'History':              '🏛️',
+      'Political Science':    '⚖️',
+      'Geography':            '🗺️',
+      'Psychology':           '🧠'
+    };
+
+    const CHANNEL_NAMES = {
+      'https://www.youtube.com/@KhanAcademyKids':       'Khan Academy Kids',
+      'https://www.youtube.com/@KhanAcademy':           'Khan Academy',
+      'https://www.youtube.com/@learningtimefun':        'Learning Time Fun',
+      'https://www.youtube.com/@PeekabooKidz':           'Peekaboo Kidz',
+      'https://www.youtube.com/@MagnetBrainsEducation':  'Magnet Brains',
+      'https://www.youtube.com/@FuseSchool':             'Fuse School',
+      'https://www.youtube.com/@CrashCourse':            'CrashCourse',
+      'https://www.youtube.com/@CodeOrg':                'Code.org',
+      'https://www.youtube.com/@TedEd':                  'TED-Ed',
+      'https://www.youtube.com/@freecodecamp':           'freeCodeCamp',
+      'https://www.youtube.com/@PhysicsWallah':          'Physics Wallah',
+      'https://www.youtube.com/@AmoebaSisters':          'Amoeba Sisters',
+      'https://www.youtube.com/@RajatAroraOfficial':     'Rajat Arora'
+    };
+
+    const SUBJECT_DESC = {
+      'Mathematics':          'Build strong number sense, algebra, geometry, and problem-solving skills through step-by-step video lessons.',
+      'English':              'Improve reading comprehension, grammar, vocabulary, and communication through engaging video lessons.',
+      'Hindi':                'Learn Hindi grammar, literature, and language skills aligned to the CBSE curriculum.',
+      'EVS':                  'Explore Environmental Studies — nature, communities, living things, and our shared planet.',
+      'Science':              'Discover physics, chemistry, and biology through experiments, animations, and visual explanations.',
+      'Social Science':       'Study history, civics, economics, and geography through engaging storytelling and visuals.',
+      'Computer Science':     'Learn programming fundamentals, algorithms, and computational thinking step by step.',
+      'Information Technology':'Master practical IT skills — web dev, databases, networking, and digital tools.',
+      'Physics':              'Understand mechanics, electricity, optics, and modern physics with clear derivations.',
+      'Chemistry':            'Explore organic, inorganic, and physical chemistry with experiments and clear theory.',
+      'Biology':              'Study cells, genetics, ecosystems, and the human body through colourful visual lessons.',
+      'Accountancy':          'Learn financial statements, journal entries, and bookkeeping for the CBSE board.',
+      'Business Studies':     'Understand business organisation, finance, marketing, and management principles.',
+      'Economics':            'Study micro and macroeconomics, development economics, and Indian economic policy.',
+      'History':              'Trace civilisations, empires, revolutions, and modern world history.',
+      'Political Science':    'Learn about constitutions, democracy, international relations, and governance.',
+      'Geography':            'Study physical and human geography — maps, climate, landforms, and natural resources.',
+      'Psychology':           'Explore human behaviour, cognition, emotions, and psychological research methods.'
+    };
+
+    /* ── CBSE Class → Subject → Channel URL (Curated Playlists) ───────────── */
+    const CBSE_DATA = {
+      1: [
+        { subject:'Mathematics', url:'https://www.youtube.com/@KhanAcademyKids' },
+        { subject:'English',     url:'https://www.youtube.com/@KhanAcademyKids' },
+        { subject:'Hindi',       url:'https://www.youtube.com/@learningtimefun' },
+        { subject:'EVS',         url:'https://www.youtube.com/@PeekabooKidz'    }
+      ],
+      2: [
+        { subject:'Mathematics', url:'https://www.youtube.com/@KhanAcademyKids' },
+        { subject:'English',     url:'https://www.youtube.com/@KhanAcademyKids' },
+        { subject:'Hindi',       url:'https://www.youtube.com/@learningtimefun' },
+        { subject:'EVS',         url:'https://www.youtube.com/@PeekabooKidz'    }
+      ],
+      3: [
+        { subject:'Mathematics', url:'https://www.youtube.com/@KhanAcademy'          },
+        { subject:'English',     url:'https://www.youtube.com/@KhanAcademyKids'       },
+        { subject:'Hindi',       url:'https://www.youtube.com/@MagnetBrainsEducation' },
+        { subject:'EVS',         url:'https://www.youtube.com/@PeekabooKidz'          }
+      ],
+      4: [
+        { subject:'Mathematics', url:'https://www.youtube.com/@KhanAcademy'          },
+        { subject:'English',     url:'https://www.youtube.com/@KhanAcademy'           },
+        { subject:'Hindi',       url:'https://www.youtube.com/@MagnetBrainsEducation' },
+        { subject:'EVS',         url:'https://www.youtube.com/@FuseSchool'            }
+      ],
+      5: [
+        { subject:'Mathematics', url:'https://www.youtube.com/@KhanAcademy'          },
+        { subject:'English',     url:'https://www.youtube.com/@KhanAcademy'           },
+        { subject:'Hindi',       url:'https://www.youtube.com/@MagnetBrainsEducation' },
+        { subject:'EVS',         url:'https://www.youtube.com/@FuseSchool'            }
+      ],
+      6: [
+        { subject:'Mathematics',      url:'https://www.youtube.com/@KhanAcademy'          },
+        { subject:'Science',          url:'https://www.youtube.com/@FuseSchool'            },
+        { subject:'Social Science',   url:'https://www.youtube.com/@CrashCourse'           },
+        { subject:'English',          url:'https://www.youtube.com/@KhanAcademy'           },
+        { subject:'Hindi',            url:'https://www.youtube.com/@MagnetBrainsEducation' },
+        { subject:'Computer Science', url:'https://www.youtube.com/@CodeOrg'               }
+      ],
+      7: [
+        { subject:'Mathematics',      url:'https://www.youtube.com/@KhanAcademy'          },
+        { subject:'Science',          url:'https://www.youtube.com/@FuseSchool'            },
+        { subject:'Social Science',   url:'https://www.youtube.com/@CrashCourse'           },
+        { subject:'English',          url:'https://www.youtube.com/@KhanAcademy'           },
+        { subject:'Hindi',            url:'https://www.youtube.com/@MagnetBrainsEducation' },
+        { subject:'Computer Science', url:'https://www.youtube.com/@CodeOrg'               }
+      ],
+      8: [
+        { subject:'Mathematics',      url:'https://www.youtube.com/@KhanAcademy'          },
+        { subject:'Science',          url:'https://www.youtube.com/@FuseSchool'            },
+        { subject:'Social Science',   url:'https://www.youtube.com/@CrashCourse'           },
+        { subject:'English',          url:'https://www.youtube.com/@KhanAcademy'           },
+        { subject:'Hindi',            url:'https://www.youtube.com/@MagnetBrainsEducation' },
+        { subject:'Computer Science', url:'https://www.youtube.com/@CodeOrg'               }
+      ],
+      9: [
+        { subject:'Mathematics',           url:'https://www.youtube.com/@KhanAcademy'          },
+        { subject:'Science',               url:'https://www.youtube.com/@FuseSchool'            },
+        { subject:'Social Science',        url:'https://www.youtube.com/@CrashCourse'           },
+        { subject:'English',               url:'https://www.youtube.com/@TedEd'                 },
+        { subject:'Hindi',                 url:'https://www.youtube.com/@MagnetBrainsEducation' },
+        { subject:'Information Technology',url:'https://www.youtube.com/@freecodecamp'           }
+      ],
+      10: [
+        { subject:'Mathematics',           url:'https://www.youtube.com/@KhanAcademy'          },
+        { subject:'Science',               url:'https://www.youtube.com/@FuseSchool'            },
+        { subject:'Social Science',        url:'https://www.youtube.com/@CrashCourse'           },
+        { subject:'English',               url:'https://www.youtube.com/@TedEd'                 },
+        { subject:'Hindi',                 url:'https://www.youtube.com/@MagnetBrainsEducation' },
+        { subject:'Information Technology',url:'https://www.youtube.com/@freecodecamp'           }
+      ],
+      /* Class 11 streams */
+      '11-science': [
+        { subject:'Physics',          url:'https://www.youtube.com/@PhysicsWallah'  },
+        { subject:'Chemistry',        url:'https://www.youtube.com/@KhanAcademy'    },
+        { subject:'Mathematics',      url:'https://www.youtube.com/@KhanAcademy'    },
+        { subject:'Biology',          url:'https://www.youtube.com/@AmoebaSisters'  },
+        { subject:'Computer Science', url:'https://www.youtube.com/@freecodecamp'   },
+        { subject:'English',          url:'https://www.youtube.com/@TedEd'          }
+      ],
+      '11-commerce': [
+        { subject:'Accountancy',      url:'https://www.youtube.com/@RajatAroraOfficial' },
+        { subject:'Business Studies', url:'https://www.youtube.com/@RajatAroraOfficial' },
+        { subject:'Economics',        url:'https://www.youtube.com/@RajatAroraOfficial' },
+        { subject:'Mathematics',      url:'https://www.youtube.com/@KhanAcademy'         },
+        { subject:'English',          url:'https://www.youtube.com/@TedEd'               }
+      ],
+      '11-humanities': [
+        { subject:'History',           url:'https://www.youtube.com/@CrashCourse' },
+        { subject:'Political Science', url:'https://www.youtube.com/@CrashCourse' },
+        { subject:'Geography',         url:'https://www.youtube.com/@CrashCourse' },
+        { subject:'Psychology',        url:'https://www.youtube.com/@CrashCourse' },
+        { subject:'English',           url:'https://www.youtube.com/@TedEd'       }
+      ],
+      /* Class 12 streams */
+      '12-science': [
+        { subject:'Physics',          url:'https://www.youtube.com/@PhysicsWallah'  },
+        { subject:'Chemistry',        url:'https://www.youtube.com/@KhanAcademy'    },
+        { subject:'Mathematics',      url:'https://www.youtube.com/@KhanAcademy'    },
+        { subject:'Biology',          url:'https://www.youtube.com/@AmoebaSisters'  },
+        { subject:'Computer Science', url:'https://www.youtube.com/@freecodecamp'   },
+        { subject:'English',          url:'https://www.youtube.com/@TedEd'          }
+      ],
+      '12-commerce': [
+        { subject:'Accountancy',      url:'https://www.youtube.com/@RajatAroraOfficial' },
+        { subject:'Business Studies', url:'https://www.youtube.com/@RajatAroraOfficial' },
+        { subject:'Economics',        url:'https://www.youtube.com/@RajatAroraOfficial' },
+        { subject:'Mathematics',      url:'https://www.youtube.com/@KhanAcademy'         },
+        { subject:'English',          url:'https://www.youtube.com/@TedEd'               }
+      ],
+      '12-humanities': [
+        { subject:'History',           url:'https://www.youtube.com/@CrashCourse' },
+        { subject:'Political Science', url:'https://www.youtube.com/@CrashCourse' },
+        { subject:'Geography',         url:'https://www.youtube.com/@CrashCourse' },
+        { subject:'Psychology',        url:'https://www.youtube.com/@CrashCourse' },
+        { subject:'English',           url:'https://www.youtube.com/@TedEd'       }
+      ]
+    };
+
+    /* ── AI Academy playlists (Curated) ──────────────────────────────────────── */
+    const AI_ACADEMY = [
+      {
+        title:'AI Foundations',
+        desc:'Start your AI journey — understand what AI is, how it learns, and where it is heading. Perfect for all ages and backgrounds.',
+        url:'https://www.youtube.com/watch?v=zjkBMFhNj_g',
+        icon:'🤖',
+        label:'Andrej Karpathy'
+      },
+      {
+        title:'Neural Networks',
+        desc:'Visualise how neural networks are structured and how they process information layer by layer using brilliant animations.',
+        url:'https://www.youtube.com/watch?v=aircAruvnKk',
+        icon:'🧠',
+        label:'3Blue1Brown'
+      },
+      {
+        title:'Deep Learning',
+        desc:'Go deeper into how deep learning models are trained, how backpropagation works, and what makes modern AI so powerful.',
+        url:'https://www.youtube.com/watch?v=IHZwWFHWa-w',
+        icon:'📡',
+        label:'3Blue1Brown'
+      },
+      {
+        title:'Python Programming',
+        desc:'Learn Python from scratch — variables, loops, functions, and data structures. The essential language of AI and data science.',
+        url:'https://www.youtube.com/watch?v=rfscVS0vtbw',
+        icon:'🐍',
+        label:'freeCodeCamp'
+      },
+      {
+        title:'Harvard CS50',
+        desc:"The world's most popular intro to Computer Science — from scratch-level concepts to full problem sets. No prior experience needed.",
+        url:'https://www.youtube.com/watch?v=LfaMVlDaQ24',
+        icon:'🎓',
+        label:'Harvard / edX'
+      },
+      {
+        title:'Zero to Hero (Karpathy)',
+        desc:"Andrej Karpathy's legendary full playlist — build neural networks and GPT-like language models entirely from first principles.",
+        url:'https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ',
+        icon:'🚀',
+        label:'Andrej Karpathy'
+      }
+    ];
+
+    /* ── State & DOM ─────────────────────────────────────────────────────── */
+    let currentClass  = '1';
+    let currentStream = 'science';
+
+    const classTabs    = document.querySelectorAll('.cbse-class-tab');
+    const streamTabsEl = document.getElementById('stream-tabs');
+    const streamTabs   = document.querySelectorAll('.cbse-stream-tab');
+    const subjectsGrid = document.getElementById('subjects-grid');
+    const sectionTitle = document.getElementById('class-section-title');
+
+    /* ── Helpers ─────────────────────────────────────────────────────────── */
+    function getDataKey() {
+      const cls = parseInt(currentClass, 10);
+      return (cls === 11 || cls === 12) ? `${cls}-${currentStream}` : currentClass;
+    }
+
+    function getLevelLabel(cls) {
+      const n = parseInt(cls, 10);
+      if (n <= 2)  return 'Primary Level — Grades 1 & 2';
+      if (n <= 5)  return 'Primary Level';
+      if (n <= 8)  return 'Middle School';
+      if (n <= 10) return 'Secondary Level';
+      return 'Senior Secondary';
+    }
+
+    function getStreamLabel(stream) {
+      return ({ science:'— Science Stream', commerce:'— Commerce Stream', humanities:'— Humanities Stream' })[stream] || '';
+    }
+
+    function getStreamCssClass(stream) {
+      return ({ science:'stream-science', commerce:'stream-commerce', humanities:'stream-humanities' })[stream] || '';
+    }
+
+    /* ── Render subject cards ────────────────────────────────────────────── */
+    function renderSubjects() {
+      const key      = getDataKey();
+      const subjects = CBSE_DATA[key] || [];
+      const cls      = parseInt(currentClass, 10);
+      const isHigher = cls === 11 || cls === 12;
+      const streamCls = isHigher ? getStreamCssClass(currentStream) : '';
+
+      sectionTitle.textContent = isHigher
+        ? `Class ${currentClass} ${getStreamLabel(currentStream)}`
+        : `Class ${currentClass} — ${getLevelLabel(currentClass)}`;
+
+      subjectsGrid.innerHTML = subjects.map((s, i) => {
+        const icon        = SUBJECT_ICONS[s.subject] || '📘';
+        const channelName = CHANNEL_NAMES[s.url]     || s.url;
+        const desc        = SUBJECT_DESC[s.subject]  || 'Explore curated lessons for this subject.';
+        return `
+          <article class="cbse-subject-card ${streamCls}" style="animation-delay:${i * 0.06}s;">
+            <div class="cbse-subject-icon">${icon}</div>
+            <div class="cbse-subject-name">${s.subject}</div>
+            <div class="cbse-subject-channel">${channelName}</div>
+            <p class="cbse-subject-desc">${desc}</p>
+            <a class="cbse-learn-btn"
+               href="${s.url}"
+               target="_blank"
+               rel="noopener noreferrer"
+               id="cbse-btn-${s.subject.toLowerCase().replace(/\s+/g,'-')}-class${currentClass}"
+               aria-label="Open ${s.subject} playlist on YouTube for Class ${currentClass}">
+              Learn Now <span class="arrow">&#8594;</span>
+            </a>
+          </article>`;
+      }).join('');
+    }
+
+    /* ── Render AI Academy ───────────────────────────────────────────────── */
+    function renderAIAcademy() {
+      document.getElementById('ai-academy-grid').innerHTML = AI_ACADEMY.map((item, i) => `
+        <article class="cbse-subject-card cbse-ai-card" style="animation-delay:${i * 0.07}s;">
+          <div class="cbse-subject-icon">${item.icon}</div>
+          <div class="cbse-subject-name">${item.title}</div>
+          <div class="cbse-subject-channel" style="color:rgba(0,212,255,.6);">&#128250; ${item.label}</div>
+          <p class="cbse-subject-desc">${item.desc}</p>
+          <a class="cbse-learn-btn"
+             href="${item.url}"
+             target="_blank"
+             rel="noopener noreferrer"
+             id="ai-btn-${item.title.toLowerCase().replace(/\s+/g,'-')}"
+             aria-label="Open ${item.title} on YouTube">
+            Watch Now <span class="arrow">&#8594;</span>
+          </a>
+        </article>`).join('');
+    }
+
+    /* ── Event Listeners ─────────────────────────────────────────────────── */
+    classTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        classTabs.forEach(t => { t.classList.remove('is-active'); t.setAttribute('aria-selected','false'); });
+        tab.classList.add('is-active');
+        tab.setAttribute('aria-selected','true');
+        currentClass = tab.dataset.class;
+        const cls    = parseInt(currentClass, 10);
+        streamTabsEl.style.display = (cls === 11 || cls === 12) ? 'flex' : 'none';
+        renderSubjects();
+        subjectsGrid.scrollIntoView({ behavior:'smooth', block:'nearest' });
+      });
+    });
+
+    streamTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        streamTabs.forEach(t => t.classList.remove('is-active'));
+        tab.classList.add('is-active');
+        currentStream = tab.dataset.stream;
+        renderSubjects();
+      });
+    });
+
+    /* ── Init ────────────────────────────────────────────────────────────── */
+    renderSubjects();
+    renderAIAcademy();
+
+    // Restore last used grade from localStorage
+    const savedGrade = window.localStorage.getItem('edustar-grade');
+    if (savedGrade && savedGrade !== '1') {
+      const matchTab = document.querySelector(`.cbse-class-tab[data-class="${savedGrade}"]`);
+      if (matchTab) matchTab.click();
+    }
+  })();
+  </script>
+</body>
+</html>

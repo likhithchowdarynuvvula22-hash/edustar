@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,56 +11,274 @@
   <link rel="stylesheet" href="edustar-design-system.css">
   <style>
     /* Navbar */
-    .es-topbar { display:flex; align-items:center; justify-content:space-between; padding:.75rem 0; gap:1rem; flex-wrap:wrap; }
-    .es-topbar__brand { display:flex; align-items:center; gap:.5rem; font-family: var(--es-font-heading); font-size:1.35rem; color: var(--es-color-star-gold); text-decoration:none; }
-    .es-topbar__nav { display:flex; gap:.75rem; flex-wrap:wrap; }
-    .es-topbar__link { font-size:.9rem; padding:.4rem .8rem; border-radius:999px; color:rgba(245,247,255,.8); text-decoration:none; transition: background var(--es-transition-fast), color var(--es-transition-fast); }
-    .es-topbar__link:hover, .es-topbar__link.is-active { background:rgba(255,215,0,.12); color:var(--es-color-star-gold); }
-    .es-video { padding: 2rem 0 4rem; }
-    .es-video__layout { display:grid; grid-template-columns: minmax(0,1fr) 320px; gap: 1.2rem; align-items:start; }
-    .es-video__player { padding: 1rem; }
-    .es-video__frame { aspect-ratio: 16/9; border-radius: 28px; background: #000; overflow:hidden; position: relative; box-shadow: var(--es-shadow-card); border: 1px solid rgba(255, 255, 255, 0.08); transition: box-shadow var(--es-transition-med); }
-    .es-video__frame:hover { box-shadow: var(--es-shadow-cyan); }
-    .es-video__frame iframe { width: 100%; height: 100%; border: 0; opacity: 0; transition: opacity var(--es-transition-med); }
-    .es-video__frame iframe.is-loaded { opacity: 1; }
-    .es-video__loader { position: absolute; inset: 0; display: grid; place-items: center; background: radial-gradient(circle at center, #111847 0%, #0a0e27 100%); z-index: 2; transition: opacity var(--es-transition-med); }
-    .es-video__spinner { width: 52px; height: 52px; border: 3px dashed var(--es-color-orbit-cyan); border-radius: 50%; animation: es-spin-slow 5s linear infinite; box-shadow: var(--es-shadow-cyan); }
-    .es-video__points { display:grid; gap: .8rem; margin-top: 1rem; }
-    .es-video__point { opacity: 0; transform: translateY(24px); transition: opacity .5s ease, transform .5s ease; }
-    .es-video__point.is-visible { opacity:1; transform: translateY(0); }
-    .es-video__quiz { margin-top: 1rem; }
-    .es-video__quiz .es-btn-primary { width: 100%; }
-    .es-video__sidebar { position: sticky; top: 96px; display:grid; gap: .8rem; max-height: calc(100vh - 120px); overflow-y: auto; padding-right: 4px; }
+    .es-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .75rem 0;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .es-topbar__brand {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: var(--es-font-heading);
+      font-size: 1.35rem;
+      color: var(--es-color-star-gold);
+      text-decoration: none;
+    }
+
+    .es-topbar__nav {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+
+    .es-topbar__link {
+      font-size: .9rem;
+      padding: .4rem .8rem;
+      border-radius: 999px;
+      color: rgba(245, 247, 255, .8);
+      text-decoration: none;
+      transition: background var(--es-transition-fast), color var(--es-transition-fast);
+    }
+
+    .es-topbar__link:hover,
+    .es-topbar__link.is-active {
+      background: rgba(255, 215, 0, .12);
+      color: var(--es-color-star-gold);
+    }
+
+    .es-video {
+      padding: 2rem 0 4rem;
+    }
+
+    .es-video__layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 1.2rem;
+      align-items: start;
+    }
+
+    .es-video__player {
+      padding: 1rem;
+    }
+
+    .es-video__frame {
+      aspect-ratio: 16/9;
+      border-radius: 28px;
+      background: #000;
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--es-shadow-card);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: box-shadow var(--es-transition-med);
+    }
+
+    .es-video__frame:hover {
+      box-shadow: var(--es-shadow-cyan);
+    }
+
+    .es-video__frame iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      opacity: 0;
+      transition: opacity var(--es-transition-med);
+    }
+
+    .es-video__frame iframe.is-loaded {
+      opacity: 1;
+    }
+
+    .es-video__loader {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at center, #111847 0%, #0a0e27 100%);
+      z-index: 2;
+      transition: opacity var(--es-transition-med);
+    }
+
+    .es-video__spinner {
+      width: 52px;
+      height: 52px;
+      border: 3px dashed var(--es-color-orbit-cyan);
+      border-radius: 50%;
+      animation: es-spin-slow 5s linear infinite;
+      box-shadow: var(--es-shadow-cyan);
+    }
+
+    .es-video__points {
+      display: grid;
+      gap: .8rem;
+      margin-top: 1rem;
+    }
+
+    .es-video__point {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+
+    .es-video__point.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .es-video__quiz {
+      margin-top: 1rem;
+    }
+
+    .es-video__quiz .es-btn-primary {
+      width: 100%;
+    }
+
+    .es-video__sidebar {
+      position: sticky;
+      top: 96px;
+      display: grid;
+      gap: .8rem;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
     /* Premium scrollbar for sidebar playlist */
-    .es-video__sidebar::-webkit-scrollbar { width: 6px; }
-    .es-video__sidebar::-webkit-scrollbar-track { background: transparent; }
-    .es-video__sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 99px; }
-    .es-video__sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
-    .es-video__lesson { display:grid; grid-template-columns: 72px 1fr; gap: .8rem; padding: .8rem; align-items:center; transition: transform var(--es-transition-fast), border-left-width var(--es-transition-med), opacity var(--es-transition-med), background-color var(--es-transition-fast); border-left: 0 solid var(--es-color-star-gold); cursor: pointer; }
-    .es-video__lesson.is-active { border-left-width: 4px; opacity: 1; background: rgba(255, 255, 255, 0.04); }
-    .es-video__thumb { width: 72px; height: 54px; border-radius: 16px; overflow:hidden; background: rgba(255,255,255,.08); display:grid; place-items:center; transition: transform var(--es-transition-fast), background var(--es-transition-fast); }
-    .es-video__lesson:hover .es-video__thumb { transform: scale(1.05); background: rgba(255, 255, 255, 0.12); }
-    .es-video__lesson.is-done .es-video__check { display:inline-block; animation: es-spin-slow .4s ease both; }
-    .es-video__check { display:none; }
-    .es-video__notes { position: fixed; inset: auto 1rem 1rem 1rem; max-width: 720px; margin: 0 auto; transform: translateY(100%); transition: transform var(--es-transition-med); z-index: var(--es-z-overlay); }
-    .es-video__notes.is-open { transform: translateY(0); }
-    .es-video__notes-panel { padding: 1rem; }
-    .es-video__notes textarea { width: 100%; min-height: 120px; resize: vertical; background: rgba(255,255,255,.04); color: var(--es-color-ink); border: 1px solid rgba(255,255,255,.1); border-radius: 22px; padding: .9rem 1rem; }
-    .es-video__count { transition: color var(--es-transition-fast); }
-    .es-video__count.is-warn { color: var(--es-color-warning); }
-    .es-video__count.is-danger { color: #ff6b6b; }
-    .es-video__saved { display:inline-block; margin-left:.4rem; opacity:0; transform: scale(.8); }
-    .es-video__saved.is-show { animation: es-pulse-glow .4s ease both; opacity:1; }
-    @media (max-width: 960px) { .es-video__layout { grid-template-columns: 1fr; } .es-video__sidebar { position: static; } }
+    .es-video__sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .es-video__sidebar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .es-video__sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 99px;
+    }
+
+    .es-video__sidebar::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .es-video__lesson {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: .8rem;
+      padding: .8rem;
+      align-items: center;
+      transition: transform var(--es-transition-fast), border-left-width var(--es-transition-med), opacity var(--es-transition-med), background-color var(--es-transition-fast);
+      border-left: 0 solid var(--es-color-star-gold);
+      cursor: pointer;
+    }
+
+    .es-video__lesson.is-active {
+      border-left-width: 4px;
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .es-video__thumb {
+      width: 72px;
+      height: 54px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, .08);
+      display: grid;
+      place-items: center;
+      transition: transform var(--es-transition-fast), background var(--es-transition-fast);
+    }
+
+    .es-video__lesson:hover .es-video__thumb {
+      transform: scale(1.05);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .es-video__lesson.is-done .es-video__check {
+      display: inline-block;
+      animation: es-spin-slow .4s ease both;
+    }
+
+    .es-video__check {
+      display: none;
+    }
+
+    .es-video__notes {
+      position: fixed;
+      inset: auto 1rem 1rem 1rem;
+      max-width: 720px;
+      margin: 0 auto;
+      transform: translateY(100%);
+      transition: transform var(--es-transition-med);
+      z-index: var(--es-z-overlay);
+    }
+
+    .es-video__notes.is-open {
+      transform: translateY(0);
+    }
+
+    .es-video__notes-panel {
+      padding: 1rem;
+    }
+
+    .es-video__notes textarea {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      background: rgba(255, 255, 255, .04);
+      color: var(--es-color-ink);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 22px;
+      padding: .9rem 1rem;
+    }
+
+    .es-video__count {
+      transition: color var(--es-transition-fast);
+    }
+
+    .es-video__count.is-warn {
+      color: var(--es-color-warning);
+    }
+
+    .es-video__count.is-danger {
+      color: #ff6b6b;
+    }
+
+    .es-video__saved {
+      display: inline-block;
+      margin-left: .4rem;
+      opacity: 0;
+      transform: scale(.8);
+    }
+
+    .es-video__saved.is-show {
+      animation: es-pulse-glow .4s ease both;
+      opacity: 1;
+    }
+
+    @media (max-width: 960px) {
+      .es-video__layout {
+        grid-template-columns: 1fr;
+      }
+
+      .es-video__sidebar {
+        position: static;
+      }
+    }
   </style>
 </head>
+
 <body>
   <header class="es-shell" style="border-bottom:1px solid rgba(255,255,255,.07);">
     <div class="es-topbar">
       <a class="es-topbar__brand" href="edustar-home.html">🚀⭐ EduStar</a>
       <nav class="es-topbar__nav" aria-label="Main navigation">
         <a class="es-topbar__link" href="edustar-home.html">Home</a>
-        <a class="es-topbar__link" href="edustar-subject-hub.html">Subjects</a>
+        <a class="es-topbar__link" href="edustar-cbse-class-hub.html">CBSE Classes</a>
         <a class="es-topbar__link" href="edustar-ai-tech-learning-centre.html">AI Centre</a>
         <a class="es-topbar__link" href="edustar-ai-tutor.html">AI Tutor</a>
         <a class="es-topbar__link" href="edustar-quiz.html">Quiz</a>
@@ -70,12 +289,16 @@
   <main class="es-video es-shell">
     <div class="es-video__layout">
       <section class="es-card es-video__player es-slide-up">
-        <h1 id="lesson-title" style="font-size: var(--es-text-2xl); margin-bottom: 0.8rem; color: var(--es-color-star-gold); transition: opacity var(--es-transition-fast);">Lesson 1: What is AI?</h1>
+        <h1 id="lesson-title"
+          style="font-size: var(--es-text-2xl); margin-bottom: 0.8rem; color: var(--es-color-star-gold); transition: opacity var(--es-transition-fast);">
+          Lesson 1: What is AI?</h1>
         <div class="es-video__frame" id="video-frame">
           <div class="es-video__loader" id="video-loader">
             <div style="display: flex; flex-direction: column; align-items: center; gap: 0.8rem;">
               <div class="es-video__spinner"></div>
-              <span style="font-size: 0.9rem; color: var(--es-color-orbit-cyan); font-weight: 600; letter-spacing: 0.05em;">LOADING LESSON VIDEO...</span>
+              <span
+                style="font-size: 0.9rem; color: var(--es-color-orbit-cyan); font-weight: 600; letter-spacing: 0.05em;">LOADING
+                LESSON VIDEO...</span>
             </div>
           </div>
           <iframe id="video-iframe" allowfullscreen allow="autoplay" src=""></iframe>
@@ -98,7 +321,8 @@
           <button class="es-btn-secondary" id="close-notes">Close</button>
         </div>
         <textarea id="notes" maxlength="240" placeholder="Write a few learning notes..."></textarea>
-        <p><span class="es-video__count" id="count">0 / 240</span><span class="es-video__saved" id="saved">✓ Saved</span></p>
+        <p><span class="es-video__count" id="count">0 / 240</span><span class="es-video__saved" id="saved">✓
+            Saved</span></p>
         <button class="es-btn-primary" id="save-notes">Save Notes</button>
       </div>
     </section>
@@ -111,7 +335,7 @@
       const topicDetails = {
         // Core Academics
         'math-foundations': {
-          youtubeId: 'UZG50n0Sp1o', // Math Antics - Place Value
+          youtubeId: 'PkZNo7MFNFg', // Math Foundations
           keyPoints: [
             { title: 'Numbers have places', text: 'The position of a digit tells us how much it is worth (ones, tens, hundreds).' },
             { title: 'Base 10 system', text: 'Our number system uses ten digits (0-9) and increases by tens.' },
@@ -119,7 +343,7 @@
           ]
         },
         'science-explorers': {
-          youtubeId: 'KIFz_-K1n9k', // Steps of Scientific Method by Scratch Garden
+          youtubeId: 'HQXFd0CN4s8', // Science Explorers
           keyPoints: [
             { title: 'Make observations', text: 'Science starts by looking closely at the world and asking questions.' },
             { title: 'Form a hypothesis', text: 'A hypothesis is a smart guess that you can test with an experiment.' },
@@ -127,7 +351,7 @@
           ]
         },
         'english-communication': {
-          youtubeId: 'h4Q7E6hyTMc', // Parts of Speech by Scratch Garden
+          youtubeId: 'JuKd26qkNAw', // English Communication
           keyPoints: [
             { title: 'Nouns and Verbs', text: 'Nouns name people, places, or things, while verbs show actions.' },
             { title: 'Adjectives describe', text: 'Adjectives give us extra details about nouns (e.g., a "shiny" star).' },
@@ -135,7 +359,7 @@
           ]
         },
         'social-studies': {
-          youtubeId: 'Co9x4j_V9T0', // What is a Map?
+          youtubeId: 'hM4AhWj5YgA', // Social Studies
           keyPoints: [
             { title: 'Maps show paths', text: 'Maps are drawings of places from above that help us navigate.' },
             { title: 'Compass rose', text: 'The compass rose shows directions: North, South, East, and West.' },
@@ -143,7 +367,7 @@
           ]
         },
         'reading-skills': {
-          youtubeId: 'W0l31G-cns4', // Reading Comprehension for Kids
+          youtubeId: 'VgM4tY8J7qA', // Reading Skills
           keyPoints: [
             { title: 'Active reading', text: 'Ask yourself questions about the story as you read.' },
             { title: 'Find main ideas', text: 'Look for the most important message or event in the text.' },
@@ -151,7 +375,7 @@
           ]
         },
         'writing-skills': {
-          youtubeId: '01I1nZ7yrcg', // How to Write a Paragraph
+          youtubeId: '8Gv0H-vPoDc', // Writing Skills
           keyPoints: [
             { title: 'Topic sentence', text: 'Start with a main idea that tells the reader what the paragraph is about.' },
             { title: 'Supporting details', text: 'Add 3-4 sentences that explain, prove, or describe your main idea.' },
@@ -177,10 +401,10 @@
 
         // AI & Technology
         'what-is-ai': {
-          youtubeId: 'g_78i_ZgL5s', // What is Artificial Intelligence? - Peekaboo Kidz
+          youtubeId: 'zjkBMFhNj_g', // Andrej Karpathy - Intro to Large Language Models
           keyPoints: [
             { title: 'Pattern matching', text: 'AI is a computer helper that finds patterns in massive amounts of data.' },
-            { title: 'Machine learning', text: 'AI improves by looking at many examples, similar to how humans learn.' },
+            { title: 'Language models', text: 'Large language models learn from text and predict what should come next.' },
             { title: 'Human check', text: 'AI makes mistakes, so we must always check its answers with trusted sources.' }
           ]
         },
@@ -193,7 +417,7 @@
           ]
         },
         'coding-basics': {
-          youtubeId: 'OAx_6-wdslM', // What is Coding? - Code.org
+          youtubeId: 'rfscVS0vtbw', // Coding for Kids
           keyPoints: [
             { title: 'Step-by-step', text: 'Coding is writing a list of instructions for a computer to follow in order.' },
             { title: 'Loops repeat', text: 'Loops tell the computer to repeat instructions without writing them again.' },
@@ -217,7 +441,7 @@
           ]
         },
         'computers-and-internet': {
-          youtubeId: 'Dxcc6ycZ73M', // How the Internet Works - Code.org
+          youtubeId: '7_LPdttKXPc', // How the Internet Works in 5 Minutes
           keyPoints: [
             { title: 'Global network', text: 'The internet connects millions of computers worldwide to share information.' },
             { title: 'Data packets', text: 'Webpages are chopped into small packets, sent across wires/air, and reassembled.' },
@@ -232,10 +456,58 @@
             { title: 'Space exploration', text: 'Reusable rockets and autonomous rovers will help us learn about other planets.' }
           ]
         },
+        'ai-foundations-advanced': {
+          youtubeId: 'PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ', // Andrej Karpathy - Neural Networks: Zero to Hero
+          keyPoints: [
+            { title: 'Build from basics', text: 'This playlist starts with the building blocks of neural networks and training.' },
+            { title: 'Learn by doing', text: 'Watching code and experiments helps ideas stick better than memorizing alone.' },
+            { title: 'Think in layers', text: 'Deep learning stacks layers so a model can learn more complex patterns.' }
+          ]
+        },
+        'machine-learning-basics': {
+          youtubeId: 'aircAruvnKk', // 3Blue1Brown Neural Networks
+          keyPoints: [
+            { title: 'Patterns in data', text: 'Machine learning looks for patterns in examples so it can make predictions.' },
+            { title: 'Neural intuition', text: 'Visual explanations make it easier to understand how networks learn.' },
+            { title: 'Practice matters', text: 'The more carefully we test models, the better we understand their behavior.' }
+          ]
+        },
+        'deep-learning': {
+          youtubeId: 'IHZwWFHWa-w', // 3Blue1Brown Deep Learning
+          keyPoints: [
+            { title: 'Layered learning', text: 'Deep learning uses many layers to turn simple signals into useful ideas.' },
+            { title: 'Representations', text: 'Each layer helps the model build a richer internal representation.' },
+            { title: 'Visual thinking', text: 'Animations and diagrams help explain the hidden math behind the model.' }
+          ]
+        },
+        'prompt-engineering': {
+          youtubeId: 'jC4v5AS4RIM', // DeepLearning.AI Prompt Engineering
+          keyPoints: [
+            { title: 'Be specific', text: 'Say what you want, who it is for, and how detailed the answer should be.' },
+            { title: 'Add constraints', text: 'Helpful prompts include format, tone, length, and examples.' },
+            { title: 'Improve iteratively', text: 'If the first answer is weak, refine the prompt and ask again.' }
+          ]
+        },
+        'ai-ethics': {
+          youtubeId: 'AD4jJLrIkr0', // IBM Technology AI Ethics
+          keyPoints: [
+            { title: 'Fairness', text: 'AI should avoid unfair treatment across different people or groups.' },
+            { title: 'Privacy', text: 'Good AI design protects personal information and sensitive data.' },
+            { title: 'Accountability', text: 'Humans are still responsible for how AI is used and checked.' }
+          ]
+        },
+        'computer-science-fundamentals': {
+          youtubeId: 'SzJ46YA_RaA', // Harvard CS50 Introduction
+          keyPoints: [
+            { title: 'Think like a computer scientist', text: 'Break problems into clear steps that a machine can follow.' },
+            { title: 'Algorithms', text: 'An algorithm is a repeatable method for solving a problem.' },
+            { title: 'Foundations first', text: 'Strong basics make later coding and AI topics much easier.' }
+          ]
+        },
 
         // Life Skills
         'critical-thinking': {
-          youtubeId: 'L4Q3K9sVzXw', // Critical Thinking for Kids
+          youtubeId: '4Prc1UfuokY', // Creative Thinking
           keyPoints: [
             { title: 'Ask questions', text: 'Always ask "why" and "how do we know this is true?"' },
             { title: 'Compare sources', text: 'Look at different opinions and facts before making up your mind.' },
@@ -433,7 +705,7 @@
             { title: 'Key point 2', text: 'Engage with the lesson content to build understanding.' },
             { title: 'Key point 3', text: 'Test your knowledge by taking the quiz after watching.' }
           ];
-          
+
           pointsEl.innerHTML = kps
             .map((p) => `<div class="es-card es-video__point"><strong>${p.title}:</strong> ${p.text}</div>`)
             .join('');
@@ -461,7 +733,7 @@
         window.EduStarAPI.requestJson('/api/notes', {
           method: 'POST',
           body: JSON.stringify({ deviceId, noteText: notes.value }),
-        }).catch(() => {});
+        }).catch(() => { });
         saved.classList.remove('is-show');
         void saved.offsetWidth;
         saved.classList.add('is-show');
@@ -539,14 +811,14 @@
             "pillarColor": "#FFD700",
             "pillarIcon": "📚",
             "topics": [
-              { "topicId": "math-foundations", "topicName": "Math Foundations", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Counting, numbers, patterns, and problem solving." },
-              { "topicId": "science-explorers", "topicName": "Science Explorers", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Plants, animals, matter, energy, and the world." },
-              { "topicId": "english-communication", "topicName": "English Communication", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Reading, writing, speaking, and vocabulary growth." },
-              { "topicId": "social-studies", "topicName": "Social Studies", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Communities, history, maps, and citizenship." },
-              { "topicId": "reading-skills", "topicName": "Reading Skills", "applicableGrades": [1,2,3,4,5,6], "shortDescription": "Fluency, understanding, and story meaning." },
-              { "topicId": "writing-skills", "topicName": "Writing Skills", "applicableGrades": [3,4,5,6,7,8,9,10,11,12], "shortDescription": "Sentences, paragraphs, and clear expression." },
-              { "topicId": "environment-awareness", "topicName": "Environment Awareness", "applicableGrades": [1,2,3,4,5,6,7,8], "shortDescription": "Nature, climate, recycling, and caring for Earth." },
-              { "topicId": "exam-revision", "topicName": "Exam Revision", "applicableGrades": [7,8,9,10,11,12], "shortDescription": "Practice, recall, and confidence before tests." }
+              { "topicId": "math-foundations", "topicName": "Math Foundations", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Counting, numbers, patterns, and problem solving." },
+              { "topicId": "science-explorers", "topicName": "Science Explorers", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Plants, animals, matter, energy, and the world." },
+              { "topicId": "english-communication", "topicName": "English Communication", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Reading, writing, speaking, and vocabulary growth." },
+              { "topicId": "social-studies", "topicName": "Social Studies", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Communities, history, maps, and citizenship." },
+              { "topicId": "reading-skills", "topicName": "Reading Skills", "applicableGrades": [1, 2, 3, 4, 5, 6], "shortDescription": "Fluency, understanding, and story meaning." },
+              { "topicId": "writing-skills", "topicName": "Writing Skills", "applicableGrades": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Sentences, paragraphs, and clear expression." },
+              { "topicId": "environment-awareness", "topicName": "Environment Awareness", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8], "shortDescription": "Nature, climate, recycling, and caring for Earth." },
+              { "topicId": "exam-revision", "topicName": "Exam Revision", "applicableGrades": [7, 8, 9, 10, 11, 12], "shortDescription": "Practice, recall, and confidence before tests." }
             ]
           },
           {
@@ -555,13 +827,19 @@
             "pillarColor": "#00D4FF",
             "pillarIcon": "🤖",
             "topics": [
-              { "topicId": "what-is-ai", "topicName": "What is AI?", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "AI is a computer system that learns patterns and helps people." },
-              { "topicId": "prompt-writing", "topicName": "Prompt Writing", "applicableGrades": [5,6,7,8,9,10,11,12], "shortDescription": "Write clear instructions so AI gives better answers." },
-              { "topicId": "coding-basics", "topicName": "Coding Basics", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Learn sequences, loops, and simple logic." },
-              { "topicId": "robotics", "topicName": "Robotics", "applicableGrades": [5,6,7,8,9,10,11,12], "shortDescription": "Robots sense, think, and act with sensors and motors." },
-              { "topicId": "digital-safety", "topicName": "Digital Safety", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Stay safe, kind, and careful online." },
-              { "topicId": "computers-and-internet", "topicName": "Computers and Internet", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Understand devices, networks, and responsible use." },
-              { "topicId": "future-tech", "topicName": "Future Tech", "applicableGrades": [6,7,8,9,10,11,12], "shortDescription": "Discover how new tools can help learning and life." }
+              { "topicId": "what-is-ai", "topicName": "What is AI?", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "AI is a computer system that learns patterns and helps people." },
+              { "topicId": "prompt-writing", "topicName": "Prompt Writing", "applicableGrades": [5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Write clear instructions so AI gives better answers." },
+              { "topicId": "coding-basics", "topicName": "Coding Basics", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Learn sequences, loops, and simple logic." },
+              { "topicId": "robotics", "topicName": "Robotics", "applicableGrades": [5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Robots sense, think, and act with sensors and motors." },
+              { "topicId": "digital-safety", "topicName": "Digital Safety", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Stay safe, kind, and careful online." },
+              { "topicId": "computers-and-internet", "topicName": "Computers and Internet", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Understand devices, networks, and responsible use." },
+              { "topicId": "future-tech", "topicName": "Future Tech", "applicableGrades": [6, 7, 8, 9, 10, 11, 12], "shortDescription": "Discover how new tools can help learning and life." },
+              { "topicId": "ai-foundations-advanced", "topicName": "AI Foundations (Advanced)", "applicableGrades": [8, 9, 10, 11, 12], "shortDescription": "Explore how large language models and neural networks are built." },
+              { "topicId": "machine-learning-basics", "topicName": "Machine Learning Basics", "applicableGrades": [9, 10, 11, 12], "shortDescription": "Learn how computers find patterns from examples and data." },
+              { "topicId": "deep-learning", "topicName": "Deep Learning", "applicableGrades": [9, 10, 11, 12], "shortDescription": "See how layered neural networks can learn from data." },
+              { "topicId": "prompt-engineering", "topicName": "Prompt Engineering", "applicableGrades": [7, 8, 9, 10, 11, 12], "shortDescription": "Write better prompts so AI gives clearer, more useful answers." },
+              { "topicId": "ai-ethics", "topicName": "AI Ethics", "applicableGrades": [7, 8, 9, 10, 11, 12], "shortDescription": "Think about fairness, safety, privacy, and responsible AI use." },
+              { "topicId": "computer-science-fundamentals", "topicName": "Computer Science Fundamentals", "applicableGrades": [8, 9, 10, 11, 12], "shortDescription": "Build a foundation in algorithms, logic, and computing ideas." }
             ]
           },
           {
@@ -570,12 +848,12 @@
             "pillarColor": "#39FF14",
             "pillarIcon": "🌱",
             "topics": [
-              { "topicId": "critical-thinking", "topicName": "Critical Thinking", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Think carefully, ask questions, and check ideas." },
-              { "topicId": "communication", "topicName": "Communication", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Listen well, speak clearly, and work with others." },
-              { "topicId": "problem-solving", "topicName": "Problem Solving", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Find simple steps to solve hard situations." },
-              { "topicId": "teamwork", "topicName": "Teamwork", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Share, help, and build together." },
-              { "topicId": "self-management", "topicName": "Self Management", "applicableGrades": [4,5,6,7,8,9,10,11,12], "shortDescription": "Plan time, keep calm, and stay on task." },
-              { "topicId": "goal-setting", "topicName": "Goal Setting", "applicableGrades": [3,4,5,6,7,8,9,10,11,12], "shortDescription": "Set a target and take small steps to reach it." }
+              { "topicId": "critical-thinking", "topicName": "Critical Thinking", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Think carefully, ask questions, and check ideas." },
+              { "topicId": "communication", "topicName": "Communication", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Listen well, speak clearly, and work with others." },
+              { "topicId": "problem-solving", "topicName": "Problem Solving", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Find simple steps to solve hard situations." },
+              { "topicId": "teamwork", "topicName": "Teamwork", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Share, help, and build together." },
+              { "topicId": "self-management", "topicName": "Self Management", "applicableGrades": [4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Plan time, keep calm, and stay on task." },
+              { "topicId": "goal-setting", "topicName": "Goal Setting", "applicableGrades": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Set a target and take small steps to reach it." }
             ]
           },
           {
@@ -584,14 +862,14 @@
             "pillarColor": "#FFD18A",
             "pillarIcon": "💛",
             "topics": [
-              { "topicId": "respect-elders", "topicName": "Respecting Elders", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Speak kindly and listen to older people with care." },
-              { "topicId": "cleanliness", "topicName": "Cleanliness", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Keep yourself, your room, and your surroundings neat." },
-              { "topicId": "discipline", "topicName": "Discipline", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Follow routines, finish work, and stay steady." },
-              { "topicId": "empathy", "topicName": "Empathy", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Understand how others feel and be supportive." },
-              { "topicId": "kindness", "topicName": "Kindness", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Small kind actions can make a big difference." },
-              { "topicId": "honesty", "topicName": "Honesty", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Tell the truth and keep promises." },
-              { "topicId": "responsibility", "topicName": "Responsibility", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Own your actions and finish what you start." },
-              { "topicId": "team-spirit", "topicName": "Team Spirit", "applicableGrades": [1,2,3,4,5,6,7,8,9,10,11,12], "shortDescription": "Work together with respect and shared purpose." }
+              { "topicId": "respect-elders", "topicName": "Respecting Elders", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Speak kindly and listen to older people with care." },
+              { "topicId": "cleanliness", "topicName": "Cleanliness", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Keep yourself, your room, and your surroundings neat." },
+              { "topicId": "discipline", "topicName": "Discipline", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Follow routines, finish work, and stay steady." },
+              { "topicId": "empathy", "topicName": "Empathy", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Understand how others feel and be supportive." },
+              { "topicId": "kindness", "topicName": "Kindness", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Small kind actions can make a big difference." },
+              { "topicId": "honesty", "topicName": "Honesty", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Tell the truth and keep promises." },
+              { "topicId": "responsibility", "topicName": "Responsibility", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Own your actions and finish what you start." },
+              { "topicId": "team-spirit", "topicName": "Team Spirit", "applicableGrades": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "shortDescription": "Work together with respect and shared purpose." }
             ]
           }
         ];
@@ -600,10 +878,13 @@
     })();
   </script>
   <!-- Footer -->
-  <footer class="es-shell" style="padding:1.2rem 0; border-top:1px solid rgba(255,255,255,.07); margin-top:2rem; text-align:center;">
+  <footer class="es-shell"
+    style="padding:1.2rem 0; border-top:1px solid rgba(255,255,255,.07); margin-top:2rem; text-align:center;">
     <small>EduStar &copy; 2025 &mdash; Safe, ad-free, joyful learning for young explorers. &nbsp;
-      <a href="edustar-subject-hub.html" style="color:var(--es-color-star-gold); text-decoration:none;">↩ Back to Subjects</a>
+      <a href="edustar-cbse-class-hub.html" style="color:var(--es-color-star-gold); text-decoration:none;">↩ Back to
+        CBSE Classes</a>
     </small>
   </footer>
 </body>
+
 </html>

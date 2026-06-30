@@ -12,6 +12,10 @@ const databasePath = join(rootDir, 'edustar-data.sqlite');
 
 const db = new DatabaseSync(databasePath);
 db.exec(readFileSync(schemaPath, 'utf8'));
+// Migrate existing databases that predate the user_name column
+try {
+  db.exec(`ALTER TABLE app_settings ADD COLUMN user_name TEXT NOT NULL DEFAULT ''`);
+} catch (_) { /* column already exists — safe to ignore */ }
 
 const contentMap = JSON.parse(readFileSync(contentMapPath, 'utf8'));
 const quizQuestions = JSON.parse(readFileSync(quizQuestionsPath, 'utf8'));
@@ -56,13 +60,18 @@ function readBody(req) {
     req.on('data', (chunk) => chunks.push(chunk));
     req.on('end', () => {
       try {
-        const body = chunks.length ? Buffer.concat(chunks).toString('utf8') : '';
-        resolveBody(body ? JSON.parse(body) : {});
-      } catch (error) {
-        rejectBody(error);
+        const raw = chunks.length ? Buffer.concat(chunks).toString('utf8') : '';
+        resolveBody(raw ? JSON.parse(raw) : {});
+      } catch {
+        // Malformed JSON → resolve with empty object so route handlers
+        // can validate missing fields and return a 400 themselves.
+        resolveBody({});
       }
     });
-    req.on('error', rejectBody);
+    req.on('error', (err) => {
+      console.error('[EduStar] request stream error:', err.message);
+      rejectBody(err);
+    });
   });
 }
 
@@ -74,8 +83,9 @@ function normalizeDeviceId(rawValue) {
   return String(rawValue || '').trim().slice(0, 120);
 }
 
-function ensureDeviceId(deviceId) {
-  const normalized = normalizeDeviceId(deviceId);
+function ensureDeviceId(rawValue) {
+  // Accept null / undefined safely before normalising
+  const normalized = normalizeDeviceId(rawValue ?? '');
   if (!normalized) {
     const error = new Error('deviceId is required');
     error.statusCode = 400;
@@ -84,14 +94,26 @@ function ensureDeviceId(deviceId) {
   return normalized;
 }
 
-function upsertSettings(deviceId, selectedGrade) {
+function upsertSettings(deviceId, selectedGrade, userName) {
   db.prepare(
-    `INSERT INTO app_settings (device_id, selected_grade, updated_at)
-     VALUES (?, ?, CURRENT_TIMESTAMP)
+    `INSERT INTO app_settings (device_id, user_name, selected_grade, updated_at)
+     VALUES (?, ?, ?, CURRENT_TIMESTAMP)
      ON CONFLICT(device_id) DO UPDATE SET
+       user_name = CASE WHEN excluded.user_name != '' THEN excluded.user_name ELSE user_name END,
        selected_grade = excluded.selected_grade,
        updated_at = CURRENT_TIMESTAMP`
-  ).run(deviceId, selectedGrade);
+  ).run(deviceId, String(userName || '').trim().slice(0, 40), selectedGrade);
+}
+
+function upsertUserName(deviceId, userName) {
+  const name = String(userName || '').trim().slice(0, 40);
+  db.prepare(
+    `INSERT INTO app_settings (device_id, user_name, selected_grade, updated_at)
+     VALUES (?, ?, 1, CURRENT_TIMESTAMP)
+     ON CONFLICT(device_id) DO UPDATE SET
+       user_name = excluded.user_name,
+       updated_at = CURRENT_TIMESTAMP`
+  ).run(deviceId, name);
 }
 
 function upsertProgress(deviceId, payload) {
@@ -169,17 +191,18 @@ function buildAdminSummary(deviceId = '') {
 }
 
 function answerFromPrompt(promptText) {
-  const text = promptText.toLowerCase();
-  if (text.includes('math') || text.includes('number')) {
+  // Guard against non-string input (null / undefined safety)
+  const safe = (typeof promptText === 'string' ? promptText : String(promptText ?? '')).toLowerCase();
+  if (safe.includes('math') || safe.includes('number')) {
     return 'Let us break it into small steps and look for patterns.';
   }
-  if (text.includes('ai') || text.includes('robot')) {
+  if (safe.includes('ai') || safe.includes('robot')) {
     return 'AI can help by finding patterns, but it still needs a human to check the answer.';
   }
-  if (text.includes('kind') || text.includes('respect')) {
+  if (safe.includes('kind') || safe.includes('respect')) {
     return 'A kind action or respectful word can make a big difference.';
   }
-  if (text.includes('write') || text.includes('prompt')) {
+  if (safe.includes('write') || safe.includes('prompt')) {
     return 'Try saying who it is for, what you want, and how long the answer should be.';
   }
   return 'Thanks for asking. I can help you turn that into a simple learning step.';
@@ -187,8 +210,12 @@ function answerFromPrompt(promptText) {
 
 async function handleTutorChat(req, res) {
   const body = await readBody(req);
-  const deviceId = ensureDeviceId(body.deviceId);
-  const promptText = String(body.message || '').trim();
+  // Null-safe deviceId extraction
+  const deviceId = ensureDeviceId(body.deviceId ?? null);
+  // Strict null/undefined check before String conversion
+  const promptText = (body.message !== null && body.message !== undefined)
+    ? String(body.message).trim()
+    : '';
 
   if (!promptText) {
     json(res, 400, { error: 'message is required' });
@@ -239,10 +266,38 @@ async function handleRequest(req, res) {
 
     if (pathname === '/api/settings' && req.method === 'POST') {
       const body = await readBody(req);
-      const deviceId = ensureDeviceId(body.deviceId);
-      const selectedGrade = Math.max(1, Math.min(12, Number.parseInt(body.selectedGrade, 10) || 1));
-      upsertSettings(deviceId, selectedGrade);
-      json(res, 200, { ok: true, settings: { device_id: deviceId, selected_grade: selectedGrade } });
+      // Null-safe extraction before passing to ensureDeviceId
+      const deviceId = ensureDeviceId(body.deviceId ?? null);
+      const selectedGrade = Math.max(1, Math.min(12, Number.parseInt(String(body.selectedGrade ?? '1'), 10) || 1));
+      // Strict null check — don't stringify undefined
+      const userName = (body.userName !== null && body.userName !== undefined)
+        ? String(body.userName).trim().slice(0, 40)
+        : '';
+      upsertSettings(deviceId, selectedGrade, userName);
+      json(res, 200, { ok: true, settings: { device_id: deviceId, selected_grade: selectedGrade, user_name: userName } });
+      return;
+    }
+
+    if (pathname === '/api/name' && req.method === 'GET') {
+      const deviceId = ensureDeviceId(getDeviceIdFromUrl(url));
+      const row = db.prepare('SELECT user_name FROM app_settings WHERE device_id = ?').get(deviceId);
+      json(res, 200, { user_name: row ? row.user_name : '' });
+      return;
+    }
+
+    if (pathname === '/api/name' && req.method === 'POST') {
+      const body = await readBody(req);
+      const deviceId = ensureDeviceId(body.deviceId ?? null);
+      // Strict null check for userName
+      const userName = (body.userName !== null && body.userName !== undefined)
+        ? String(body.userName).trim().slice(0, 40)
+        : '';
+      if (!userName || userName.length < 2) {
+        json(res, 400, { error: 'userName must be at least 2 characters' });
+        return;
+      }
+      upsertUserName(deviceId, userName);
+      json(res, 200, { ok: true, user_name: userName });
       return;
     }
 
@@ -254,11 +309,11 @@ async function handleRequest(req, res) {
 
     if (pathname === '/api/progress' && req.method === 'POST') {
       const body = await readBody(req);
-      const deviceId = ensureDeviceId(body.deviceId);
+      const deviceId = ensureDeviceId(body.deviceId ?? null);
       const payload = {
-        stars: Math.max(0, Number.parseInt(body.stars, 10) || 0),
-        level: Math.max(1, Number.parseInt(body.level, 10) || 1),
-        completedLessons: Math.max(0, Number.parseInt(body.completedLessons, 10) || 0),
+        stars:            Math.max(0, Number.parseInt(String(body.stars            ?? '0'), 10) || 0),
+        level:            Math.max(1, Number.parseInt(String(body.level            ?? '1'), 10) || 1),
+        completedLessons: Math.max(0, Number.parseInt(String(body.completedLessons ?? '0'), 10) || 0),
       };
       upsertProgress(deviceId, payload);
       json(res, 200, { ok: true, progress: { device_id: deviceId, ...payload } });
@@ -273,8 +328,11 @@ async function handleRequest(req, res) {
 
     if (pathname === '/api/notes' && req.method === 'POST') {
       const body = await readBody(req);
-      const deviceId = ensureDeviceId(body.deviceId);
-      const noteText = String(body.noteText || '').slice(0, 2000);
+      const deviceId = ensureDeviceId(body.deviceId ?? null);
+      // Strict null/undefined check before String conversion
+      const noteText = (body.noteText !== null && body.noteText !== undefined)
+        ? String(body.noteText).slice(0, 2000)
+        : '';
       upsertNotes(deviceId, noteText);
       json(res, 200, { ok: true, noteText });
       return;
@@ -288,8 +346,10 @@ async function handleRequest(req, res) {
 
     if (pathname === '/api/journal' && req.method === 'POST') {
       const body = await readBody(req);
-      const deviceId = ensureDeviceId(body.deviceId);
-      const entryText = String(body.entryText || '').trim().slice(0, 1000);
+      const deviceId = ensureDeviceId(body.deviceId ?? null);
+      const entryText = (body.entryText !== null && body.entryText !== undefined)
+        ? String(body.entryText).trim().slice(0, 1000)
+        : '';
       if (!entryText) {
         json(res, 400, { error: 'entryText is required' });
         return;
@@ -307,10 +367,17 @@ async function handleRequest(req, res) {
 
     if (pathname === '/api/quiz-attempts' && req.method === 'POST') {
       const body = await readBody(req);
-      const deviceId = ensureDeviceId(body.deviceId);
-      const pillar = String(body.pillar || 'General').slice(0, 80);
-      const score = Math.max(0, Number.parseInt(body.score, 10) || 0);
-      const total = Math.max(1, Number.parseInt(body.total, 10) || 1);
+      const deviceId = ensureDeviceId(body.deviceId ?? null);
+      // Safe string coercion with explicit null guard
+      const pillar = (body.pillar !== null && body.pillar !== undefined)
+        ? String(body.pillar).slice(0, 80)
+        : 'General';
+      const score = Math.max(0, Number.parseInt(String(body.score  ?? '0'), 10) || 0);
+      const total = Math.max(1, Number.parseInt(String(body.total  ?? '1'), 10) || 1);
+      if (score > total) {
+        json(res, 400, { error: 'score cannot exceed total' });
+        return;
+      }
       insertQuizAttempt(deviceId, { pillar, score, total });
       json(res, 200, { ok: true });
       return;
@@ -349,6 +416,10 @@ async function handleRequest(req, res) {
     text(res, 405, 'Method Not Allowed');
   } catch (error) {
     const statusCode = Number.isInteger(error.statusCode) ? error.statusCode : 500;
+    // Log server-side errors for debugging; client only gets generic message for 500s
+    if (statusCode === 500) {
+      console.error('[EduStar] unhandled error:', error.message, error.stack);
+    }
     json(res, statusCode, {
       error: statusCode === 500 ? 'Internal Server Error' : error.message,
     });
@@ -357,8 +428,19 @@ async function handleRequest(req, res) {
 
 const port = Number.parseInt(process.env.PORT || process.env.EDUSTAR_PORT || '3000', 10);
 
-createServer((req, res) => {
+const server = createServer((req, res) => {
   handleRequest(req, res);
-}).listen(port, '0.0.0.0', () => {
-  console.log(`EduStar backend listening on http://0.0.0.0:${port}`);
+});
+
+server.on('error', (err) => {
+  console.error('[EduStar] server error:', err.message);
+  if (err.code === 'EADDRINUSE') {
+    console.error(`[EduStar] Port ${port} is already in use. Set PORT or EDUSTAR_PORT to a different value.`);
+    process.exit(1);
+  }
+});
+
+server.listen(port, '0.0.0.0', () => {
+  console.log(`[EduStar] backend listening on http://0.0.0.0:${port}`);
+  console.log(`[EduStar] open http://127.0.0.1:${port}/edustar-home.html`);
 });

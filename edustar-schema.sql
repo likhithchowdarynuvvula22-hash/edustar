@@ -3,6 +3,7 @@ PRAGMA synchronous = NORMAL;
 
 CREATE TABLE IF NOT EXISTS app_settings (
   device_id TEXT PRIMARY KEY,
+  user_name TEXT NOT NULL DEFAULT '',
   selected_grade INTEGER NOT NULL DEFAULT 1,
   updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
